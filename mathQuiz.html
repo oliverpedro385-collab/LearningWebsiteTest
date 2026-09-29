@@ -10,12 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-
     <script>
         if (
-            localStorage.getItem(
-                "darkMode"
-            ) === "true"
+            localStorage.getItem("darkMode") === "true"
         ) {
             document.documentElement.classList.add(
                 "darkMode"
@@ -23,12 +20,10 @@
         }
     </script>
 
-
     <link
         rel="stylesheet"
         href="style.css"
     >
-
 
     <title>
         Math Quiz
@@ -50,7 +45,6 @@
     </a>
 
 
-
     <!-- SETTINGS -->
 
     <button
@@ -65,14 +59,12 @@
     </button>
 
 
-
     <!-- QUIZ -->
 
     <div class="container">
 
 
         <div class="subjectHeading">
-
 
             <span
                 class="subjectSmallTitle"
@@ -81,29 +73,54 @@
                 Mid-Day • Grade
             </span>
 
-
             <h1 data-i18n="math">
                 Math
             </h1>
 
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="quizProgress">
+
+            <div
+                class="quizProgressText"
+                id="progressText"
+            >
+                Question 1 of 10
+            </div>
+
+            <div class="quizProgressBar">
+
+                <div
+                    id="quizProgressFill"
+                    class="quizProgressFill"
+                ></div>
+
+            </div>
 
         </div>
 
 
+        <!-- QUESTION -->
 
         <h2 id="question">
             Question goes here
         </h2>
 
 
+        <!-- ANSWERS -->
 
         <div id="answers"></div>
 
 
+        <!-- RESULT -->
 
         <p id="result"></p>
 
 
+        <!-- NEXT -->
 
         <button
             id="nextButton"
@@ -116,7 +133,6 @@
 
 
     </div>
-
 
 
     <!-- SCRIPTS -->
