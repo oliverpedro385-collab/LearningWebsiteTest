@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+
+    <script>
+        if (
+            localStorage.getItem(
+                "darkMode"
+            ) === "true"
+        ) {
+            document.documentElement.classList.add(
+                "darkMode"
+            );
+        }
+    </script>
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+    <title>
+        Math
+    </title>
+
+</head>
+
+
+<body>
+
+
+    <!-- BACK -->
+
+    <a
+        href="index.html"
+        class="backButton"
+    >
+        ↶
+    </a>
+
+
+
+    <!-- SETTINGS -->
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+    >
+
+        <span id="settingsIcon">
+            ⚙
+        </span>
+
+    </button>
+
+
+
+    <!-- CONTENT -->
+
+    <div class="container gradePage">
+
+
+        <div class="subjectHeading">
+
+
+            <span
+                class="subjectSmallTitle"
+                data-i18n="midDay"
+            >
+                Mid-Day
+            </span>
+
+
+            <h1 data-i18n="math">
+                Math
+            </h1>
+
+
+            <p
+                data-i18n="chooseGrade"
+            >
+                Choose your grade.
+            </p>
+
+
+        </div>
+
+
+
+        <div class="gradeContainer">
+
+
+            <a
+                href="mathQuiz.html?grade=1"
+                class="gradeButton"
+            >
+
+                <span class="gradeNumber">
+                    1
+                </span>
+
+                <span
+                    data-i18n="grade1"
+                >
+                    Grade 1
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="mathQuiz.html?grade=2"
+                class="gradeButton"
+            >
+
+                <span class="gradeNumber">
+                    2
+                </span>
+
+                <span
+                    data-i18n="grade2"
+                >
+                    Grade 2
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="mathQuiz.html?grade=3"
+                class="gradeButton"
+            >
+
+                <span class="gradeNumber">
+                    3
+                </span>
+
+                <span
+                    data-i18n="grade3"
+                >
+                    Grade 3
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="mathQuiz.html?grade=4"
+                class="gradeButton"
+            >
+
+                <span class="gradeNumber">
+                    4
+                </span>
+
+                <span
+                    data-i18n="grade4"
+                >
+                    Grade 4
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="mathQuiz.html?grade=5"
+                class="gradeButton"
+            >
+
+                <span class="gradeNumber">
+                    5
+                </span>
+
+                <span
+                    data-i18n="grade5"
+                >
+                    Grade 5
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- SCRIPTS -->
+
+    <script src="user.js"></script>
+
+    <script src="language.js"></script>
+
+    <script src="theme.js"></script>
+
+    <script src="settings.js"></script>
+
+
+</body>
+
+</html>
