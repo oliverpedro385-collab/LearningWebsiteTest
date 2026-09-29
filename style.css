@@ -161,6 +161,9 @@ p {
 
     cursor: pointer;
 
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
     transition:
         background-color 0.3s ease,
         color 0.3s ease,
@@ -201,6 +204,9 @@ p {
     font-weight: bold;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     box-shadow:
         0 5px 15px rgba(84, 49, 15, 0.16);
@@ -289,6 +295,9 @@ input::placeholder {
 
     z-index: 3000;
 
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
     transition:
         background-color 0.5s ease,
         color 0.5s ease,
@@ -335,6 +344,9 @@ input::placeholder {
 
     cursor: pointer;
 
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
     box-shadow:
         0 4px 12px rgba(84, 49, 15, 0.15);
 
@@ -377,7 +389,7 @@ input::placeholder {
     right: 25px;
 
     width: 330px;
-    max-width: calc(100% - 30px);
+    max-width: calc(100vw - 30px);
 
     max-height: calc(100vh - 110px);
 
@@ -396,6 +408,8 @@ input::placeholder {
 
     overflow-y: auto;
     overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
 
     opacity: 0;
     visibility: hidden;
@@ -500,6 +514,9 @@ html.darkMode body .settingsMenu::-webkit-scrollbar-thumb:hover {
 
     cursor: pointer;
 
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
     transition:
         background-color 0.3s ease,
         transform 0.2s ease;
@@ -551,7 +568,7 @@ html.darkMode body .settingsMenu::-webkit-scrollbar-thumb:hover {
 .toggleButton {
     min-width: 60px;
 
-    padding: 8px 12px;
+    padding: 10px 14px;
 
     border: none;
     border-radius: 20px;
@@ -562,6 +579,9 @@ html.darkMode body .settingsMenu::-webkit-scrollbar-thumb:hover {
     font-weight: bold;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     transition:
         background-color 0.3s ease,
@@ -602,7 +622,7 @@ html.darkMode body .settingsMenu::-webkit-scrollbar-thumb:hover {
 .settingsAction {
     width: 100%;
 
-    padding: 11px;
+    padding: 12px;
 
     border: none;
     border-radius: 10px;
@@ -614,6 +634,9 @@ html.darkMode body .settingsMenu::-webkit-scrollbar-thumb:hover {
     font-weight: bold;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     transition:
         background-color 0.5s ease,
@@ -633,6 +656,7 @@ html.darkMode body .settingsMenu::-webkit-scrollbar-thumb:hover {
 
 html.darkMode body .settingsAction {
     background-color: #69569d;
+
     color: #ffffff;
 }
 
@@ -675,6 +699,8 @@ html.darkMode body .settingsAction:hover {
     background: var(--button-color);
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 #highlightColorValue {
@@ -693,7 +719,7 @@ html.darkMode body .settingsAction:hover {
 .languageSelect {
     width: 100%;
 
-    padding: 11px 12px;
+    padding: 12px;
 
     box-sizing: border-box;
 
@@ -708,6 +734,8 @@ html.darkMode body .settingsAction:hover {
     font-size: 16px;
 
     cursor: pointer;
+
+    touch-action: manipulation;
 
     transition:
         background-color 0.5s ease,
@@ -752,6 +780,7 @@ html.darkMode body .settingsAction:hover {
     padding: 40px;
 
     display: flex;
+
     flex-direction: column;
 
     align-items: center;
@@ -796,6 +825,9 @@ html.darkMode body .settingsAction:hover {
     font-weight: bold;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     transition:
         background-color 0.15s ease,
@@ -887,6 +919,7 @@ html.darkMode body .settingsAction:hover {
     border-radius: 18px;
 
     font-size: 21px;
+
     font-weight: bold;
 
     box-shadow:
@@ -989,6 +1022,7 @@ html.darkMode body .gradeNumber {
     flex-direction: column;
 
     align-items: center;
+
     justify-content: center;
 
     gap: 10px;
@@ -1011,6 +1045,9 @@ html.darkMode body .gradeNumber {
         rgba(50, 30, 20, 0.15);
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     overflow: hidden;
 
@@ -1329,6 +1366,9 @@ html.darkMode body .gradeNumber {
 
     cursor: pointer;
 
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
     z-index: 10;
 
     transition:
@@ -1476,7 +1516,8 @@ html.darkMode body .stars {
 
     border-radius: 50%;
 
-    filter: blur(1px);
+    filter:
+        blur(1px);
 
     transition:
         opacity 0.8s ease;
@@ -1597,6 +1638,46 @@ body > .backButton {
             1px solid
             rgba(80, 50, 30, 0.15);
     }
+
+    .settingsMenu {
+        top: 73px;
+
+        left: 15px;
+        right: 15px;
+
+        width: auto;
+        max-width: none;
+
+        max-height:
+            calc(100dvh - 88px);
+
+        padding: 20px;
+
+        border-radius: 16px;
+    }
+
+    .settingsButton {
+        top: 15px;
+        right: 15px;
+
+        width: 48px;
+        height: 48px;
+
+        font-size: 23px;
+    }
+
+    .closeSettings {
+        width: 40px;
+        height: 40px;
+    }
+
+    .toggleButton {
+        padding: 10px 15px;
+    }
+
+    .settingsAction {
+        padding: 13px;
+    }
 }
 
 
@@ -1640,8 +1721,7 @@ body > .backButton {
             20px;
     }
 
-    .backButton,
-    .settingsButton {
+    .backButton {
         width:
             45px;
 
@@ -1651,37 +1731,16 @@ body > .backButton {
         top:
             15px;
 
-        font-size:
-            24px;
-    }
-
-    .backButton {
         left:
             15px;
-    }
 
-    .settingsButton {
-        right:
-            15px;
+        font-size:
+            24px;
     }
 
     .answerButton {
         width:
             90%;
-    }
-
-    .settingsMenu {
-        top:
-            70px;
-
-        right:
-            15px;
-
-        width:
-            calc(100% - 30px);
-
-        max-height:
-            calc(100vh - 85px);
     }
 
     .usernameBox {
@@ -1718,5 +1777,451 @@ body > .backButton {
     .libraryBooks {
         grid-template-columns:
             1fr;
+    }
+
+    .settingRow {
+        align-items:
+            flex-start;
+    }
+}
+
+/* ========================================
+   QUIZ RESULTS
+   ======================================== */
+
+.quizComplete {
+    text-align: center;
+
+    animation:
+        quizResultIn 0.6s
+        cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes quizResultIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.quizScore {
+    margin-top: 25px;
+
+    font-size: 64px;
+
+    font-weight: bold;
+
+    color: var(--heading-color);
+}
+
+.quizPercentage {
+    margin-top: 5px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    opacity: 0.65;
+}
+
+.quizFeedback {
+    max-width: 600px;
+
+    margin:
+        25px auto 10px;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+}
+
+.quizWeakTopic {
+    max-width: 600px;
+
+    margin:
+        15px auto;
+
+    font-size: 18px;
+
+    line-height: 1.5;
+}
+
+.quizReturning {
+    margin-top: 30px;
+
+    font-size: 15px;
+
+    opacity: 0.55;
+}
+
+/* ========================================
+   QUIZ PROGRESS
+   ======================================== */
+
+.quizProgress {
+    width: 100%;
+
+    max-width: 600px;
+
+    margin:
+        0 auto 30px;
+}
+
+.quizProgressText {
+    margin-bottom: 8px;
+
+    text-align: left;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    opacity: 0.65;
+}
+
+.quizProgressBar {
+    width: 100%;
+
+    height: 12px;
+
+    overflow: hidden;
+
+    background:
+        rgba(80, 60, 100, 0.12);
+
+    border-radius: 20px;
+}
+
+.quizProgressFill {
+    width: 0%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #e99b32,
+            #ffd56e
+        );
+
+    border-radius: 20px;
+
+    transition:
+        width 0.45s
+        cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ========================================
+   QUIZ RESULTS
+   ======================================== */
+
+.quizComplete {
+    text-align: center;
+
+    animation:
+        quizResultIn 0.6s
+        cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes quizResultIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.quizScore {
+    margin-top: 25px;
+
+    font-size: 64px;
+
+    font-weight: bold;
+
+    color:
+        var(--heading-color);
+}
+
+.quizPercentage {
+    margin-top: 5px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    opacity: 0.65;
+}
+
+.quizFeedback {
+    max-width: 600px;
+
+    margin:
+        25px auto 10px;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+}
+
+.quizWeakTopic {
+    max-width: 600px;
+
+    margin:
+        15px auto 30px;
+
+    font-size: 18px;
+
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   BACK TO GRADES
+   ======================================== */
+
+.backToGradesButton {
+    padding:
+        14px 28px;
+
+    background:
+        #e99b32;
+
+    color:
+        white;
+
+    border:
+        none;
+
+    border-radius:
+        12px;
+
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
+    touch-action:
+        manipulation;
+
+    box-shadow:
+        0 5px 15px
+        rgba(84, 49, 15, 0.16);
+
+    transition:
+        background-color 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.backToGradesButton:hover {
+
+    background:
+        #d98520;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 7px 18px
+        rgba(84, 49, 15, 0.2);
+}
+
+.backToGradesButton:active {
+
+    transform:
+        translateY(1px);
+}
+
+
+/* ========================================
+   DARK MODE PROGRESS
+   ======================================== */
+
+html.darkMode body .quizProgressBar {
+
+    background:
+        rgba(220, 210, 255, 0.12);
+}
+
+html.darkMode body .quizProgressFill {
+
+    background:
+        linear-gradient(
+            90deg,
+            #69569d,
+            #a88fd4
+        );
+}
+
+html.darkMode body .backToGradesButton {
+
+    background:
+        #69569d;
+}
+
+html.darkMode body .backToGradesButton:hover {
+
+    background:
+        #7b66b4;
+}
+
+
+/* ========================================
+   CONFETTI
+   ======================================== */
+
+.confettiContainer {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    pointer-events:
+        none;
+
+    overflow:
+        hidden;
+
+    z-index:
+        10000;
+}
+
+.confetti {
+
+    position:
+        absolute;
+
+    top:
+        -25px;
+
+    width:
+        10px;
+
+    height:
+        16px;
+
+    opacity:
+        0;
+
+    animation:
+        confettiFall
+        var(--duration)
+        linear
+        forwards;
+}
+
+@keyframes confettiFall {
+
+    0% {
+
+        opacity:
+            1;
+
+        transform:
+            translate3d(
+                0,
+                0,
+                0
+            )
+            rotate(0deg);
+    }
+
+    15% {
+
+        opacity:
+            1;
+    }
+
+    100% {
+
+        opacity:
+            0;
+
+        transform:
+            translate3d(
+                var(--drift),
+                var(--fallDistance),
+                0
+            )
+            rotate(
+                var(--spin)
+            );
+    }
+}
+
+
+/* ========================================
+   MOBILE QUIZ
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    .quizProgress {
+
+        margin-bottom:
+            25px;
+    }
+
+    .quizProgressBar {
+
+        height:
+            10px;
+    }
+
+    .quizProgressText {
+
+        font-size:
+            13px;
+    }
+
+    .quizScore {
+
+        font-size:
+            52px;
+    }
+
+    .quizFeedback {
+
+        font-size:
+            18px;
+    }
+
+    .quizWeakTopic {
+
+        font-size:
+            16px;
     }
 }
