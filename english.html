@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>English</title>
+
+    <script>
+        if (localStorage.getItem("darkMode") === "true") {
+            document.documentElement.classList.add("darkMode");
+        }
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+    <a
+        href="index.html"
+        class="backButton"
+    >↶</a>
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+    >
+        <span id="settingsIcon">⚙</span>
+    </button>
+
+    <div class="container gradePage">
+
+        <div class="subjectHeading">
+            <h1>English</h1>
+
+            <p>
+                Choose your grade
+            </p>
+        </div>
+
+        <div class="gradeContainer">
+
+            <a
+                href="englishQuiz.html?grade=1"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">1</span>
+                Grade 1
+            </a>
+
+            <a
+                href="englishQuiz.html?grade=2"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">2</span>
+                Grade 2
+            </a>
+
+            <a
+                href="englishQuiz.html?grade=3"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">3</span>
+                Grade 3
+            </a>
+
+            <a
+                href="englishQuiz.html?grade=4"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">4</span>
+                Grade 4
+            </a>
+
+            <a
+                href="englishQuiz.html?grade=5"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">5</span>
+                Grade 5
+            </a>
+
+        </div>
+
+    </div>
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+
+</body>
+
+</html>

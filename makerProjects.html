@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Maker Projects</title>
+
+
+    <script>
+        if (
+            localStorage.getItem("darkMode") === "true"
+        ) {
+            document.documentElement.classList.add("darkMode");
+        }
+    </script>
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <a
+        href="maker.html"
+        class="backButton"
+        aria-label="Back"
+    >
+        ↶
+    </a>
+
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        aria-label="Settings"
+    >
+        ⚙
+    </button>
+
+
+
+    <main class="container makerPage">
+
+
+        <div class="subjectHeading">
+
+
+            <div
+                class="subjectEyebrow"
+                id="makerEyebrow"
+            >
+                Mid-Day
+            </div>
+
+
+            <h1 id="makerTitle">
+                Maker
+            </h1>
+
+
+        </div>
+
+
+        <h2 id="makerChooseProject">
+            Choose a project to make.
+        </h2>
+
+
+        <div
+            id="projectGrid"
+            class="makerProjectGrid"
+        ></div>
+
+
+    </main>
+
+
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="makerData.js"></script>
+
+
+    <script>
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const grade =
+            Number(
+                params.get("grade")
+            );
+
+
+        const projectGrid =
+            document.getElementById(
+                "projectGrid"
+            );
+
+
+
+        function getMakerLanguage() {
+
+            return (
+                localStorage.getItem(
+                    "siteLanguage"
+                ) ||
+                "en"
+            );
+
+        }
+
+
+
+        function renderProjects() {
+
+            const language =
+                getMakerLanguage();
+
+
+            const projects =
+                Object.values(
+                    makerProjects
+                ).filter(
+                    project =>
+                        project.grade ===
+                        grade
+                );
+
+
+            projectGrid.innerHTML =
+                "";
+
+
+            projects.forEach(
+                project => {
+
+
+                    const card =
+                        document.createElement(
+                            "a"
+                        );
+
+
+                    card.className =
+                        "makerProjectCard";
+
+
+                    card.href =
+                        `makerProject.html?project=${encodeURIComponent(project.id)}`;
+
+
+
+                    const title =
+                        document.createElement(
+                            "h3"
+                        );
+
+
+                    title.textContent =
+                        project.title[
+                            language
+                        ];
+
+
+
+                    const description =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    description.textContent =
+                        project.description[
+                            language
+                        ];
+
+
+
+                    const parts =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    parts.className =
+                        "makerProjectParts";
+
+
+
+                    project.required.forEach(
+                        requirement => {
+
+                            const component =
+                                makerComponents[
+                                    requirement.type
+                                ];
+
+
+                            const part =
+                                document.createElement(
+                                    "span"
+                                );
+
+
+                            part.className =
+                                "makerPartTag";
+
+
+                            part.textContent =
+                                `${component.name[language]} ×${requirement.count}`;
+
+
+                            parts.appendChild(
+                                part
+                            );
+
+                        }
+                    );
+
+
+
+                    const buildLabel =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    buildLabel.className =
+                        "makerBuildLabel";
+
+
+                    buildLabel.textContent =
+                        makerUI[
+                            language
+                        ].buildProject;
+
+
+
+                    card.appendChild(
+                        title
+                    );
+
+
+                    card.appendChild(
+                        description
+                    );
+
+
+                    card.appendChild(
+                        parts
+                    );
+
+
+                    card.appendChild(
+                        buildLabel
+                    );
+
+
+                    projectGrid.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+
+            document.getElementById(
+                "makerEyebrow"
+            ).textContent =
+                makerUI[
+                    language
+                ].midDay;
+
+
+
+            document.getElementById(
+                "makerTitle"
+            ).textContent =
+                makerUI[
+                    language
+                ].maker;
+
+
+
+            document.getElementById(
+                "makerChooseProject"
+            ).textContent =
+                makerUI[
+                    language
+                ].chooseProject;
+
+
+
+            document.documentElement.lang =
+                language === "pt-BR"
+                    ? "pt-BR"
+                    : "en";
+
+        }
+
+
+
+        renderProjects();
+
+
+        window.addEventListener(
+            "languageChanged",
+            renderProjects
+        );
+
+    </script>
+
+
+</body>
+
+</html>

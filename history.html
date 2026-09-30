@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>História</title>
+
+    <script>
+        if (
+            localStorage.getItem("darkMode") === "true"
+        ) {
+            document.documentElement.classList.add(
+                "darkMode"
+            );
+        }
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+    <a
+        href="index.html"
+        class="backButton"
+    >
+        ↶
+    </a>
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+    >
+        <span id="settingsIcon">⚙</span>
+    </button>
+
+    <div class="container gradePage">
+
+        <div class="subjectHeading">
+
+            <h1>
+                História
+            </h1>
+
+            <p>
+                Escolha seu ano
+            </p>
+
+        </div>
+
+        <div class="gradeContainer">
+
+            <a
+                href="historyQuiz.html?grade=1"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">
+                    1
+                </span>
+
+                Ano 1
+            </a>
+
+            <a
+                href="historyQuiz.html?grade=2"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">
+                    2
+                </span>
+
+                Ano 2
+            </a>
+
+            <a
+                href="historyQuiz.html?grade=3"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">
+                    3
+                </span>
+
+                Ano 3
+            </a>
+
+            <a
+                href="historyQuiz.html?grade=4"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">
+                    4
+                </span>
+
+                Ano 4
+            </a>
+
+            <a
+                href="historyQuiz.html?grade=5"
+                class="gradeButton"
+            >
+                <span class="gradeNumber">
+                    5
+                </span>
+
+                Ano 5
+            </a>
+
+        </div>
+
+    </div>
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+
+</body>
+
+</html>
