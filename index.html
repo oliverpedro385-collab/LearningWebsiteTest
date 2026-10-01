@@ -291,111 +291,393 @@
 
 
     <script>
+(function () {
+    "use strict";
 
-        const usernameOverlay =
-            document.getElementById(
-                "usernameOverlay"
-            );
+    /*
+        ========================================================
+        ELEMENTS
+        ========================================================
+    */
 
+    const usernameOverlay =
+        document.getElementById(
+            "usernameOverlay"
+        );
 
-        const usernameInput =
-            document.getElementById(
-                "usernameInput"
-            );
+    const usernameInput =
+        document.getElementById(
+            "usernameInput"
+        );
 
+    const usernameButton =
+        document.getElementById(
+            "usernameButton"
+        );
 
-        const usernameButton =
-            document.getElementById(
-                "usernameButton"
-            );
+    const usernameError =
+        document.getElementById(
+            "usernameError"
+        );
 
+    const studentName =
+        document.getElementById(
+            "studentName"
+        );
 
-        const usernameError =
-            document.getElementById(
-                "usernameError"
-            );
+    /*
+        ========================================================
+        VALIDATION
+        ========================================================
+    */
 
+    function validateUsername(value) {
+        const username =
+            value.trim();
 
-        const studentName =
-            document.getElementById(
-                "studentName"
-            );
+        if (
+            username.length === 0
+        ) {
+            return {
+                valid: false,
+                message:
+                    "Please enter a name."
+            };
+        }
 
+        if (
+            username.length > 20
+        ) {
+            return {
+                valid: false,
+                message:
+                    "Your name can be up to 20 characters."
+            };
+        }
 
-        function loadUsername() {
+        return {
+            valid: true,
+            name: username
+        };
+    }
 
-            const username =
-                getUsername();
+    /*
+        ========================================================
+        SHOW ERROR
+        ========================================================
+    */
 
+    function showError(message) {
+        if (!usernameError) {
+            return;
+        }
 
-            if (username) {
+        usernameError.textContent =
+            message;
 
-                studentName.textContent =
-                    username;
+        usernameError.style.color =
+            "#d95f59";
+    }
 
-                usernameOverlay.style.display =
-                    "none";
+    /*
+        ========================================================
+        CLEAR ERROR
+        ========================================================
+    */
 
-            } else {
+    function clearError() {
+        if (!usernameError) {
+            return;
+        }
 
-                usernameOverlay.style.display =
-                    "flex";
+        usernameError.textContent =
+            "";
+
+        usernameError.style.color =
+            "";
+    }
+
+    /*
+        ========================================================
+        SHOW / HIDE PICKER
+        ========================================================
+    */
+
+    function showUsernamePicker() {
+        if (!usernameOverlay) {
+            return;
+        }
+
+        usernameOverlay.style.display =
+            "flex";
+
+        /*
+            Small timeout lets the browser
+            finish displaying the overlay
+            before focusing the field.
+        */
+        setTimeout(function () {
+            if (usernameInput) {
+                usernameInput.focus();
+
+                /*
+                    On mobile, select the existing
+                    value when the picker opens.
+                */
+                usernameInput.select();
+            }
+        }, 50);
+    }
+
+    function hideUsernamePicker() {
+        if (!usernameOverlay) {
+            return;
+        }
+
+        usernameOverlay.style.display =
+            "none";
+    }
+
+    /*
+        ========================================================
+        LOAD SAVED NAME
+        ========================================================
+    */
+
+    function loadUsername() {
+        let username = "";
+
+        if (
+            typeof window.getUsername ===
+            "function"
+        ) {
+            username =
+                window.getUsername();
+        } else {
+            /*
+                Failsafe in case user.js failed
+                to load for some reason.
+            */
+            try {
+                username =
+                    (
+                        localStorage.getItem(
+                            "learningWebsiteUsername"
+                        ) || ""
+                    ).trim();
+            } catch (error) {
+                username = "";
             }
         }
 
-
-        usernameButton.addEventListener(
-            "click",
-            function() {
-
-                const username =
-                    usernameInput.value.trim();
-
-
-                if (username === "") {
-
-                    usernameError.textContent =
-                        t("pleaseEnterName");
-
-                    usernameError.style.color =
-                        "red";
-
-                    return;
-                }
-
-
-                setUsername(
-                    username
-                );
-
-
+        if (username) {
+            if (studentName) {
                 studentName.textContent =
                     username;
+            }
 
+            if (usernameInput) {
+                usernameInput.value =
+                    username;
+            }
 
-                usernameOverlay.style.display =
-                    "none";
+            hideUsernamePicker();
+
+            return;
+        }
+
+        if (studentName) {
+            studentName.textContent =
+                "Student";
+        }
+
+        if (usernameInput) {
+            usernameInput.value =
+                "";
+        }
+
+        showUsernamePicker();
+    }
+
+    /*
+        ========================================================
+        SAVE NAME
+        ========================================================
+    */
+
+    function saveUsername() {
+        if (!usernameInput) {
+            return;
+        }
+
+        const result =
+            validateUsername(
+                usernameInput.value
+            );
+
+        if (!result.valid) {
+            showError(
+                result.message
+            );
+
+            usernameInput.focus();
+
+            return;
+        }
+
+        clearError();
+
+        let saved = false;
+
+        if (
+            typeof window.setUsername ===
+            "function"
+        ) {
+            saved =
+                window.setUsername(
+                    result.name
+                );
+        } else {
+            /*
+                Failsafe if user.js did not load.
+            */
+            try {
+                localStorage.setItem(
+                    "learningWebsiteUsername",
+                    result.name
+                );
+
+                saved = true;
+            } catch (error) {
+                saved = false;
+            }
+        }
+
+        if (!saved) {
+            showError(
+                "Could not save your name. Please try again."
+            );
+
+            return;
+        }
+
+        if (studentName) {
+            studentName.textContent =
+                result.name;
+        }
+
+        usernameInput.value =
+            result.name;
+
+        hideUsernamePicker();
+    }
+
+    /*
+        ========================================================
+        BUTTON
+        ========================================================
+    */
+
+    if (usernameButton) {
+        usernameButton.addEventListener(
+            "click",
+            function (event) {
+                event.preventDefault();
+
+                saveUsername();
             }
         );
+    }
 
+    /*
+        ========================================================
+        ENTER KEY
+        ========================================================
+    */
 
+    if (usernameInput) {
         usernameInput.addEventListener(
             "keydown",
-            function(event) {
-
+            function (event) {
                 if (
                     event.key === "Enter"
                 ) {
+                    event.preventDefault();
 
-                    usernameButton.click();
+                    saveUsername();
                 }
             }
         );
 
+        /*
+            Clear the error as soon as
+            the person starts typing again.
+        */
+        usernameInput.addEventListener(
+            "input",
+            function () {
+                clearError();
+            }
+        );
+    }
 
-        loadUsername();
+    /*
+        ========================================================
+        USERNAME CHANGED ELSEWHERE
+        ========================================================
+    */
 
-    </script>
+    window.addEventListener(
+        "usernameChanged",
+        function (event) {
+            const username =
+                event.detail &&
+                typeof event.detail.username ===
+                    "string"
+                    ? event.detail.username.trim()
+                    : "";
+
+            if (username) {
+                if (studentName) {
+                    studentName.textContent =
+                        username;
+                }
+
+                if (usernameInput) {
+                    usernameInput.value =
+                        username;
+                }
+
+                hideUsernamePicker();
+            } else {
+                if (studentName) {
+                    studentName.textContent =
+                        "Student";
+                }
+
+                if (usernameInput) {
+                    usernameInput.value =
+                        "";
+                }
+
+                showUsernamePicker();
+            }
+        }
+    );
+
+    /*
+        ========================================================
+        START
+        ========================================================
+    */
+
+    loadUsername();
+
+    console.log(
+        "[Username] Picker ready."
+    );
+})();
+</script>
 
     <script>
 (function () {
