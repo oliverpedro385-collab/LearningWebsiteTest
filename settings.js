@@ -1,113 +1,66 @@
 (function () {
+    "use strict";
 
-    const DARK_MODE_KEY =
-        "darkMode";
-
-    const NAME_KEY =
-        "username";
-
-    const LANGUAGE_KEY =
-        "siteLanguage";
-
-    const HIGHLIGHT_KEY =
-        "highlightColor";
-
+    const DARK_MODE_KEY = "darkMode";
+    const LANGUAGE_KEY = "siteLanguage";
+    const HIGHLIGHT_KEY = "highlightColor";
 
     // ==================================================
     // ELEMENT HELPERS
     // ==================================================
 
-    function makeElement(
-        tag,
-        className,
-        text = ""
-    ) {
-
-        const element =
-            document.createElement(tag);
+    function makeElement(tag, className, text = "") {
+        const element = document.createElement(tag);
 
         if (className) {
-            element.className =
-                className;
+            element.className = className;
         }
 
         if (text) {
-            element.textContent =
-                text;
+            element.textContent = text;
         }
 
         return element;
     }
-
 
     // ==================================================
     // SETTINGS BUTTON
     // ==================================================
 
     function getSettingsButton() {
-
-        let button =
-            document.getElementById(
-                "settingsButton"
-            );
+        let button = document.getElementById("settingsButton");
 
         if (button) {
             return button;
         }
 
+        button = makeElement("button", "settingsButton");
+        button.id = "settingsButton";
+        button.type = "button";
+        button.setAttribute("aria-label", "Abrir configurações");
 
-        button =
-            makeElement(
-                "button",
-                "settingsButton"
-            );
+        button.innerHTML = '<span id="settingsIcon">⚙</span>';
 
-        button.id =
-            "settingsButton";
-
-        button.type =
-            "button";
-
-        button.innerHTML =
-            '<span id="settingsIcon">⚙</span>';
-
-        document.body.appendChild(
-            button
-        );
+        document.body.appendChild(button);
 
         return button;
     }
-
 
     // ==================================================
     // SETTINGS MENU
     // ==================================================
 
     function getSettingsMenu() {
-
-        let menu =
-            document.getElementById(
-                "settingsMenu"
-            );
+        let menu = document.getElementById("settingsMenu");
 
         if (menu) {
             return menu;
         }
 
+        menu = makeElement("div", "settingsMenu");
+        menu.id = "settingsMenu";
 
-        menu =
-            makeElement(
-                "div",
-                "settingsMenu"
-            );
-
-        menu.id =
-            "settingsMenu";
-
-        document.body.appendChild(
-            menu
-        );
-
+        document.body.appendChild(menu);
 
         menu.innerHTML = `
             <div class="settingsHeader">
@@ -123,11 +76,8 @@
                 </button>
             </div>
 
-
             <div class="settingsSection">
-
                 <div class="settingRow">
-
                     <div>
                         <strong>Modo escuro</strong>
 
@@ -144,22 +94,18 @@
                     >
                         🌙 Escuro
                     </button>
-
                 </div>
-
             </div>
 
-
             <div class="settingsSection">
-
-                <label for="usernameInput">
+                <label for="settingsUsernameInput">
                     Seu nome
                 </label>
 
                 <input
-                    id="usernameInput"
+                    id="settingsUsernameInput"
                     type="text"
-                    maxlength="30"
+                    maxlength="20"
                     autocomplete="off"
                     placeholder="Digite seu nome"
                 >
@@ -176,18 +122,14 @@
                     id="nameChangeMessage"
                     aria-live="polite"
                 ></p>
-
             </div>
 
-
             <div class="settingsSection">
-
                 <label for="highlightColor">
                     Cor do marca-texto
                 </label>
 
                 <div class="highlightColorRow">
-
                     <input
                         id="highlightColor"
                         type="color"
@@ -197,14 +139,10 @@
                     <span id="highlightColorValue">
                         #FFD56E
                     </span>
-
                 </div>
-
             </div>
 
-
             <div class="settingsSection">
-
                 <label for="languageSelect">
                     Idioma
                 </label>
@@ -221,544 +159,468 @@
                         Português (Brasil)
                     </option>
                 </select>
-
             </div>
         `;
 
-
         return menu;
     }
-
 
     // ==================================================
     // DARK MODE
     // ==================================================
 
     function syncDarkModeButton() {
-
-        const button =
-            document.getElementById(
-                "darkModeToggle"
-            );
+        const button = document.getElementById("darkModeToggle");
 
         if (!button) {
             return;
         }
 
-
         const dark =
-            localStorage.getItem(
-                DARK_MODE_KEY
-            ) === "true";
+            localStorage.getItem(DARK_MODE_KEY) === "true";
 
+        button.classList.toggle("active", dark);
 
-        button.classList.toggle(
-            "active",
-            dark
-        );
-
-
-        button.textContent =
-            dark
-                ? "☀️ Claro"
-                : "🌙 Escuro";
-
+        button.textContent = dark
+            ? "☀️ Claro"
+            : "🌙 Escuro";
 
         button.setAttribute(
             "aria-pressed",
-            dark
-                ? "true"
-                : "false"
+            dark ? "true" : "false"
         );
     }
 
-
     function toggleDarkMode() {
-
         const enabled =
-            localStorage.getItem(
-                DARK_MODE_KEY
-            ) !== "true";
+            localStorage.getItem(DARK_MODE_KEY) !== "true";
 
-
-        if (
-            typeof window.toggleDarkMode ===
-            "function"
-        ) {
-
+        if (typeof window.toggleDarkMode === "function") {
             window.toggleDarkMode();
-
         } else {
-
-            document.documentElement
-                .classList.toggle(
-                    "darkMode",
-                    enabled
-                );
+            document.documentElement.classList.toggle(
+                "darkMode",
+                enabled
+            );
 
             localStorage.setItem(
                 DARK_MODE_KEY,
-                enabled
-                    ? "true"
-                    : "false"
+                enabled ? "true" : "false"
+            );
+
+            document.dispatchEvent(
+                new CustomEvent("themeChanged", {
+                    detail: {
+                        darkMode: enabled
+                    }
+                })
             );
         }
 
-
         syncDarkModeButton();
     }
-
 
     // ==================================================
     // NAME
     // ==================================================
 
     function loadName() {
-
         const input =
-            document.getElementById(
-                "usernameInput"
-            );
+            document.getElementById("settingsUsernameInput");
 
         if (!input) {
             return;
         }
 
+        let username = "";
 
-        input.value =
-            localStorage.getItem(
-                NAME_KEY
-            ) || "";
+        if (typeof window.getUsername === "function") {
+            username = window.getUsername();
+        } else {
+            try {
+                username =
+                    localStorage.getItem(
+                        "learningWebsiteUsername"
+                    ) || "";
+            } catch (error) {
+                console.warn(
+                    "[Settings] Could not read username.",
+                    error
+                );
+            }
+        }
+
+        input.value = username;
     }
-
 
     function saveName() {
-
         const input =
-            document.getElementById(
-                "usernameInput"
-            );
+            document.getElementById("settingsUsernameInput");
 
         const message =
-            document.getElementById(
-                "nameChangeMessage"
-            );
-
+            document.getElementById("nameChangeMessage");
 
         if (!input) {
             return;
         }
 
-
-        const name =
-            input.value
-                .trim()
-                .slice(0, 30);
-
+        const name = input.value.trim().slice(0, 20);
 
         if (!name) {
-
-            localStorage.removeItem(
-                NAME_KEY
-            );
-
             if (message) {
-
                 message.textContent =
-                    "Nome removido.";
+                    "Digite um nome primeiro.";
             }
 
+            return;
+        }
+
+        let saved = false;
+
+        if (typeof window.setUsername === "function") {
+            saved = window.setUsername(name);
         } else {
+            try {
+                localStorage.setItem(
+                    "learningWebsiteUsername",
+                    name
+                );
 
-            localStorage.setItem(
-                NAME_KEY,
-                name
-            );
+                saved = true;
 
-            if (message) {
-
-                message.textContent =
-                    "Nome salvo!";
+                window.dispatchEvent(
+                    new CustomEvent("usernameChanged", {
+                        detail: {
+                            username: name
+                        }
+                    })
+                );
+            } catch (error) {
+                console.error(
+                    "[Settings] Could not save username.",
+                    error
+                );
             }
         }
 
+        if (!saved) {
+            if (message) {
+                message.textContent =
+                    "Não foi possível salvar o nome.";
+            }
 
+            return;
+        }
+
+        input.value = name;
+
+        if (message) {
+            message.textContent = "Nome salvo!";
+        }
+
+        // Make sure anything using the old event system updates too.
         document.dispatchEvent(
-            new CustomEvent(
-                "usernameChanged",
-                {
-                    detail: {
-                        username: name
-                    }
+            new CustomEvent("usernameChanged", {
+                detail: {
+                    username: name
                 }
-            )
+            })
         );
 
-
-        setTimeout(
-            () => {
-
-                if (message) {
-                    message.textContent =
-                        "";
+        window.dispatchEvent(
+            new CustomEvent("usernameChanged", {
+                detail: {
+                    username: name
                 }
-
-            },
-            1800
+            })
         );
+
+        setTimeout(function () {
+            if (message) {
+                message.textContent = "";
+            }
+        }, 1800);
     }
-
 
     // ==================================================
     // HIGHLIGHTER
     // ==================================================
 
     function loadHighlightColor() {
-
         const input =
-            document.getElementById(
-                "highlightColor"
-            );
+            document.getElementById("highlightColor");
 
         const valueElement =
-            document.getElementById(
-                "highlightColorValue"
-            );
-
+            document.getElementById("highlightColorValue");
 
         if (!input) {
             return;
         }
 
+        let saved =
+            localStorage.getItem(HIGHLIGHT_KEY) ||
+            "#FFD56E";
 
-        const saved =
-            localStorage.getItem(
-                HIGHLIGHT_KEY
-            ) || "#FFD56E";
+        if (!/^#[0-9A-Fa-f]{6}$/.test(saved)) {
+            saved = "#FFD56E";
+        }
 
-
-        input.value =
-            saved;
-
+        input.value = saved;
 
         if (valueElement) {
-
             valueElement.textContent =
                 saved.toUpperCase();
         }
 
-
-        document.documentElement.style
-            .setProperty(
-                "--user-highlight-color",
-                saved
-            );
+        document.documentElement.style.setProperty(
+            "--user-highlight-color",
+            saved
+        );
     }
 
-
-    function saveHighlightColor(
-        color
-    ) {
+    function saveHighlightColor(color) {
+        if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
+            return;
+        }
 
         localStorage.setItem(
             HIGHLIGHT_KEY,
             color
         );
 
-
-        document.documentElement.style
-            .setProperty(
-                "--user-highlight-color",
-                color
-            );
-
+        document.documentElement.style.setProperty(
+            "--user-highlight-color",
+            color
+        );
 
         const valueElement =
-            document.getElementById(
-                "highlightColorValue"
-            );
-
+            document.getElementById("highlightColorValue");
 
         if (valueElement) {
-
             valueElement.textContent =
                 color.toUpperCase();
         }
     }
-
 
     // ==================================================
     // LANGUAGE
     // ==================================================
 
     function loadLanguage() {
-
         const select =
-            document.getElementById(
-                "languageSelect"
-            );
+            document.getElementById("languageSelect");
 
         if (!select) {
             return;
         }
 
-
-        select.value =
+        const saved =
             localStorage.getItem(
                 LANGUAGE_KEY
             ) || "en";
+
+        select.value = saved;
     }
 
-
-    function changeLanguage(
-        language
-    ) {
+    function changeLanguage(language) {
+        if (
+            language !== "en" &&
+            language !== "pt-BR"
+        ) {
+            language = "en";
+        }
 
         localStorage.setItem(
             LANGUAGE_KEY,
             language
         );
 
-
         document.dispatchEvent(
-            new CustomEvent(
-                "languageChanged",
-                {
-                    detail: {
-                        language
-                    }
+            new CustomEvent("languageChanged", {
+                detail: {
+                    language: language
                 }
-            )
+            })
         );
     }
-
 
     // ==================================================
     // OPEN / CLOSE
     // ==================================================
 
     function openSettings() {
-
         const button =
             getSettingsButton();
 
         const menu =
             getSettingsMenu();
 
+        loadName();
+        loadHighlightColor();
+        loadLanguage();
+        syncDarkModeButton();
 
-        menu.classList.add(
-            "open"
+        menu.classList.add("open");
+        button.classList.add("open");
+
+        document.documentElement.classList.add(
+            "settingsOpen"
         );
-
-        button.classList.add(
-            "open"
-        );
-
-        document.documentElement
-            .classList.add(
-                "settingsOpen"
-            );
 
         document.body.classList.add(
             "settings-open"
         );
     }
 
-
     function closeSettings() {
-
         const button =
             getSettingsButton();
 
         const menu =
             getSettingsMenu();
 
+        menu.classList.remove("open");
+        button.classList.remove("open");
 
-        menu.classList.remove(
-            "open"
+        document.documentElement.classList.remove(
+            "settingsOpen"
         );
-
-        button.classList.remove(
-            "open"
-        );
-
-        document.documentElement
-            .classList.remove(
-                "settingsOpen"
-            );
 
         document.body.classList.remove(
             "settings-open"
         );
     }
 
-
     function toggleSettings() {
-
         const menu =
             getSettingsMenu();
 
-        if (
-            menu.classList.contains(
-                "open"
-            )
-        ) {
-
+        if (menu.classList.contains("open")) {
             closeSettings();
-
         } else {
-
             openSettings();
         }
     }
-
 
     // ==================================================
     // INITIALIZE
     // ==================================================
 
     function initialize() {
-
         const button =
             getSettingsButton();
 
         const menu =
             getSettingsMenu();
 
+        // Prevent duplicate initialization.
+        if (button.dataset.settingsInitialized === "true") {
+            return;
+        }
+
+        button.dataset.settingsInitialized = "true";
 
         button.addEventListener(
             "click",
             toggleSettings
         );
 
-
         const closeButton =
-            document.getElementById(
-                "closeSettings"
-            );
+            document.getElementById("closeSettings");
 
         if (closeButton) {
-
             closeButton.addEventListener(
                 "click",
                 closeSettings
             );
         }
 
-
         document.addEventListener(
             "pointerdown",
-            event => {
-
-                if (
-                    !menu.classList.contains(
-                        "open"
-                    )
-                ) {
+            function (event) {
+                if (!menu.classList.contains("open")) {
                     return;
                 }
 
-
-                if (
-                    menu.contains(
-                        event.target
-                    )
-                ) {
+                if (menu.contains(event.target)) {
                     return;
                 }
 
-
-                if (
-                    button.contains(
-                        event.target
-                    )
-                ) {
+                if (button.contains(event.target)) {
                     return;
                 }
-
 
                 closeSettings();
             }
         );
 
-
         document.addEventListener(
             "keydown",
-            event => {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
+            function (event) {
+                if (event.key === "Escape") {
                     closeSettings();
                 }
             }
         );
 
-
         const darkModeButton =
-            document.getElementById(
-                "darkModeToggle"
-            );
+            document.getElementById("darkModeToggle");
 
         if (darkModeButton) {
-
             darkModeButton.addEventListener(
                 "click",
                 toggleDarkMode
             );
         }
 
+        const saveUsernameButton =
+            document.getElementById("saveUsername");
 
-        const saveUsername =
-            document.getElementById(
-                "saveUsername"
-            );
-
-        if (saveUsername) {
-
-            saveUsername.addEventListener(
+        if (saveUsernameButton) {
+            saveUsernameButton.addEventListener(
                 "click",
                 saveName
             );
         }
 
-
         const usernameInput =
             document.getElementById(
-                "usernameInput"
+                "settingsUsernameInput"
             );
 
         if (usernameInput) {
-
             usernameInput.addEventListener(
                 "keydown",
-                event => {
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
+                function (event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
                         saveName();
+                    }
+                }
+            );
+
+            usernameInput.addEventListener(
+                "input",
+                function () {
+                    const message =
+                        document.getElementById(
+                            "nameChangeMessage"
+                        );
+
+                    if (message) {
+                        message.textContent = "";
                     }
                 }
             );
         }
 
-
         const colorInput =
-            document.getElementById(
-                "highlightColor"
-            );
+            document.getElementById("highlightColor");
 
         if (colorInput) {
-
             colorInput.addEventListener(
                 "input",
-                () => {
-
+                function () {
                     saveHighlightColor(
                         colorInput.value
                     );
@@ -766,18 +628,13 @@
             );
         }
 
-
         const languageSelect =
-            document.getElementById(
-                "languageSelect"
-            );
+            document.getElementById("languageSelect");
 
         if (languageSelect) {
-
             languageSelect.addEventListener(
                 "change",
-                () => {
-
+                function () {
                     changeLanguage(
                         languageSelect.value
                     );
@@ -785,12 +642,34 @@
             );
         }
 
-
         document.addEventListener(
             "themeChanged",
             syncDarkModeButton
         );
 
+        // Keep settings synchronized if the main username
+        // system changes the name elsewhere.
+        window.addEventListener(
+            "usernameChanged",
+            function (event) {
+                const input =
+                    document.getElementById(
+                        "settingsUsernameInput"
+                    );
+
+                if (!input) {
+                    return;
+                }
+
+                const username =
+                    event.detail &&
+                    typeof event.detail.username === "string"
+                        ? event.detail.username
+                        : "";
+
+                input.value = username;
+            }
+        );
 
         loadName();
         loadHighlightColor();
@@ -798,20 +677,13 @@
         syncDarkModeButton();
     }
 
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
+    if (document.readyState === "loading") {
         document.addEventListener(
             "DOMContentLoaded",
-            initialize
+            initialize,
+            { once: true }
         );
-
     } else {
-
         initialize();
     }
-
 })();
