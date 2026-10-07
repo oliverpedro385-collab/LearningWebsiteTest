@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Programming Challenge</title>
+
+    <script>
+        if (
+            localStorage.getItem("darkMode") === "true"
+        ) {
+            document.documentElement.classList.add("darkMode");
+        }
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <a
+        id="challengeBack"
+        href="programmingGrades.html"
+        class="backButton"
+        aria-label="Back"
+    >
+        ↶
+    </a>
+
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        aria-label="Settings"
+    >
+        ⚙
+    </button>
+
+
+
+    <main class="container programmingChallengePage">
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <div class="programmingChallengeHeader">
+
+
+            <div>
+
+                <div
+                    class="subjectEyebrow"
+                    id="challengeEyebrow"
+                >
+                    Python • Grade 1
+                </div>
+
+
+                <h1 id="challengeTitle">
+                    Move the Happy Square
+                </h1>
+
+
+                <p
+                    id="challengeDescription"
+                    class="programmingChallengeDescription"
+                >
+                    Move the happy square to the finish line.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             OBJECTIVE
+             ================================================= -->
+
+        <section class="programmingObjectiveCard">
+
+            <div class="programmingObjectiveLabel">
+                Objective
+            </div>
+
+            <div
+                id="objectiveText"
+                class="programmingObjectiveText"
+            >
+                Move the happy square to the finish line.
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             COMPUTER
+             ================================================= -->
+
+        <section class="programmingComputer">
+
+
+            <div class="computerTopBar">
+
+                <span class="computerLight"></span>
+
+                <span class="computerTitle">
+                    MID-DAY COMPUTER
+                </span>
+
+                <span class="computerDots">
+                    • • •
+                </span>
+
+            </div>
+
+
+
+            <div class="computerScreen">
+
+
+                <!-- WORLD -->
+
+                <div
+                    id="programmingWorld"
+                    class="programmingWorld"
+                ></div>
+
+
+                <!-- CODE -->
+
+                <div class="computerEditor">
+
+
+                    <div class="editorHeader">
+
+                        <span id="yourCodeLabel">
+                            Your Code
+                        </span>
+
+                    </div>
+
+
+                    <div class="editorBody">
+
+
+                        <div
+                            id="lineNumbers"
+                            class="lineNumbers"
+                        >
+                            1
+                        </div>
+
+
+                        <textarea
+                            id="codeEditor"
+                            spellcheck="false"
+                            autocapitalize="off"
+                            autocomplete="off"
+                            autocorrect="off"
+                            placeholder=""
+                        ></textarea>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- CONTROLS -->
+
+                <div class="computerControls">
+
+
+                    <button
+                        id="runButton"
+                        class="runCodeButton"
+                        type="button"
+                    >
+                        ▶ Run Code
+                    </button>
+
+
+                    <button
+                        id="resetButton"
+                        class="resetCodeButton"
+                        type="button"
+                    >
+                        Reset
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- CONSOLE -->
+
+                <div class="programmingConsole">
+
+
+                    <div
+                        class="consoleTitle"
+                        id="consoleTitle"
+                    >
+                        Console
+                    </div>
+
+
+                    <div
+                        id="consoleOutput"
+                        class="consoleOutput"
+                    >
+                        Ready.
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             HELPER
+             ================================================= -->
+
+        <section
+            id="programmingHelper"
+            class="programmingHelper"
+        >
+
+
+            <div
+                id="programmingHelperFace"
+                class="programmingHelperFace"
+            >
+                :)
+            </div>
+
+
+            <div class="programmingHelperContent">
+
+
+                <strong id="helperTitle">
+                    Need a hint?
+                </strong>
+
+
+                <p
+                    id="helperText"
+                    class="programmingHelperText"
+                >
+                    I'm here to help!
+                </p>
+
+
+                <button
+                    id="helperButton"
+                    class="helperButton"
+                    type="button"
+                >
+                    Show Hint
+                </button>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="technologyData.js"></script>
+    <script src="programmingSimulator.js"></script>
+
+
+</body>
+
+</html>

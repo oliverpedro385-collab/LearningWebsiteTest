@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Hardware Workshop</title>
+
+    <script>
+        if (localStorage.getItem("darkMode") === "true") {
+            document.documentElement.classList.add("darkMode");
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .hardwareWorkshopPage {
+            max-width: 1160px;
+        }
+
+        .hardwareWorkshopHeader {
+            margin-bottom: 20px;
+        }
+
+        .hardwareWorkshopDescription {
+            max-width: 800px;
+            margin: 8px 0 0;
+            line-height: 1.6;
+        }
+
+        .hardwareLessonProgress {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .hardwareStepButton {
+            min-height: 42px;
+            padding: 9px 15px;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(233, 155, 50, .12);
+            color: var(--text-color);
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+
+            transition:
+                transform .15s ease,
+                background-color .2s ease;
+        }
+
+        .hardwareStepButton:hover {
+            transform: translateY(-2px);
+        }
+
+        .hardwareStepButton.active {
+            background: #e99b32;
+            color: white;
+        }
+
+        .hardwareWorkshopGrid {
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1.25fr)
+                minmax(280px, .75fr);
+
+            gap: 22px;
+            align-items: start;
+        }
+
+        .hardwareWorkbench,
+        .hardwareInfoPanel,
+        .hardwareQuestionPanel {
+
+            background: var(--container-color);
+
+            border-radius: 20px;
+
+            border:
+                1px solid
+                rgba(120, 90, 50, .10);
+
+            box-shadow:
+                0 10px 26px
+                rgba(50, 40, 30, .07);
+        }
+
+        .hardwareWorkbench {
+            min-height: 540px;
+            padding: 22px;
+            overflow: hidden;
+        }
+
+        .hardwareSide {
+            display: grid;
+            gap: 18px;
+        }
+
+        .hardwareInfoPanel,
+        .hardwareQuestionPanel {
+            padding: 20px;
+        }
+
+        .hardwarePanelTitle {
+            margin: 0 0 9px;
+            color: var(--heading-color);
+            font-size: 18px;
+        }
+
+        .hardwarePanelText {
+            margin: 0;
+            line-height: 1.55;
+            opacity: .75;
+        }
+
+        .hardwareStatus {
+            margin-top: 15px;
+            min-height: 24px;
+            font-weight: 800;
+        }
+
+        .hardwareStatus.success {
+            color: #459e59;
+        }
+
+        .hardwareStatus.error {
+            color: #c85353;
+        }
+
+        .hardwareActionRow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .hardwareActionButton {
+            min-height: 44px;
+            padding: 10px 16px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background: #e99b32;
+            color: #fff;
+
+            font: inherit;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform .15s ease,
+                opacity .2s ease;
+        }
+
+        .hardwareActionButton:hover {
+            transform: translateY(-2px);
+        }
+
+        .hardwareActionButton.secondary {
+            background: rgba(120, 100, 90, .12);
+            color: var(--text-color);
+        }
+
+        .hardwareOptionGrid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .hardwareChoice {
+            min-height: 48px;
+            padding: 10px;
+
+            border:
+                2px solid
+                rgba(120, 90, 50, .10);
+
+            border-radius: 11px;
+
+            background: var(--container-color);
+            color: var(--text-color);
+
+            font: inherit;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                border-color .2s ease,
+                transform .15s ease,
+                background-color .2s ease;
+        }
+
+        .hardwareChoice:hover {
+            transform: translateY(-2px);
+        }
+
+        .hardwareChoice.correct {
+            border-color: #5db56d;
+            background: rgba(93, 181, 109, .13);
+        }
+
+        .hardwareChoice.wrong {
+            border-color: #d65f5f;
+            background: rgba(214, 95, 95, .12);
+        }
+
+        .hardwareQuestionText {
+            margin: 0 0 12px;
+            line-height: 1.5;
+            font-weight: 800;
+        }
+
+        .hardwareFeedback {
+            min-height: 22px;
+            margin-top: 12px;
+            font-weight: 800;
+        }
+
+        .hardwareProgressBar {
+            height: 8px;
+
+            border-radius: 999px;
+            overflow: hidden;
+
+            background:
+                rgba(100, 90, 80, .14);
+
+            margin-top: 15px;
+        }
+
+        .hardwareProgressFill {
+            height: 100%;
+            width: 0%;
+
+            border-radius: inherit;
+
+            background: #e99b32;
+
+            transition:
+                width .35s ease;
+        }
+
+        /* Simulated PC */
+
+        .simPc {
+            max-width: 700px;
+            margin: 10px auto 0;
+
+            padding: 22px;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ece6dd,
+                    #c8c0b6
+                );
+
+            border: 5px solid #79726a;
+
+            box-shadow:
+                inset 0 0 0 2px
+                rgba(255,255,255,.35),
+
+                0 16px 30px
+                rgba(0,0,0,.16);
+        }
+
+        .simPcTop {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 16px;
+
+            color: #332f2b;
+            font-weight: 900;
+        }
+
+        .simPcPower {
+            width: 12px;
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: #65c977;
+
+            box-shadow:
+                0 0 8px
+                rgba(101,201,119,.7);
+        }
+
+        .simPcBody {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(170px, .55fr);
+
+            gap: 16px;
+        }
+
+        .simMonitor {
+            min-height: 210px;
+
+            padding: 14px;
+
+            border-radius: 15px;
+
+            background: #2c2930;
+
+            border: 5px solid #59545c;
+
+            box-shadow:
+                inset 0 0 20px
+                rgba(0,0,0,.35);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .simScreen {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 150px;
+
+            border-radius: 9px;
+
+            background: #131218;
+            color: #dcd4ee;
+
+            font-family: Consolas, monospace;
+
+            text-align: center;
+
+            padding: 20px;
+        }
+
+        .simMonitorStand {
+            width: 85px;
+            height: 12px;
+
+            border-radius: 999px;
+
+            background: #4a454b;
+
+            margin: 10px auto 0;
+        }
+
+        .simTower {
+            padding: 17px;
+
+            border-radius: 15px;
+
+            background: #242127;
+            color: #f4eefc;
+
+            box-shadow:
+                inset 0 0 18px
+                rgba(0,0,0,.35);
+        }
+
+        .simTowerTitle {
+            margin-bottom: 13px;
+            font-weight: 900;
+        }
+
+        .simPortArea {
+            display: grid;
+            gap: 9px;
+        }
+
+        .simPort {
+            position: relative;
+
+            min-height: 48px;
+
+            padding: 8px 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 8px;
+
+            border-radius: 10px;
+
+            border: 2px solid #48424e;
+
+            background: #17151a;
+            color: #d9d1e5;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition:
+                border-color .2s ease,
+                background-color .2s ease,
+                transform .15s ease;
+        }
+
+        .simPort:hover {
+            transform: translateY(-2px);
+        }
+
+        .simPort.target {
+            border-color: #e99b32;
+            background: #27202f;
+        }
+
+        .simPort.connected {
+            border-color: #63ba70;
+            background: #1d3122;
+        }
+
+        .simPort small {
+            opacity: .7;
+        }
+
+        .simCableTray {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin: 18px auto 0;
+
+            max-width: 700px;
+        }
+
+        .simCable {
+            min-height: 80px;
+            padding: 9px;
+
+            border: 2px solid #bda999;
+            border-radius: 12px;
+
+            background: #f5eee8;
+            color: #382f2a;
+
+            cursor: pointer;
+
+            font: inherit;
+            font-weight: 800;
+
+            transition:
+                transform .15s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .simCable:hover {
+            transform: translateY(-3px);
+        }
+
+        .simCable.selected {
+            border-color: #e99b32;
+
+            box-shadow:
+                0 5px 12px
+                rgba(233,155,50,.22);
+        }
+
+        .simCable.connected {
+            border-color: #61b66f;
+            background: #e5f5e7;
+        }
+
+        /* Component board */
+
+        .componentBoard {
+            position: relative;
+
+            max-width: 750px;
+            min-height: 430px;
+
+            margin: 0 auto;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #2f6048,
+                    #1f4734
+                );
+
+            border: 10px solid #7a675b;
+
+            box-shadow:
+                inset 0 0 0 2px
+                rgba(255,255,255,.06),
+
+                0 18px 32px
+                rgba(0,0,0,.18);
+        }
+
+        .componentPart {
+            position: absolute;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-width: 88px;
+            min-height: 48px;
+
+            padding: 7px 10px;
+
+            border-radius: 10px;
+
+            border:
+                2px solid
+                rgba(255,255,255,.28);
+
+            background: #4a8f67;
+            color: #fff;
+
+            font-weight: 900;
+            font-size: 13px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 6px 12px
+                rgba(0,0,0,.15);
+
+            transition:
+                transform .16s ease,
+                box-shadow .2s ease,
+                background-color .2s ease;
+        }
+
+        .componentPart:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 18px
+                rgba(0,0,0,.18);
+        }
+
+        .componentPart.selected {
+            outline: 3px solid #ffd56e;
+            background: #5ea77b;
+        }
+
+        .componentPart[data-part="cpu"] {
+            left: 37%;
+            top: 22%;
+            width: 110px;
+        }
+
+        .componentPart[data-part="ram"] {
+            left: 54%;
+            top: 17%;
+            width: 86px;
+        }
+
+        .componentPart[data-part="gpu"] {
+            left: 52%;
+            top: 48%;
+            width: 120px;
+        }
+
+        .componentPart[data-part="storage"] {
+            left: 16%;
+            top: 56%;
+            width: 105px;
+        }
+
+        .componentPart[data-part="psu"] {
+            right: 7%;
+            bottom: 9%;
+            width: 110px;
+        }
+
+        .componentPart[data-part="motherboard"] {
+            left: 6%;
+            top: 12%;
+            width: 190px;
+            height: 270px;
+
+            background:
+                rgba(39,93,63,.62);
+        }
+
+        .componentPart[data-part="cooling"] {
+            left: 34%;
+            top: 38%;
+
+            width: 72px;
+            height: 72px;
+
+            border-radius: 50%;
+        }
+
+        .componentInfo {
+            min-height: 100px;
+
+            margin-top: 18px;
+            padding: 15px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(255,255,255,.08);
+
+            color: inherit;
+
+            line-height: 1.5;
+        }
+
+        /* Troubleshooting */
+
+        .troubleshootPanel {
+            max-width: 760px;
+
+            margin: 0 auto;
+
+            padding: 22px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #27222e,
+                    #17141d
+                );
+
+            color: #f0eaf9;
+
+            box-shadow:
+                inset 0 0 25px
+                rgba(0,0,0,.25),
+
+                0 18px 32px
+                rgba(0,0,0,.17);
+        }
+
+        .symptom {
+            padding: 15px;
+
+            border-radius: 13px;
+
+            background: #332c3e;
+
+            border:
+                1px solid
+                #51475e;
+
+            margin-bottom: 14px;
+        }
+
+        .symptom strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .diagnosisChoices {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin-top: 16px;
+        }
+
+        /* Builder */
+
+        .builderPanel {
+            max-width: 760px;
+
+            margin: 0 auto;
+
+            padding: 22px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ded4c9,
+                    #b8a99d
+                );
+
+            color: #342d29;
+        }
+
+        .builderSlots {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 14px;
+        }
+
+        .builderSlot {
+            padding: 13px;
+
+            border-radius: 13px;
+
+            background:
+                rgba(255,255,255,.52);
+        }
+
+        .builderSlot label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: 900;
+        }
+
+        .builderSlot select {
+            width: 100%;
+            min-height: 43px;
+
+            border:
+                1px solid
+                rgba(90,70,60,.24);
+
+            border-radius: 10px;
+
+            padding: 8px;
+
+            font: inherit;
+
+            background: #fffaf5;
+            color: #332c27;
+        }
+
+        .builderResult {
+            margin-top: 17px;
+            min-height: 26px;
+            font-weight: 900;
+        }
+
+        .lessonPage {
+            display: none;
+        }
+
+        .lessonPage.active {
+            display: block;
+
+            animation:
+                hardwarePageIn .25s ease;
+        }
+
+        @keyframes hardwarePageIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 850px) {
+
+            .hardwareWorkshopGrid {
+                grid-template-columns: 1fr;
+            }
+
+            .simPcBody {
+                grid-template-columns: 1fr;
+            }
+
+            .simCableTray {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .hardwareWorkbench {
+                padding: 14px;
+            }
+
+            .simPc {
+                padding: 14px;
+            }
+
+            .componentBoard {
+                min-height: 360px;
+
+                transform: scale(.92);
+                transform-origin: top center;
+
+                margin-bottom: -25px;
+            }
+
+            .builderSlots,
+            .diagnosisChoices {
+                grid-template-columns: 1fr;
+            }
+
+            .hardwareOptionGrid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        html.darkMode body .hardwareWorkbench,
+        html.darkMode body .hardwareInfoPanel,
+        html.darkMode body .hardwareQuestionPanel {
+
+            border-color:
+                rgba(168,143,212,.16);
+
+            box-shadow:
+                0 10px 28px
+                rgba(0,0,0,.20);
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <a href="technology.html" class="backButton">↶</a>
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        type="button"
+    >
+        <span id="settingsIcon">
+            Settings
+        </span>
+    </button>
+
+    <main class="container hardwareWorkshopPage">
+
+        <header class="hardwareWorkshopHeader">
+
+            <h1 id="lessonTitle">
+                Hardware Workshop
+            </h1>
+
+            <p
+                id="lessonDescription"
+                class="hardwareWorkshopDescription"
+            ></p>
+
+        </header>
+
+        <div
+            id="lessonProgress"
+            class="hardwareLessonProgress"
+        ></div>
+
+        <div class="hardwareWorkshopGrid">
+
+            <section
+                class="hardwareWorkbench"
+                id="hardwareWorkbench"
+            >
+
+                <div
+                    class="lessonPage"
+                    data-page="learn"
+                >
+
+                    <h2
+                        id="learnTitle"
+                        class="hardwarePanelTitle"
+                    >
+                        Learn
+                    </h2>
+
+                    <p
+                        id="learnIntro"
+                        class="hardwarePanelText"
+                    ></p>
+
+                    <div id="learnArea"></div>
+
+                </div>
+
+                <div
+                    class="lessonPage"
+                    data-page="do"
+                >
+
+                    <h2
+                        id="doTitle"
+                        class="hardwarePanelTitle"
+                    >
+                        Do it
+                    </h2>
+
+                    <p
+                        id="doIntro"
+                        class="hardwarePanelText"
+                    ></p>
+
+                    <div id="doArea"></div>
+
+                </div>
+
+                <div
+                    class="lessonPage"
+                    data-page="check"
+                >
+
+                    <h2
+                        id="checkTitle"
+                        class="hardwarePanelTitle"
+                    >
+                        Check what you learned
+                    </h2>
+
+                    <p
+                        id="checkIntro"
+                        class="hardwarePanelText"
+                    ></p>
+
+                    <div id="checkArea"></div>
+
+                </div>
+
+            </section>
+
+            <aside class="hardwareSide">
+
+                <section class="hardwareInfoPanel">
+
+                    <h2
+                        id="objectiveTitle"
+                        class="hardwarePanelTitle"
+                    >
+                        Objective
+                    </h2>
+
+                    <p
+                        id="objectiveText"
+                        class="hardwarePanelText"
+                    ></p>
+
+                    <div
+                        id="hardwareStatus"
+                        class="hardwareStatus"
+                        aria-live="polite"
+                    ></div>
+
+                    <div class="hardwareProgressBar">
+
+                        <div
+                            id="hardwareProgressFill"
+                            class="hardwareProgressFill"
+                        ></div>
+
+                    </div>
+
+                </section>
+
+                <section class="hardwareQuestionPanel">
+
+                    <h2
+                        id="tipTitle"
+                        class="hardwarePanelTitle"
+                    >
+                        Tip
+                    </h2>
+
+                    <p
+                        id="tipText"
+                        class="hardwarePanelText"
+                    ></p>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+
+    <!-- THESE ARE IN THE SAME FOLDER AS THIS HTML FILE -->
+    <script src="hardwareData.js"></script>
+    <script src="hardwareSimulator.js"></script>
+
+</body>
+
+</html>

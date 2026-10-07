@@ -1,0 +1,8161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <script>
+
+        if (
+            localStorage.getItem("darkMode") === "true"
+        ) {
+
+            document.documentElement.classList.add(
+                "darkMode"
+            );
+
+        }
+
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <title>
+        Math Challenge
+    </title>
+
+
+    <style>
+
+        .mathChallengePage {
+
+            max-width:
+                1050px;
+
+            position:
+                relative;
+
+            z-index:
+                1;
+
+        }
+
+
+        .mathQuizHeader {
+
+            text-align:
+                center;
+
+            max-width:
+                800px;
+
+            margin:
+                25px auto 20px;
+
+        }
+
+
+        .mathQuizHeader h1 {
+
+            margin-bottom:
+                8px;
+
+        }
+
+
+        .mathQuizHeader p {
+
+            margin:
+                0;
+
+            opacity:
+                .7;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        .mathMeta {
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            flex-wrap:
+                wrap;
+
+            gap:
+                8px;
+
+            margin-top:
+                13px;
+
+        }
+
+
+        .mathMetaPill {
+
+            min-height:
+                29px;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                5px 10px;
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(105,86,157,.10);
+
+            font-size:
+                10px;
+
+            font-weight:
+                900;
+
+        }
+
+
+        .mathProgressWrap {
+
+            max-width:
+                760px;
+
+            margin:
+                20px auto;
+
+        }
+
+
+        .mathProgressTop {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            gap:
+                10px;
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+            opacity:
+                .7;
+
+            margin-bottom:
+                7px;
+
+        }
+
+
+        .mathProgress {
+
+            height:
+                9px;
+
+            border-radius:
+                999px;
+
+            overflow:
+                hidden;
+
+            background:
+                rgba(105,86,157,.10);
+
+        }
+
+
+        .mathProgressFill {
+
+            height:
+                100%;
+
+            width:
+                0;
+
+            border-radius:
+                inherit;
+
+            background:
+                #e99b32;
+
+            transition:
+                width .3s ease;
+
+        }
+
+
+        html.darkMode .mathProgressFill {
+
+            background:
+                #69569d;
+
+        }
+
+
+        .mathQuestionCard {
+
+            max-width:
+                780px;
+
+            margin:
+                0 auto;
+
+            background:
+                var(--container-color);
+
+            border-radius:
+                22px;
+
+            padding:
+                24px;
+
+            box-shadow:
+                0 10px 28px rgba(0,0,0,.07);
+
+        }
+
+
+        .mathQuestionNumber {
+
+            font-size:
+                11px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .08em;
+
+            font-weight:
+                900;
+
+            opacity:
+                .52;
+
+            margin-bottom:
+                10px;
+
+        }
+
+
+        .mathQuestionPrompt {
+
+            font-size:
+                clamp(
+                    20px,
+                    3vw,
+                    30px
+                );
+
+            font-weight:
+                900;
+
+            line-height:
+                1.3;
+
+            margin:
+                0 0 20px;
+
+        }
+
+
+        .mathChoices {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap:
+                10px;
+
+        }
+
+
+        .mathChoice {
+
+            min-height:
+                58px;
+
+            border:
+                1px solid rgba(100,90,120,.14);
+
+            border-radius:
+                14px;
+
+            background:
+                transparent;
+
+            color:
+                var(--text-color);
+
+            font:
+                inherit;
+
+            font-weight:
+                800;
+
+            cursor:
+                pointer;
+
+            padding:
+                10px 13px;
+
+            transition:
+                transform .15s ease,
+                background-color .2s ease,
+                border-color .2s ease;
+
+        }
+
+
+        .mathChoice:hover:not(:disabled) {
+
+            transform:
+                translateY(-2px);
+
+            background:
+                rgba(233,155,50,.10);
+
+        }
+
+
+        .mathChoice:disabled {
+
+            cursor:
+                default;
+
+        }
+
+
+        .mathChoice.correct {
+
+            background:
+                rgba(95,197,108,.14);
+
+            border-color:
+                rgba(95,197,108,.42);
+
+        }
+
+
+        .mathChoice.wrong {
+
+            background:
+                rgba(212,98,97,.13);
+
+            border-color:
+                rgba(212,98,97,.40);
+
+        }
+
+
+        .mathHintBox {
+
+            margin-top:
+                17px;
+
+            padding:
+                14px;
+
+            border-radius:
+                14px;
+
+            background:
+                rgba(105,86,157,.07);
+
+            border:
+                1px solid rgba(105,86,157,.11);
+
+        }
+
+
+        .mathHintButton,
+        .mathNextButton,
+        .mathBackButton,
+        .mathCheckButton {
+
+            min-height:
+                42px;
+
+            padding:
+                9px 15px;
+
+            border:
+                none;
+
+            border-radius:
+                11px;
+
+            font:
+                inherit;
+
+            font-weight:
+                900;
+
+            cursor:
+                pointer;
+
+            transition:
+                transform .15s ease,
+                background-color .2s ease;
+
+        }
+
+
+        .mathHintButton {
+
+            background:
+                rgba(105,86,157,.12);
+
+            color:
+                var(--text-color);
+
+        }
+
+
+        .mathNextButton,
+        .mathCheckButton {
+
+            background:
+                #e99b32;
+
+            color:
+                white;
+
+        }
+
+
+        html.darkMode
+        .mathNextButton,
+        html.darkMode
+        .mathCheckButton {
+
+            background:
+                #69569d;
+
+            color:
+                #f5f0ff;
+
+        }
+
+
+        .mathBackButton {
+
+            text-decoration:
+                none;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            background:
+                rgba(105,86,157,.10);
+
+            color:
+                var(--text-color);
+
+        }
+
+
+        .mathHintButton:hover,
+        .mathNextButton:hover,
+        .mathBackButton:hover,
+        .mathCheckButton:hover {
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        .mathHintText {
+
+            margin:
+                10px 0 0;
+
+            line-height:
+                1.5;
+
+            font-size:
+                13px;
+
+            opacity:
+                .76;
+
+        }
+
+
+        .mathFeedback {
+
+            min-height:
+                28px;
+
+            margin-top:
+                15px;
+
+            font-weight:
+                800;
+
+            line-height:
+                1.45;
+
+        }
+
+
+        .mathActionRow {
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            gap:
+                10px;
+
+            flex-wrap:
+                wrap;
+
+            margin-top:
+                18px;
+
+        }
+
+
+        .mathResult {
+
+            max-width:
+                760px;
+
+            margin:
+                22px auto 0;
+
+            text-align:
+                center;
+
+            background:
+                var(--container-color);
+
+            border-radius:
+                22px;
+
+            padding:
+                25px;
+
+            box-shadow:
+                0 10px 28px rgba(0,0,0,.07);
+
+        }
+
+
+        .mathScore {
+
+            font-size:
+                44px;
+
+            font-weight:
+                1000;
+
+            margin:
+                4px 0;
+
+        }
+
+
+        .mathResult p {
+
+            opacity:
+                .7;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        /* =====================================================
+           FUN LAB
+           ===================================================== */
+
+        .funLab {
+
+            max-width:
+                980px;
+
+            margin:
+                0 auto;
+
+        }
+
+
+        .funIntro {
+
+            text-align:
+                center;
+
+            max-width:
+                760px;
+
+            margin:
+                0 auto 17px;
+
+        }
+
+
+        .funIntro h2 {
+
+            margin:
+                0 0 7px;
+
+        }
+
+
+        .funIntro p {
+
+            margin:
+                0;
+
+            opacity:
+                .7;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        .funCard {
+
+            background:
+                var(--container-color);
+
+            border-radius:
+                22px;
+
+            padding:
+                20px;
+
+            box-shadow:
+                0 10px 28px rgba(0,0,0,.07);
+
+        }
+
+
+        .funPanel {
+
+            background:
+                rgba(105,86,157,.06);
+
+            border-radius:
+                16px;
+
+            padding:
+                15px;
+
+            margin-bottom:
+                12px;
+
+        }
+
+
+        .funPanel:last-child {
+
+            margin-bottom:
+                0;
+
+        }
+
+
+        .funPanel h3 {
+
+            margin:
+                0 0 7px;
+
+        }
+
+
+        .funDescription {
+
+            margin:
+                0;
+
+            opacity:
+                .7;
+
+            line-height:
+                1.5;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .funTarget {
+
+            font-size:
+                clamp(
+                    26px,
+                    5vw,
+                    44px
+                );
+
+            font-weight:
+                1000;
+
+            text-align:
+                center;
+
+            margin:
+                8px 0 14px;
+
+        }
+
+
+        .funChoices {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(0,1fr)
+                );
+
+            gap:
+                10px;
+
+        }
+
+
+        .funChoice {
+
+            min-height:
+                65px;
+
+            border:
+                1px solid rgba(100,90,120,.13);
+
+            border-radius:
+                14px;
+
+            background:
+                transparent;
+
+            color:
+                var(--text-color);
+
+            font:
+                inherit;
+
+            font-weight:
+                900;
+
+            cursor:
+                pointer;
+
+            transition:
+                transform .15s ease,
+                background-color .2s ease;
+
+        }
+
+
+        .funChoice:hover {
+
+            transform:
+                translateY(-3px);
+
+            background:
+                rgba(233,155,50,.10);
+
+        }
+
+
+        .funChoice.selected {
+
+            background:
+                rgba(105,86,157,.15);
+
+            border-color:
+                rgba(105,86,157,.35);
+
+        }
+
+
+        .funChoice.correct {
+
+            background:
+                rgba(95,197,108,.15);
+
+            border-color:
+                rgba(95,197,108,.45);
+
+        }
+
+
+        .funChoice.wrong {
+
+            background:
+                rgba(212,98,97,.14);
+
+            border-color:
+                rgba(212,98,97,.4);
+
+        }
+
+
+        .funControls {
+
+            display:
+                grid;
+
+            gap:
+                10px;
+
+        }
+
+
+        .funControlRow {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                120px minmax(0,1fr) 80px;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+        }
+
+
+        .funControlRow label {
+
+            font-size:
+                12px;
+
+            font-weight:
+                900;
+
+        }
+
+
+        .funControlValue {
+
+            font-weight:
+                900;
+
+            text-align:
+                right;
+
+        }
+
+
+        .funRange {
+
+            width:
+                100%;
+
+        }
+
+
+        .funButton {
+
+            min-height:
+                44px;
+
+            padding:
+                9px 15px;
+
+            border:
+                none;
+
+            border-radius:
+                11px;
+
+            background:
+                #e99b32;
+
+            color:
+                white;
+
+            font:
+                inherit;
+
+            font-weight:
+                900;
+
+            cursor:
+                pointer;
+
+        }
+
+
+        html.darkMode .funButton {
+
+            background:
+                #69569d;
+
+        }
+
+
+        .funButton.secondary {
+
+            background:
+                rgba(105,86,157,.11);
+
+            color:
+                var(--text-color);
+
+        }
+
+
+        .funStatus {
+
+            min-height:
+                27px;
+
+            margin-top:
+                12px;
+
+            font-weight:
+                800;
+
+            line-height:
+                1.45;
+
+        }
+
+
+        .funMachine {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr
+                auto
+                1fr;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+            margin:
+                15px 0;
+
+        }
+
+
+        .funMachineBox {
+
+            min-height:
+                90px;
+
+            border-radius:
+                17px;
+
+            background:
+                rgba(105,86,157,.08);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                12px;
+
+            text-align:
+                center;
+
+            font-weight:
+                900;
+
+        }
+
+
+        .funMachineArrow {
+
+            font-size:
+                25px;
+
+            opacity:
+                .55;
+
+        }
+
+
+        .funNumberDisplay {
+
+            text-align:
+                center;
+
+            font-size:
+                34px;
+
+            font-weight:
+                1000;
+
+            margin:
+                8px 0;
+
+        }
+
+
+        .funFraction {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                3px;
+
+            margin:
+                12px auto;
+
+            max-width:
+                400px;
+
+        }
+
+
+        .funFractionRow {
+
+            display:
+                flex;
+
+            gap:
+                4px;
+
+        }
+
+
+        .funFractionPiece {
+
+            flex:
+                1;
+
+            height:
+                40px;
+
+            border:
+                none;
+
+            border-radius:
+                7px;
+
+            background:
+                rgba(105,86,157,.08);
+
+            cursor:
+                pointer;
+
+        }
+
+
+        .funFractionPiece.filled {
+
+            background:
+                #e99b32;
+
+        }
+
+
+        html.darkMode
+        .funFractionPiece.filled {
+
+            background:
+                #69569d;
+
+        }
+
+
+        .funSlots {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    1fr
+                );
+
+            gap:
+                10px;
+
+        }
+
+
+        .funSlot {
+
+            border:
+                1px solid rgba(100,90,120,.14);
+
+            border-radius:
+                12px;
+
+            padding:
+                10px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .funSlot strong {
+
+            display:
+                block;
+
+            font-size:
+                11px;
+
+            opacity:
+                .6;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .funSlot span {
+
+            font-size:
+                24px;
+
+            font-weight:
+                1000;
+
+        }
+
+
+        .funCanvasWrap {
+
+            background:
+                #151620;
+
+            border-radius:
+                17px;
+
+            padding:
+                8px;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .funCanvas {
+
+            display:
+                block;
+
+            width:
+                100%;
+
+            height:
+                auto;
+
+            background:
+                #151620;
+
+            border-radius:
+                12px;
+
+            touch-action:
+                none;
+
+        }
+
+
+        .funEquationRow {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(0,1fr)
+                auto;
+
+            gap:
+                8px;
+
+            margin-top:
+                9px;
+
+        }
+
+
+        .funInput {
+
+            width:
+                100%;
+
+            min-height:
+                43px;
+
+            box-sizing:
+                border-box;
+
+            border:
+                1px solid rgba(100,90,120,.18);
+
+            border-radius:
+                10px;
+
+            background:
+                var(--container-color);
+
+            color:
+                var(--text-color);
+
+            padding:
+                9px 11px;
+
+            font:
+                inherit;
+
+        }
+
+
+        .funSmallGrid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap:
+                9px;
+
+        }
+
+
+        .funInfoGrid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(0,1fr)
+                );
+
+            gap:
+                9px;
+
+        }
+
+
+        .funInfoBox {
+
+            padding:
+                12px;
+
+            border-radius:
+                12px;
+
+            background:
+                rgba(105,86,157,.07);
+
+            text-align:
+                center;
+
+        }
+
+
+        .funInfoBox strong {
+
+            display:
+                block;
+
+            font-size:
+                10px;
+
+            opacity:
+                .58;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .funInfoBox span {
+
+            font-size:
+                20px;
+
+            font-weight:
+                1000;
+
+        }
+
+
+        .funShapeGrid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(0,1fr)
+                );
+
+            gap:
+                9px;
+
+        }
+
+
+        .funShapeButton {
+
+            min-height:
+                62px;
+
+            border:
+                1px solid rgba(100,90,120,.14);
+
+            border-radius:
+                12px;
+
+            background:
+                transparent;
+
+            color:
+                var(--text-color);
+
+            font:
+                inherit;
+
+            font-weight:
+                900;
+
+            cursor:
+                pointer;
+
+        }
+
+
+        .funShapeButton.active {
+
+            background:
+                rgba(105,86,157,.14);
+
+            border-color:
+                rgba(105,86,157,.35);
+
+        }
+
+
+        .funShapePreview {
+
+            min-height:
+                150px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            margin-bottom:
+                12px;
+
+        }
+
+
+        .shapeTriangle {
+
+            width:
+                0;
+
+            height:
+                0;
+
+            border-left:
+                70px solid transparent;
+
+            border-right:
+                70px solid transparent;
+
+            border-bottom:
+                120px solid #e99b32;
+
+        }
+
+
+        .shapeSquare {
+
+            width:
+                120px;
+
+            height:
+                120px;
+
+            background:
+                #69569d;
+
+        }
+
+
+        .shapePentagon {
+
+            width:
+                120px;
+
+            height:
+                120px;
+
+            background:
+                #5fc56c;
+
+            clip-path:
+                polygon(
+                    50% 0%,
+                    100% 38%,
+                    82% 100%,
+                    18% 100%,
+                    0% 38%
+                );
+
+        }
+
+
+        .shapeHexagon {
+
+            width:
+                130px;
+
+            height:
+                115px;
+
+            background:
+                #d46261;
+
+            clip-path:
+                polygon(
+                    25% 0,
+                    75% 0,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%,
+                    0 50%
+                );
+
+        }
+
+
+        .funAngle {
+
+            width:
+                190px;
+
+            height:
+                190px;
+
+            position:
+                relative;
+
+            margin:
+                5px auto;
+
+        }
+
+
+        .funAngle::before,
+        .funAngle::after {
+
+            content:
+                "";
+
+            position:
+                absolute;
+
+            left:
+                50%;
+
+            top:
+                50%;
+
+            height:
+                4px;
+
+            width:
+                75px;
+
+            transform-origin:
+                left center;
+
+            border-radius:
+                999px;
+
+            background:
+                #69569d;
+
+        }
+
+
+        .funAngle::before {
+
+            transform:
+                rotate(0deg);
+
+        }
+
+
+        .funAngle::after {
+
+            transform:
+                rotate(
+                    var(
+                        --angle,
+                        45deg
+                    )
+                );
+
+        }
+
+
+        .funAngleCenter {
+
+            position:
+                absolute;
+
+            left:
+                calc(50% - 5px);
+
+            top:
+                calc(50% - 5px);
+
+            width:
+                10px;
+
+            height:
+                10px;
+
+            border-radius:
+                50%;
+
+            background:
+                #e99b32;
+
+        }
+
+
+        .funMap {
+
+            width:
+                min(
+                    100%,
+                    620px
+                );
+
+            margin:
+                0 auto;
+
+            aspect-ratio:
+                1;
+
+            border-radius:
+                16px;
+
+            background:
+                #151620;
+
+            position:
+                relative;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .funMapCanvas {
+
+            display:
+                block;
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            touch-action:
+                none;
+
+        }
+
+
+        .funArtEquations {
+
+            display:
+                grid;
+
+            gap:
+                8px;
+
+        }
+
+
+        @media (
+            max-width: 760px
+        ) {
+
+            .mathChoices,
+            .funChoices {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .funMachine {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .funMachineArrow {
+
+                transform:
+                    rotate(90deg);
+
+            }
+
+
+            .funControlRow {
+
+                grid-template-columns:
+                    1fr
+                    70px;
+
+            }
+
+
+            .funControlRow label {
+
+                grid-column:
+                    1 /
+                    -1;
+
+            }
+
+        }
+
+
+        @media (
+            max-width: 520px
+        ) {
+
+            .mathChoices,
+            .funChoices {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .funInfoGrid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .funShapeGrid {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .funSmallGrid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="sunRays"></div>
+
+    <div
+        class="stars"
+        aria-hidden="true"
+    ></div>
+
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        type="button"
+    >
+
+        <span
+            id="settingsIcon"
+        >
+            ⚙
+        </span>
+
+    </button>
+
+
+    <main class="container mathChallengePage">
+
+        <a
+            href="math.html"
+            class="backButton"
+        >
+            ↶
+        </a>
+
+
+        <section class="mathQuizHeader">
+
+            <h1 id="pageTitle">
+                Math Challenge
+            </h1>
+
+            <p id="pageSubtitle">
+                Loading...
+            </p>
+
+
+            <div class="mathMeta">
+
+                <span
+                    class="mathMetaPill"
+                    id="topicPill"
+                >
+                    Topic
+                </span>
+
+                <span
+                    class="mathMetaPill"
+                    id="difficultyPill"
+                >
+                    Difficulty
+                </span>
+
+                <span
+                    class="mathMetaPill"
+                    id="modePill"
+                >
+                    Practice
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <section id="quizArea">
+
+            <div class="mathProgressWrap">
+
+                <div class="mathProgressTop">
+
+                    <span id="questionCount">
+                        Question 1 / 10
+                    </span>
+
+                    <span id="scoreText">
+                        Score: 0
+                    </span>
+
+                </div>
+
+
+                <div class="mathProgress">
+
+                    <div
+                        class="mathProgressFill"
+                        id="progressFill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <article
+                class="mathQuestionCard"
+                id="questionCard"
+            >
+
+                <div
+                    class="mathQuestionNumber"
+                    id="questionNumber"
+                >
+                    Question 1
+                </div>
+
+
+                <h2
+                    class="mathQuestionPrompt"
+                    id="questionPrompt"
+                >
+                    Loading...
+                </h2>
+
+
+                <div
+                    class="mathChoices"
+                    id="choices"
+                ></div>
+
+
+                <div class="mathHintBox">
+
+                    <button
+                        class="mathHintButton"
+                        id="hintButton"
+                        type="button"
+                    >
+                        Need a hint?
+                    </button>
+
+
+                    <p
+                        class="mathHintText"
+                        id="hintText"
+                        hidden
+                    ></p>
+
+                </div>
+
+
+                <div
+                    class="mathFeedback"
+                    id="feedback"
+                ></div>
+
+
+                <div class="mathActionRow">
+
+                    <button
+                        class="mathNextButton"
+                        id="nextButton"
+                        type="button"
+                        hidden
+                    >
+                        Next question
+                    </button>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <section
+            id="resultArea"
+            class="mathResult"
+            hidden
+        ></section>
+
+
+        <section
+            id="funArea"
+            class="funLab"
+            hidden
+        ></section>
+
+    </main>
+
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="mathQuestions.js"></script>
+
+
+    <script>
+
+        (() => {
+
+            "use strict";
+
+
+            const lab =
+                window.MathLab;
+
+
+            if (!lab) {
+                return;
+            }
+
+
+            function isPortuguese() {
+
+                const language =
+                    localStorage.getItem(
+                        "siteLanguage"
+                    );
+
+                return (
+                    language === "pt-BR" ||
+                    language === "pt"
+                );
+            }
+
+
+            function t(
+                en,
+                pt
+            ) {
+
+                return isPortuguese()
+                    ? pt
+                    : en;
+            }
+
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const topicId =
+                params.get("topic") ||
+                "addition";
+
+
+            const difficultyId =
+                params.get("difficulty") ||
+                "easy";
+
+
+            const mode =
+                params.get("mode") ||
+                "practice";
+
+
+            const topic =
+                lab.getTopic(
+                    topicId
+                );
+
+
+            const difficulty =
+                lab.getDifficulty(
+                    difficultyId
+                );
+
+
+            const quizArea =
+                document.getElementById(
+                    "quizArea"
+                );
+
+
+            const resultArea =
+                document.getElementById(
+                    "resultArea"
+                );
+
+
+            const funArea =
+                document.getElementById(
+                    "funArea"
+                );
+
+
+            const pageTitle =
+                document.getElementById(
+                    "pageTitle"
+                );
+
+
+            const pageSubtitle =
+                document.getElementById(
+                    "pageSubtitle"
+                );
+
+
+            const topicPill =
+                document.getElementById(
+                    "topicPill"
+                );
+
+
+            const difficultyPill =
+                document.getElementById(
+                    "difficultyPill"
+                );
+
+
+            const modePill =
+                document.getElementById(
+                    "modePill"
+                );
+
+
+            topicPill.textContent =
+                isPortuguese()
+                    ? topic.pt
+                    : topic.en;
+
+
+            difficultyPill.textContent =
+                isPortuguese()
+                    ? difficulty.pt
+                    : difficulty.en;
+
+
+            modePill.textContent =
+                mode === "fun"
+                    ? t(
+                        "Fun Lab",
+                        "Laboratório"
+                    )
+                    : t(
+                        "Practice",
+                        "Prática"
+                    );
+
+
+            if (mode === "fun") {
+
+                quizArea.hidden =
+                    true;
+
+                initFunLab();
+
+            } else {
+
+                funArea.hidden =
+                    true;
+
+                initPractice();
+
+            }
+
+
+            /* =================================================
+               NORMAL PRACTICE
+               ================================================= */
+
+
+            function initPractice() {
+
+                pageTitle.textContent =
+                    t(
+                        "Math Challenge",
+                        "Desafio de Matemática"
+                    );
+
+
+                pageSubtitle.textContent =
+                    t(
+                        "Solve the problems and see how far you can push the difficulty.",
+                        "Resolva os problemas e veja até onde você consegue levar a dificuldade."
+                    );
+
+
+                const questions =
+                    lab.createQuestions(
+                        topic.id,
+                        difficulty.id,
+                        10
+                    );
+
+
+                let questionIndex =
+                    0;
+
+
+                let score =
+                    0;
+
+
+                let currentEarned =
+                    1;
+
+
+                let hintUsed =
+                    false;
+
+
+                const questionCount =
+                    document.getElementById(
+                        "questionCount"
+                    );
+
+
+                const scoreText =
+                    document.getElementById(
+                        "scoreText"
+                    );
+
+
+                const progressFill =
+                    document.getElementById(
+                        "progressFill"
+                    );
+
+
+                const questionNumber =
+                    document.getElementById(
+                        "questionNumber"
+                    );
+
+
+                const questionPrompt =
+                    document.getElementById(
+                        "questionPrompt"
+                    );
+
+
+                const choices =
+                    document.getElementById(
+                        "choices"
+                    );
+
+
+                const hintButton =
+                    document.getElementById(
+                        "hintButton"
+                    );
+
+
+                const hintText =
+                    document.getElementById(
+                        "hintText"
+                    );
+
+
+                const feedback =
+                    document.getElementById(
+                        "feedback"
+                    );
+
+
+                const nextButton =
+                    document.getElementById(
+                        "nextButton"
+                    );
+
+
+                function formatScore(
+                    value
+                ) {
+
+                    return Number.isInteger(
+                        value
+                    )
+                        ? String(value)
+                        : value.toFixed(1);
+
+                }
+
+
+                function renderQuestion() {
+
+                    const question =
+                        questions[
+                            questionIndex
+                        ];
+
+
+                    currentEarned =
+                        1;
+
+
+                    hintUsed =
+                        false;
+
+
+                    questionCount.textContent =
+                        t(
+                            `Question ${questionIndex + 1} / ${questions.length}`,
+                            `Questão ${questionIndex + 1} / ${questions.length}`
+                        );
+
+
+                    scoreText.textContent =
+                        t(
+                            `Score: ${formatScore(score)}`,
+                            `Pontuação: ${formatScore(score)}`
+                        );
+
+
+                    progressFill.style.width =
+                        `${
+                            (
+                                questionIndex /
+                                questions.length
+                            ) * 100
+                        }%`;
+
+
+                    questionNumber.textContent =
+                        t(
+                            `Question ${questionIndex + 1}`,
+                            `Questão ${questionIndex + 1}`
+                        );
+
+
+                    questionPrompt.textContent =
+                        question.prompt;
+
+
+                    choices.innerHTML =
+                        "";
+
+
+                    hintText.hidden =
+                        true;
+
+
+                    hintText.textContent =
+                        "";
+
+
+                    feedback.textContent =
+                        "";
+
+
+                    nextButton.hidden =
+                        true;
+
+
+                    hintButton.disabled =
+                        false;
+
+
+                    question.choices.forEach(
+                        choice => {
+
+                            const button =
+                                document.createElement(
+                                    "button"
+                                );
+
+
+                            button.type =
+                                "button";
+
+
+                            button.className =
+                                "mathChoice";
+
+
+                            button.textContent =
+                                choice;
+
+
+                            button.addEventListener(
+                                "click",
+                                () =>
+                                    answer(
+                                        button,
+                                        choice
+                                    )
+                            );
+
+
+                            choices.appendChild(
+                                button
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                function answer(
+                    clicked,
+                    value
+                ) {
+
+                    const question =
+                        questions[
+                            questionIndex
+                        ];
+
+
+                    const buttons =
+                        [
+                            ...choices.querySelectorAll(
+                                "button"
+                            )
+                        ];
+
+
+                    buttons.forEach(
+                        button =>
+                            button.disabled =
+                                true
+                    );
+
+
+                    hintButton.disabled =
+                        true;
+
+
+                    if (
+                        String(value) ===
+                        String(question.answer)
+                    ) {
+
+                        clicked.classList.add(
+                            "correct"
+                        );
+
+
+                        score +=
+                            currentEarned;
+
+
+                        feedback.textContent =
+                            t(
+                                hintUsed
+                                    ? "Correct — nice recovery with the hint."
+                                    : "Correct!",
+
+                                hintUsed
+                                    ? "Correto — boa recuperação com a dica."
+                                    : "Correto!"
+                            );
+
+                    } else {
+
+                        clicked.classList.add(
+                            "wrong"
+                        );
+
+
+                        const correctButton =
+                            buttons.find(
+                                button =>
+                                    button.textContent ===
+                                    String(
+                                        question.answer
+                                    )
+                            );
+
+
+                        if (correctButton) {
+
+                            correctButton.classList.add(
+                                "correct"
+                            );
+
+                        }
+
+
+                        feedback.textContent =
+                            t(
+                                `Not quite. ${question.explanation}`,
+                                `Não foi dessa vez. ${question.explanation}`
+                            );
+
+                    }
+
+
+                    nextButton.hidden =
+                        false;
+
+
+                    scoreText.textContent =
+                        t(
+                            `Score: ${formatScore(score)}`,
+                            `Pontuação: ${formatScore(score)}`
+                        );
+
+                }
+
+
+                hintButton.addEventListener(
+                    "click",
+                    () => {
+
+                        const question =
+                            questions[
+                                questionIndex
+                            ];
+
+
+                        if (hintUsed) {
+                            return;
+                        }
+
+
+                        hintUsed =
+                            true;
+
+
+                        currentEarned =
+                            0.5;
+
+
+                        hintText.hidden =
+                            false;
+
+
+                        hintText.textContent =
+                            `${
+                                t(
+                                    "Hint",
+                                    "Dica"
+                                )
+                            }: ${question.hint}`;
+
+
+                        hintButton.disabled =
+                            true;
+
+                    }
+                );
+
+
+                nextButton.addEventListener(
+                    "click",
+                    () => {
+
+                        questionIndex++;
+
+
+                        if (
+                            questionIndex >=
+                            questions.length
+                        ) {
+
+                            finishQuiz();
+
+                        } else {
+
+                            renderQuestion();
+
+                        }
+
+                    }
+                );
+
+
+                function finishQuiz() {
+
+                    quizArea.hidden =
+                        true;
+
+
+                    resultArea.hidden =
+                        false;
+
+
+                    progressFill.style.width =
+                        "100%";
+
+
+                    const perfect =
+                        score ===
+                        questions.length;
+
+
+                    const feedbackText =
+                        perfect
+                            ? t(
+                                "You absolutely crushed it.",
+                                "Você mandou muito bem."
+                            )
+                            : score >= questions.length * .7
+                                ? t(
+                                    "Solid work. Try the next difficulty when you're ready.",
+                                    "Bom trabalho. Tente a próxima dificuldade quando estiver pronto."
+                                )
+                                : t(
+                                    "Keep practicing — the next attempt can be better.",
+                                    "Continue praticando — a próxima tentativa pode ser melhor."
+                                );
+
+
+                    resultArea.innerHTML = `
+
+                        <h2>
+                            ${
+                                t(
+                                    "Challenge complete!",
+                                    "Desafio concluído!"
+                                )
+                            }
+                        </h2>
+
+                        <div class="mathScore">
+                            ${
+                                formatScore(
+                                    score
+                                )
+                            }
+                            /
+                            ${questions.length}
+                        </div>
+
+                        <p>
+                            ${feedbackText}
+                        </p>
+
+                        <p>
+                            ${
+                                t(
+                                    "Hints reduce that question to half credit, while wrong answers never make the score negative.",
+                                    "As dicas reduzem aquela questão para meio ponto, enquanto respostas erradas nunca deixam a pontuação negativa."
+                                )
+                            }
+                        </p>
+
+                        <div class="mathActionRow">
+
+                            <a
+                                class="mathBackButton"
+                                href="math.html"
+                            >
+                                ${
+                                    t(
+                                        "Back to Math",
+                                        "Voltar para Matemática"
+                                    )
+                                }
+                            </a>
+
+                            <a
+                                class="mathNextButton"
+                                style="
+                                    text-decoration:none;
+                                    display:inline-flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                "
+                                href="mathQuiz.html?topic=${encodeURIComponent(topic.id)}&difficulty=${encodeURIComponent(difficulty.id)}&mode=practice"
+                            >
+                                ${
+                                    t(
+                                        "Try again",
+                                        "Tentar novamente"
+                                    )
+                                }
+                            </a>
+
+                        </div>
+
+                    `;
+
+
+                    if (perfect) {
+
+                        createConfetti();
+
+                    }
+
+                }
+
+
+                renderQuestion();
+
+            }
+
+
+            /* =================================================
+               FUN LAB
+               ================================================= */
+
+
+            function initFunLab() {
+
+                pageTitle.textContent =
+                    t(
+                        "Fun Lab",
+                        "Laboratório de Matemática"
+                    );
+
+
+                pageSubtitle.textContent =
+                    t(
+                        "Learn the idea by playing with it.",
+                        "Aprenda o conceito brincando com ele."
+                    );
+
+
+                funArea.hidden =
+                    false;
+
+
+                const title =
+                    isPortuguese()
+                        ? topic.pt
+                        : topic.en;
+
+
+                funArea.innerHTML = `
+
+                    <div class="funIntro">
+
+                        <h2>
+                            ${title}
+                        </h2>
+
+                        <p>
+                            ${getFunDescription()}
+                        </p>
+
+                    </div>
+
+                    <div class="funCard">
+                        <div id="funContent"></div>
+                    </div>
+
+                `;
+
+
+                const content =
+                    document.getElementById(
+                        "funContent"
+                    );
+
+
+                const labs = {
+
+                    addition:
+                        buildAdditionLab,
+
+                    subtraction:
+                        buildSubtractionLab,
+
+                    multiplication:
+                        buildMultiplicationLab,
+
+                    division:
+                        buildDivisionLab,
+
+                    fractions:
+                        buildFractionLab,
+
+                    decimals:
+                        buildDecimalLab,
+
+                    percentages:
+                        buildPercentageLab,
+
+                    powers:
+                        buildPowerLab,
+
+                    "square-roots":
+                        buildSquareRootLab,
+
+                    "function-basics":
+                        buildFunctionMachineLab,
+
+                    "function-tables":
+                        buildFunctionTableLab,
+
+                    "linear-functions":
+                        buildLinearLab,
+
+                    quadratics:
+                        buildQuadraticLab,
+
+                    graphs:
+                        buildGraphLab,
+
+                    "function-art":
+                        buildFunctionArtLab,
+
+                    shapes:
+                        buildShapeLab,
+
+                    angles:
+                        buildAngleLab,
+
+                    "area-perimeter":
+                        buildAreaLab,
+
+                    coordinates:
+                        buildCoordinateLab
+
+                };
+
+
+                (
+                    labs[topic.id] ||
+                    buildAdditionLab
+                )(
+                    content
+                );
+
+            }
+
+
+            function getFunDescription() {
+
+                const descriptions = {
+
+                    addition: t(
+                        "Find number pairs that create the target.",
+                        "Encontre pares de números que formem o alvo."
+                    ),
+
+                    subtraction: t(
+                        "Make the starting number reach the target by choosing the right amount to subtract.",
+                        "Faça o número inicial chegar ao alvo escolhendo a quantidade certa para subtrair."
+                    ),
+
+                    multiplication: t(
+                        "Hit the multiplication result before the wrong answers get you.",
+                        "Acerte o resultado da multiplicação antes que as respostas erradas te enganem."
+                    ),
+
+                    division: t(
+                        "Split a total into equal groups.",
+                        "Divida um total em grupos iguais."
+                    ),
+
+                    fractions: t(
+                        "Fill the right number of pieces to build the fraction.",
+                        "Preencha o número certo de partes para construir a fração."
+                    ),
+
+                    decimals: t(
+                        "Tune the decimal places until the display matches the target.",
+                        "Ajuste as casas decimais até o visor chegar ao alvo."
+                    ),
+
+                    percentages: t(
+                        "Run a little shop and control the discount.",
+                        "Controle uma lojinha e ajuste o desconto."
+                    ),
+
+                    powers: t(
+                        "Grow a number through repeated multiplication.",
+                        "Faça um número crescer através da multiplicação repetida."
+                    ),
+
+                    "square-roots": t(
+                        "Choose the number that grows into the target square.",
+                        "Escolha o número que, multiplicado por si mesmo, chega ao alvo."
+                    ),
+
+                    "function-basics": t(
+                        "Feed numbers into a function machine and predict the output.",
+                        "Coloque números em uma máquina de funções e descubra a saída."
+                    ),
+
+                    "function-tables": t(
+                        "Change a function and watch the whole table update.",
+                        "Mude uma função e veja a tabela inteira atualizar."
+                    ),
+
+                    "linear-functions": t(
+                        "Build a line by controlling slope and intercept.",
+                        "Monte uma reta controlando a inclinação e o intercepto."
+                    ),
+
+                    quadratics: t(
+                        "Shape a parabola by moving its coefficients.",
+                        "Modele uma parábola alterando seus coeficientes."
+                    ),
+
+                    graphs: t(
+                        "Find the requested coordinates on a live graph.",
+                        "Encontre as coordenadas pedidas em um gráfico interativo."
+                    ),
+
+                    "function-art": t(
+                        "Turn equations into drawings.",
+                        "Transforme equações em desenhos."
+                    ),
+
+                    shapes: t(
+                        "Choose the right shape and inspect its properties.",
+                        "Escolha a forma certa e veja suas propriedades."
+                    ),
+
+                    angles: t(
+                        "Rotate the angle until you hit the target.",
+                        "Gire o ângulo até chegar ao alvo."
+                    ),
+
+                    "area-perimeter": t(
+                        "Resize a rectangle and control its measurements.",
+                        "Redimensione um retângulo e controle suas medidas."
+                    ),
+
+                    coordinates: t(
+                        "Find the treasure by clicking the right coordinate.",
+                        "Encontre o tesouro clicando na coordenada certa."
+                    )
+
+                };
+
+
+                return (
+                    descriptions[topic.id] ||
+                    descriptions.addition
+                );
+
+            }
+
+
+            function randomInt(
+                min,
+                max
+            ) {
+
+                return Math.floor(
+                    Math.random() *
+                    (
+                        max -
+                        min +
+                        1
+                    )
+                ) + min;
+
+            }
+
+
+            function makePanel(
+                title,
+                description
+            ) {
+
+                const panel =
+                    document.createElement(
+                        "div"
+                    );
+
+                panel.className =
+                    "funPanel";
+
+
+                const heading =
+                    document.createElement(
+                        "h3"
+                    );
+
+                heading.textContent =
+                    title;
+
+
+                const text =
+                    document.createElement(
+                        "p"
+                    );
+
+                text.className =
+                    "funDescription";
+
+                text.textContent =
+                    description;
+
+
+                panel.append(
+                    heading,
+                    text
+                );
+
+
+                return panel;
+            }
+
+
+            function status(
+                parent
+            ) {
+
+                const node =
+                    document.createElement(
+                        "div"
+                    );
+
+                node.className =
+                    "funStatus";
+
+
+                parent.appendChild(
+                    node
+                );
+
+
+                return node;
+            }
+
+
+            function buildAdditionLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Number Catcher",
+                            "Caçador de Números"
+                        ),
+                        t(
+                            "Pick the two numbers that add up to the target.",
+                            "Escolha os dois números que somam o alvo."
+                        )
+                    );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+
+                const choices =
+                    document.createElement(
+                        "div"
+                    );
+
+                choices.className =
+                    "funChoices";
+
+
+                panel.append(
+                    target,
+                    choices
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                let a;
+                let b;
+                let selected = [];
+
+
+                function setup() {
+
+                    const max =
+                        difficulty.id === "easy"
+                            ? 15
+                            : difficulty.id === "medium"
+                                ? 35
+                                : difficulty.id === "hard"
+                                    ? 80
+                                    : difficulty.id === "difficult"
+                                        ? 150
+                                        : 300;
+
+
+                    a =
+                        randomInt(
+                            2,
+                            max
+                        );
+
+                    b =
+                        randomInt(
+                            2,
+                            max
+                        );
+
+
+                    const numbers =
+                        [
+                            a,
+                            b
+                        ];
+
+
+                    while (
+                        numbers.length < 8
+                    ) {
+
+                        const value =
+                            randomInt(
+                                1,
+                                max
+                            );
+
+
+                        if (
+                            !numbers.includes(
+                                value
+                            )
+                        ) {
+
+                            numbers.push(
+                                value
+                            );
+
+                        }
+
+                    }
+
+
+                    selected =
+                        [];
+
+
+                    target.textContent =
+                        t(
+                            `Target: ${a + b}`,
+                            `Alvo: ${a + b}`
+                        );
+
+
+                    choices.innerHTML =
+                        "";
+
+
+                    numbers
+                        .sort(
+                            () =>
+                                Math.random() -
+                                .5
+                        )
+                        .forEach(
+                            value => {
+
+                                const button =
+                                    document.createElement(
+                                        "button"
+                                    );
+
+                                button.className =
+                                    "funChoice";
+
+                                button.textContent =
+                                    value;
+
+                                button.addEventListener(
+                                    "click",
+                                    () => {
+
+                                        if (
+                                            selected.length >=
+                                            2
+                                        ) {
+                                            return;
+                                        }
+
+
+                                        selected.push(
+                                            {
+                                                value,
+                                                button
+                                            }
+                                        );
+
+
+                                        button.classList.add(
+                                            "selected"
+                                        );
+
+
+                                        if (
+                                            selected.length ===
+                                            2
+                                        ) {
+
+                                            const sum =
+                                                selected[0].value +
+                                                selected[1].value;
+
+
+                                            if (
+                                                sum ===
+                                                a + b
+                                            ) {
+
+                                                selected.forEach(
+                                                    item =>
+                                                        item.button.classList.add(
+                                                            "correct"
+                                                        )
+                                                );
+
+
+                                                result.textContent =
+                                                    t(
+                                                        "Correct! You caught the pair.",
+                                                        "Correto! Você pegou o par."
+                                                    );
+
+                                            } else {
+
+                                                selected.forEach(
+                                                    item =>
+                                                        item.button.classList.add(
+                                                            "wrong"
+                                                        )
+                                                );
+
+
+                                                result.textContent =
+                                                    t(
+                                                        "Not quite. Try another pair.",
+                                                        "Não foi dessa vez. Tente outro par."
+                                                    );
+
+                                            }
+
+
+                                            setTimeout(
+                                                setup,
+                                                850
+                                            );
+
+                                        }
+
+                                    }
+                                );
+
+
+                                choices.appendChild(
+                                    button
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                setup();
+
+            }
+
+
+            function buildSubtractionLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Reach the Target",
+                            "Chegue ao Alvo"
+                        ),
+                        t(
+                            "Choose what to subtract so the starting number lands exactly on the target.",
+                            "Escolha o que subtrair para que o número inicial chegue exatamente ao alvo."
+                        )
+                    );
+
+
+                const machine =
+                    document.createElement(
+                        "div"
+                    );
+
+                machine.className =
+                    "funMachine";
+
+
+                const startBox =
+                    document.createElement(
+                        "div"
+                    );
+
+                startBox.className =
+                    "funMachineBox";
+
+
+                const arrow =
+                    document.createElement(
+                        "div"
+                    );
+
+                arrow.className =
+                    "funMachineArrow";
+
+                arrow.textContent =
+                    "→";
+
+
+                const targetBox =
+                    document.createElement(
+                        "div"
+                    );
+
+                targetBox.className =
+                    "funMachineBox";
+
+
+                const buttons =
+                    document.createElement(
+                        "div"
+                    );
+
+                buttons.className =
+                    "funChoices";
+
+
+                panel.append(
+                    machine,
+                    buttons
+                );
+
+
+                machine.append(
+                    startBox,
+                    arrow,
+                    targetBox
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function setup() {
+
+                    const start =
+                        difficulty.id === "easy"
+                            ? 10
+                            : difficulty.id === "medium"
+                                ? 30
+                                : difficulty.id === "hard"
+                                    ? 80
+                                    : difficulty.id === "difficult"
+                                        ? 150
+                                        : 300;
+
+
+                    const current =
+                        start -
+                        randomInt(
+                            2,
+                            Math.max(
+                                3,
+                                Math.floor(
+                                    start *
+                                    .6
+                                )
+                            )
+                        );
+
+
+                    const answer =
+                        start -
+                        current;
+
+
+                    startBox.textContent =
+                        start;
+
+
+                    targetBox.textContent =
+                        current;
+
+
+                    buttons.innerHTML =
+                        "";
+
+
+                    const values =
+                        [
+                            answer,
+                            answer + 1,
+                            Math.max(
+                                1,
+                                answer - 2
+                            ),
+                            answer + 5,
+                            answer + 10,
+                            Math.max(
+                                1,
+                                answer - 5
+                            )
+                        ];
+
+
+                    [...new Set(values)]
+                        .sort(
+                            () =>
+                                Math.random() -
+                                .5
+                        )
+                        .forEach(
+                            value => {
+
+                                const button =
+                                    document.createElement(
+                                        "button"
+                                    );
+
+                                button.className =
+                                    "funChoice";
+
+                                button.textContent =
+                                    `− ${value}`;
+
+
+                                button.addEventListener(
+                                    "click",
+                                    () => {
+
+                                        if (
+                                            start -
+                                            value ===
+                                            current
+                                        ) {
+
+                                            button.classList.add(
+                                                "correct"
+                                            );
+
+
+                                            result.textContent =
+                                                t(
+                                                    "Perfect subtraction.",
+                                                    "Subtração perfeita."
+                                                );
+
+                                        } else {
+
+                                            button.classList.add(
+                                                "wrong"
+                                            );
+
+
+                                            result.textContent =
+                                                t(
+                                                    "That would land on the wrong number.",
+                                                    "Isso faria você chegar ao número errado."
+                                                );
+
+                                        }
+
+
+                                        setTimeout(
+                                            setup,
+                                            800
+                                        );
+
+                                    }
+                                );
+
+
+                                buttons.appendChild(
+                                    button
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                setup();
+
+            }
+
+
+            function buildMultiplicationLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Multiplier Blaster",
+                            "Blaster da Multiplicação"
+                        ),
+                        t(
+                            "Hit the card whose multiplication equals the target.",
+                            "Acerte o cartão cuja multiplicação resulta no alvo."
+                        )
+                    );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+
+                const choices =
+                    document.createElement(
+                        "div"
+                    );
+
+                choices.className =
+                    "funChoices";
+
+
+                panel.append(
+                    target,
+                    choices
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function setup() {
+
+                    const max =
+                        difficulty.id === "easy"
+                            ? 6
+                            : difficulty.id === "medium"
+                                ? 12
+                                : difficulty.id === "hard"
+                                    ? 25
+                                    : difficulty.id === "difficult"
+                                        ? 50
+                                        : 100;
+
+
+                    const a =
+                        randomInt(
+                            2,
+                            max
+                        );
+
+
+                    const b =
+                        randomInt(
+                            2,
+                            max
+                        );
+
+
+                    const answer =
+                        a * b;
+
+
+                    target.textContent =
+                        t(
+                            `Target: ${answer}`,
+                            `Alvo: ${answer}`
+                        );
+
+
+                    choices.innerHTML =
+                        "";
+
+
+                    const pairs =
+                        [
+                            [a,b]
+                        ];
+
+
+                    while (
+                        pairs.length <
+                        8
+                    ) {
+
+                        const x =
+                            randomInt(
+                                2,
+                                max
+                            );
+
+                        const y =
+                            randomInt(
+                                2,
+                                max
+                            );
+
+
+                        if (
+                            x * y !==
+                            answer
+                        ) {
+
+                            pairs.push(
+                                [x,y]
+                            );
+
+                        }
+
+                    }
+
+
+                    pairs
+                        .sort(
+                            () =>
+                                Math.random() -
+                                .5
+                        )
+                        .forEach(
+                            ([x,y]) => {
+
+                                const button =
+                                    document.createElement(
+                                        "button"
+                                    );
+
+                                button.className =
+                                    "funChoice";
+
+                                button.textContent =
+                                    `${x} × ${y}`;
+
+
+                                button.addEventListener(
+                                    "click",
+                                    () => {
+
+                                        if (
+                                            x * y ===
+                                            answer
+                                        ) {
+
+                                            button.classList.add(
+                                                "correct"
+                                            );
+
+                                            result.textContent =
+                                                t(
+                                                    "Direct hit.",
+                                                    "Acerto direto."
+                                                );
+
+                                        } else {
+
+                                            button.classList.add(
+                                                "wrong"
+                                            );
+
+                                            result.textContent =
+                                                t(
+                                                    "Wrong target.",
+                                                    "Alvo errado."
+                                                );
+
+                                        }
+
+
+                                        setTimeout(
+                                            setup,
+                                            800
+                                        );
+
+                                    }
+                                );
+
+
+                                choices.appendChild(
+                                    button
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                setup();
+
+            }
+
+
+            function buildDivisionLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "The Splitter",
+                            "O Divisor"
+                        ),
+                        t(
+                            "Choose how many equal groups the total can be split into.",
+                            "Escolha em quantos grupos iguais o total pode ser dividido."
+                        )
+                    );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+
+                const choices =
+                    document.createElement(
+                        "div"
+                    );
+
+                choices.className =
+                    "funChoices";
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                panel.append(
+                    target,
+                    choices
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function setup() {
+
+                    const divisor =
+                        randomInt(
+                            2,
+                            difficulty.id === "easy"
+                                ? 5
+                                : difficulty.id === "medium"
+                                    ? 10
+                                    : difficulty.id === "hard"
+                                        ? 15
+                                        : 25
+                        );
+
+
+                    const quotient =
+                        randomInt(
+                            2,
+                            difficulty.id === "easy"
+                                ? 8
+                                : difficulty.id === "medium"
+                                    ? 15
+                                    : 25
+                        );
+
+
+                    const total =
+                        divisor *
+                        quotient;
+
+
+                    target.textContent =
+                        t(
+                            `${total} items — how many groups give ${quotient} each?`,
+                            `${total} itens — quantos grupos dão ${quotient} em cada grupo?`
+                        );
+
+
+                    choices.innerHTML =
+                        "";
+
+
+                    const values =
+                        [
+                            divisor,
+                            Math.max(
+                                2,
+                                divisor - 1
+                            ),
+                            divisor + 1,
+                            divisor + 2,
+                            Math.max(
+                                2,
+                                divisor - 2
+                            )
+                        ];
+
+
+                    [...new Set(values)]
+                        .forEach(
+                            value => {
+
+                                const button =
+                                    document.createElement(
+                                        "button"
+                                    );
+
+                                button.className =
+                                    "funChoice";
+
+                                button.textContent =
+                                    `${value} groups`;
+
+
+                                button.addEventListener(
+                                    "click",
+                                    () => {
+
+                                        if (
+                                            total /
+                                            value ===
+                                            quotient
+                                        ) {
+
+                                            button.classList.add(
+                                                "correct"
+                                            );
+
+
+                                            result.textContent =
+                                                t(
+                                                    `${total} ÷ ${value} = ${quotient}.`,
+                                                    `${total} ÷ ${value} = ${quotient}.`
+                                                );
+
+                                        } else {
+
+                                            button.classList.add(
+                                                "wrong"
+                                            );
+
+
+                                            result.textContent =
+                                                t(
+                                                    "Those groups would not divide the total evenly.",
+                                                    "Esses grupos não dividiriam o total igualmente."
+                                                );
+
+                                        }
+
+
+                                        setTimeout(
+                                            setup,
+                                            850
+                                        );
+
+                                    }
+                                );
+
+
+                                choices.appendChild(
+                                    button
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                setup();
+
+            }
+
+
+            function buildFractionLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Fraction Pizza",
+                            "Pizza de Frações"
+                        ),
+                        t(
+                            "Fill exactly the right number of pieces.",
+                            "Preencha exatamente o número certo de partes."
+                        )
+                    );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+
+                const pizza =
+                    document.createElement(
+                        "div"
+                    );
+
+                pizza.className =
+                    "funFraction";
+
+
+                const statusNode =
+                    status(
+                        panel
+                    );
+
+
+                panel.append(
+                    target,
+                    pizza
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function setup() {
+
+                    const denominator =
+                        difficulty.id === "easy"
+                            ? 4
+                            : difficulty.id === "medium"
+                                ? 6
+                                : difficulty.id === "hard"
+                                    ? 8
+                                    : difficulty.id === "difficult"
+                                        ? 10
+                                        : 12;
+
+
+                    const numerator =
+                        randomInt(
+                            1,
+                            denominator - 1
+                        );
+
+
+                    target.textContent =
+                        `${numerator}/${denominator}`;
+
+
+                    pizza.innerHTML =
+                        "";
+
+
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+
+                    row.className =
+                        "funFractionRow";
+
+
+                    for (
+                        let i = 0;
+                        i < denominator;
+                        i++
+                    ) {
+
+                        const piece =
+                            document.createElement(
+                                "button"
+                            );
+
+                        piece.className =
+                            "funFractionPiece";
+
+                        piece.type =
+                            "button";
+
+
+                        piece.addEventListener(
+                            "click",
+                            () => {
+
+                                piece.classList.toggle(
+                                    "filled"
+                                );
+
+
+                                const count =
+                                    row.querySelectorAll(
+                                        ".filled"
+                                    ).length;
+
+
+                                if (
+                                    count ===
+                                    numerator
+                                ) {
+
+                                    statusNode.textContent =
+                                        t(
+                                            "Perfect fraction.",
+                                            "Fração perfeita."
+                                        );
+
+                                } else {
+
+                                    statusNode.textContent =
+                                        t(
+                                            `${count}/${denominator} selected.`,
+                                            `${count}/${denominator} selecionado.`
+                                        );
+
+                                }
+
+                            }
+                        );
+
+
+                        row.appendChild(
+                            piece
+                        );
+
+                    }
+
+
+                    pizza.appendChild(
+                        row
+                    );
+
+                }
+
+
+                setup();
+
+            }
+
+
+            function buildDecimalLab(
+    root
+) {
+
+    const panel =
+        makePanel(
+            t(
+                "Decimal Tuner",
+                "Afinador Decimal"
+            ),
+            t(
+                "Move the place-value controls until the display matches the target.",
+                "Mova os controles das casas até o visor chegar ao alvo."
+            )
+        );
+
+
+    /*
+        The four sliders represent:
+
+        Tens      → 0 to 9
+        Ones      → 0 to 9
+        Tenths    → 0 to 9
+        Hundredths→ 0 to 9
+
+        Therefore the biggest possible number is 99.99.
+
+        The old version could generate 999.99,
+        which made some targets impossible.
+    */
+
+
+    let minCents;
+    let maxCents;
+
+
+    switch (
+        difficulty.id
+    ) {
+
+        case "easy":
+
+            minCents =
+                100;
+
+            maxCents =
+                999;
+
+            break;
+
+
+        case "medium":
+
+            minCents =
+                100;
+
+            maxCents =
+                2999;
+
+            break;
+
+
+        case "hard":
+
+            minCents =
+                1000;
+
+            maxCents =
+                5999;
+
+            break;
+
+
+        case "difficult":
+
+            minCents =
+                2000;
+
+            maxCents =
+                8999;
+
+            break;
+
+
+        default:
+
+            minCents =
+                100;
+
+            maxCents =
+                9999;
+
+            break;
+
+    }
+
+
+    const targetCents =
+        randomInt(
+            minCents,
+            maxCents
+        );
+
+
+    const targetValue =
+        targetCents / 100;
+
+
+    const tensTarget =
+        Math.floor(
+            targetCents / 1000
+        );
+
+
+    const onesTarget =
+        Math.floor(
+            (
+                targetCents % 1000
+            ) / 100
+        );
+
+
+    const tenthsTarget =
+        Math.floor(
+            (
+                targetCents % 100
+            ) / 10
+        );
+
+
+    const hundredthsTarget =
+        targetCents % 10;
+
+
+    const targetNode =
+        document.createElement(
+            "div"
+        );
+
+    targetNode.className =
+        "funTarget";
+
+    targetNode.textContent =
+        t(
+            `Target: ${targetValue.toFixed(2)}`,
+            `Alvo: ${targetValue.toFixed(2)}`
+        );
+
+
+    const display =
+        document.createElement(
+            "div"
+        );
+
+    display.className =
+        "funNumberDisplay";
+
+
+    const places =
+        document.createElement(
+            "div"
+        );
+
+    places.className =
+        "funSlots";
+
+
+    const controls = [];
+
+
+    function addPlace(
+        label,
+        min,
+        max,
+        step,
+        startingValue
+    ) {
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+        wrapper.className =
+            "funPanel";
+
+
+        const title =
+            document.createElement(
+                "div"
+            );
+
+        title.textContent =
+            label;
+
+        title.style.fontWeight =
+            "900";
+
+
+        const input =
+            document.createElement(
+                "input"
+            );
+
+        input.type =
+            "range";
+
+        input.className =
+            "funRange";
+
+        input.min =
+            min;
+
+        input.max =
+            max;
+
+        input.step =
+            step;
+
+        input.value =
+            startingValue;
+
+
+        wrapper.append(
+            title,
+            input
+        );
+
+
+        places.appendChild(
+            wrapper
+        );
+
+
+        controls.push(
+            input
+        );
+
+
+        input.addEventListener(
+            "input",
+            update
+        );
+
+    }
+
+
+    addPlace(
+        t(
+            "Tens",
+            "Dezenas"
+        ),
+        0,
+        9,
+        1,
+        0
+    );
+
+
+    addPlace(
+        t(
+            "Ones",
+            "Unidades"
+        ),
+        0,
+        9,
+        1,
+        0
+    );
+
+
+    addPlace(
+        t(
+            "Tenths",
+            "Décimos"
+        ),
+        0,
+        9,
+        1,
+        0
+    );
+
+
+    addPlace(
+        t(
+            "Hundredths",
+            "Centésimos"
+        ),
+        0,
+        9,
+        1,
+        0
+    );
+
+
+    panel.append(
+        targetNode,
+        display,
+        places
+    );
+
+
+    const result =
+        status(
+            panel
+        );
+
+
+    root.appendChild(
+        panel
+    );
+
+
+    function getCurrentValue() {
+
+        const tens =
+            Number(
+                controls[0].value
+            );
+
+
+        const ones =
+            Number(
+                controls[1].value
+            );
+
+
+        const tenths =
+            Number(
+                controls[2].value
+            );
+
+
+        const hundredths =
+            Number(
+                controls[3].value
+            );
+
+
+        return (
+            tens * 10 +
+            ones +
+            tenths / 10 +
+            hundredths / 100
+        );
+
+    }
+
+
+    function update() {
+
+        const value =
+            getCurrentValue();
+
+
+        display.textContent =
+            value.toFixed(2);
+
+
+        if (
+            Math.abs(
+                value -
+                targetValue
+            ) < 0.005
+        ) {
+
+            result.textContent =
+                t(
+                    "Matched! You built the target number.",
+                    "Acertou! Você montou o número alvo."
+                );
+
+        } else {
+
+            const difference =
+                Math.abs(
+                    value -
+                    targetValue
+                );
+
+
+            result.textContent =
+                t(
+                    `Keep tuning. You are ${difference.toFixed(2)} away.`,
+                    `Continue ajustando. Você está a ${difference.toFixed(2)} do alvo.`
+                );
+
+        }
+
+    }
+
+
+    update();
+
+}
+
+
+            function buildPercentageLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Discount Shop",
+                            "Loja de Descontos"
+                        ),
+                        t(
+                            "Move the discount until the final price matches the target sale price.",
+                            "Mova o desconto até o preço final chegar ao preço-alvo."
+                        )
+                    );
+
+
+                const price =
+                    difficulty.id === "easy"
+                        ? 20
+                        : difficulty.id === "medium"
+                            ? 80
+                            : difficulty.id === "hard"
+                                ? 250
+                                : difficulty.id === "difficult"
+                                    ? 800
+                                    : 2000;
+
+
+                const discount =
+                    (
+                        [10,15,20,25,30,40,50]
+                    )[
+                        randomInt(
+                            0,
+                            6
+                        )
+                    ];
+
+
+                const targetPrice =
+                    price *
+                    (
+                        1 -
+                        discount / 100
+                    );
+
+
+                const goal =
+                    document.createElement(
+                        "div"
+                    );
+
+                goal.className =
+                    "funTarget";
+
+                goal.textContent =
+                    t(
+                        `Sale target: $${targetPrice.toFixed(2)}`,
+                        `Preço-alvo: R$ ${targetPrice.toFixed(2)}`
+                    );
+
+
+                const slider =
+                    document.createElement(
+                        "input"
+                    );
+
+                slider.type =
+                    "range";
+
+                slider.className =
+                    "funRange";
+
+                slider.min =
+                    "0";
+
+                slider.max =
+                    "75";
+
+                slider.step =
+                    "5";
+
+
+                const display =
+                    document.createElement(
+                        "div"
+                    );
+
+                display.className =
+                    "funInfoGrid";
+
+
+                const discountBox =
+                    document.createElement(
+                        "div"
+                    );
+
+                discountBox.className =
+                    "funInfoBox";
+
+
+                const discountValue =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                const finalBox =
+                    document.createElement(
+                        "div"
+                    );
+
+                finalBox.className =
+                    "funInfoBox";
+
+
+                const finalValue =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                const priceBox =
+                    document.createElement(
+                        "div"
+                    );
+
+                priceBox.className =
+                    "funInfoBox";
+
+
+                priceBox.innerHTML =
+                    `
+                        <strong>${t(
+                            "Original",
+                            "Original"
+                        )}</strong>
+
+                        <span>
+                            ${price.toFixed(2)}
+                        </span>
+                    `;
+
+
+                discountBox.innerHTML =
+                    `
+                        <strong>${t(
+                            "Discount",
+                            "Desconto"
+                        )}</strong>
+                    `;
+
+
+                finalBox.innerHTML =
+                    `
+                        <strong>${t(
+                            "Final price",
+                            "Preço final"
+                        )}</strong>
+                    `;
+
+
+                discountBox.appendChild(
+                    discountValue
+                );
+
+
+                finalBox.appendChild(
+                    finalValue
+                );
+
+
+                display.append(
+                    priceBox,
+                    discountBox,
+                    finalBox
+                );
+
+
+                panel.append(
+                    goal,
+                    display,
+                    slider
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                function update() {
+
+                    const current =
+                        Number(
+                            slider.value
+                        );
+
+
+                    const final =
+                        price *
+                        (
+                            1 -
+                            current /
+                            100
+                        );
+
+
+                    discountValue.textContent =
+                        `${current}%`;
+
+
+                    finalValue.textContent =
+                        final.toFixed(
+                            2
+                        );
+
+
+                    if (
+                        Math.abs(
+                            final -
+                            targetPrice
+                        ) <
+                        .01
+                    ) {
+
+                        result.textContent =
+                            t(
+                                "Sale price matched.",
+                                "Preço de promoção encontrado."
+                            );
+
+                    } else {
+
+                        result.textContent =
+                            t(
+                                "Adjust the discount.",
+                                "Ajuste o desconto."
+                            );
+
+                    }
+
+                }
+
+
+                slider.addEventListener(
+                    "input",
+                    update
+                );
+
+
+                update();
+
+            }
+
+
+            function buildPowerLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Growth Machine",
+                            "Máquina de Crescimento"
+                        ),
+                        t(
+                            "Choose a base and watch it grow through repeated multiplication.",
+                            "Escolha uma base e veja ela crescer através da multiplicação repetida."
+                        )
+                    );
+
+
+                const base =
+                    difficulty.id === "easy"
+                        ? 2
+                        : randomInt(
+                            2,
+                            difficulty.id === "extreme"
+                                ? 8
+                                : 5
+                        );
+
+
+                const targetExponent =
+                    randomInt(
+                        2,
+                        difficulty.id === "extreme"
+                            ? 5
+                            : 4
+                    );
+
+
+                const target =
+                    base **
+                    targetExponent;
+
+
+                const targetNode =
+                    document.createElement(
+                        "div"
+                    );
+
+                targetNode.className =
+                    "funTarget";
+
+                targetNode.textContent =
+                    `Target: ${target}`;
+
+
+                const display =
+                    document.createElement(
+                        "div"
+                    );
+
+                display.className =
+                    "funNumberDisplay";
+
+
+                const buttons =
+                    document.createElement(
+                        "div"
+                    );
+
+                buttons.className =
+                    "funChoices";
+
+
+                panel.append(
+                    targetNode,
+                    display,
+                    buttons
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                for (
+                    let exponent = 1;
+                    exponent <= 6;
+                    exponent++
+                ) {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+                    button.className =
+                        "funChoice";
+
+                    button.textContent =
+                        `${base} ^ ${exponent}`;
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            const value =
+                                base **
+                                exponent;
+
+
+                            display.textContent =
+                                value;
+
+
+                            if (
+                                value ===
+                                target
+                            ) {
+
+                                button.classList.add(
+                                    "correct"
+                                );
+
+
+                                result.textContent =
+                                    t(
+                                        "You reached the target.",
+                                        "Você chegou ao alvo."
+                                    );
+
+                            } else {
+
+                                result.textContent =
+                                    t(
+                                        `That gives ${value}.`,
+                                        `Isso dá ${value}.`
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    buttons.appendChild(
+                        button
+                    );
+
+                }
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+            }
+
+
+            function buildSquareRootLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Root Garden",
+                            "Jardim das Raízes"
+                        ),
+                        t(
+                            "Pick the root that grows into the target square.",
+                            "Escolha a raiz que gera o quadrado-alvo."
+                        )
+                    );
+
+
+                const rootValue =
+                    randomInt(
+                        2,
+                        difficulty.id === "easy"
+                            ? 8
+                            : difficulty.id === "medium"
+                                ? 12
+                                : difficulty.id === "hard"
+                                    ? 18
+                                    : 30
+                    );
+
+
+                const target =
+                    rootValue *
+                    rootValue;
+
+
+                const targetNode =
+                    document.createElement(
+                        "div"
+                    );
+
+                targetNode.className =
+                    "funTarget";
+
+                targetNode.textContent =
+                    `√${target}`;
+
+
+                const choices =
+                    document.createElement(
+                        "div"
+                    );
+
+                choices.className =
+                    "funChoices";
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                panel.append(
+                    targetNode,
+                    choices
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                const values =
+                    [
+                        rootValue,
+                        Math.max(
+                            1,
+                            rootValue - 2
+                        ),
+                        rootValue + 1,
+                        rootValue + 3
+                    ];
+
+
+                values
+                    .sort(
+                        () =>
+                            Math.random() -
+                            .5
+                    )
+                    .forEach(
+                        value => {
+
+                            const button =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            button.className =
+                                "funChoice";
+
+                            button.textContent =
+                                value;
+
+
+                            button.addEventListener(
+                                "click",
+                                () => {
+
+                                    if (
+                                        value ===
+                                        rootValue
+                                    ) {
+
+                                        button.classList.add(
+                                            "correct"
+                                        );
+
+
+                                        result.textContent =
+                                            t(
+                                                `${value} × ${value} = ${target}.`,
+                                                `${value} × ${value} = ${target}.`
+                                            );
+
+                                    } else {
+
+                                        button.classList.add(
+                                            "wrong"
+                                        );
+
+
+                                        result.textContent =
+                                            t(
+                                                "That number does not square to the target.",
+                                                "Esse número não gera o quadrado-alvo."
+                                            );
+
+                                    }
+
+                                }
+                            );
+
+
+                            choices.appendChild(
+                                button
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            function buildFunctionMachineLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Function Machine",
+                            "Máquina de Funções"
+                        ),
+                        t(
+                            "Feed a number into the machine and predict the output.",
+                            "Coloque um número na máquina e descubra a saída."
+                        )
+                    );
+
+
+                const a =
+                    difficulty.id === "easy"
+                        ? 2
+                        : randomInt(
+                            2,
+                            difficulty.id === "extreme"
+                                ? 8
+                                : 5
+                        );
+
+
+                const b =
+                    randomInt(
+                        -6,
+                        8
+                    );
+
+
+                const x =
+                    document.createElement(
+                        "input"
+                    );
+
+                x.type =
+                    "number";
+
+                x.className =
+                    "funInput";
+
+                x.value =
+                    "2";
+
+
+                const output =
+                    document.createElement(
+                        "div"
+                    );
+
+                output.className =
+                    "funNumberDisplay";
+
+
+                const equation =
+                    document.createElement(
+                        "div"
+                    );
+
+                equation.className =
+                    "funTarget";
+
+                equation.textContent =
+                    `f(x) = ${a}x ${b >= 0 ? "+ " + b : "− " + Math.abs(b)}`;
+
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "funButton";
+
+                button.textContent =
+                    t(
+                        "Run Machine",
+                        "Rodar máquina"
+                    );
+
+
+                panel.append(
+                    equation,
+                    x,
+                    button,
+                    output
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const value =
+                            Number(
+                                x.value
+                            );
+
+
+                        if (
+                            !Number.isFinite(
+                                value
+                            )
+                        ) {
+
+                            result.textContent =
+                                t(
+                                    "Enter a number first.",
+                                    "Digite um número primeiro."
+                                );
+
+                            return;
+
+                        }
+
+
+                        const answer =
+                            a *
+                            value +
+                            b;
+
+
+                        output.textContent =
+                            `f(${value}) = ${answer}`;
+
+
+                        result.textContent =
+                            t(
+                                "The machine applied the rule.",
+                                "A máquina aplicou a regra."
+                            );
+
+                    }
+                );
+
+            }
+
+
+            function buildFunctionTableLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Live Function Table",
+                            "Tabela de Função ao Vivo"
+                        ),
+                        t(
+                            "Change the rule and watch the values update.",
+                            "Mude a regra e veja os valores atualizarem."
+                        )
+                    );
+
+
+                const controls =
+                    document.createElement(
+                        "div"
+                    );
+
+                controls.className =
+                    "funControls";
+
+
+                const a =
+                    makeRange(
+                        t(
+                            "Multiplier",
+                            "Multiplicador"
+                        ),
+                        -5,
+                        5,
+                        1,
+                        2
+                    );
+
+
+                const b =
+                    makeRange(
+                        t(
+                            "Added value",
+                            "Valor adicionado"
+                        ),
+                        -10,
+                        10,
+                        1,
+                        1
+                    );
+
+
+                controls.append(
+                    a.row,
+                    b.row
+                );
+
+
+                const table =
+                    document.createElement(
+                        "div"
+                    );
+
+                table.className =
+                    "funInfoGrid";
+
+
+                panel.append(
+                    controls,
+                    table
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function update() {
+
+                    table.innerHTML =
+                        "";
+
+
+                    [-2,-1,0,1,2,3]
+                        .forEach(
+                            x => {
+
+                                const box =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                box.className =
+                                    "funInfoBox";
+
+
+                                box.innerHTML =
+                                    `
+                                        <strong>
+                                            x = ${x}
+                                        </strong>
+
+                                        <span>
+                                            ${
+                                                Number(
+                                                    a.input.value
+                                                ) *
+                                                x +
+                                                Number(
+                                                    b.input.value
+                                                )
+                                            }
+                                        </span>
+                                    `;
+
+
+                                table.appendChild(
+                                    box
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                a.input.addEventListener(
+                    "input",
+                    update
+                );
+
+
+                b.input.addEventListener(
+                    "input",
+                    update
+                );
+
+
+                update();
+
+            }
+
+
+            function makeRange(
+                labelText,
+                min,
+                max,
+                step,
+                value
+            ) {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+                row.className =
+                    "funControlRow";
+
+
+                const label =
+                    document.createElement(
+                        "label"
+                    );
+
+                label.textContent =
+                    labelText;
+
+
+                const input =
+                    document.createElement(
+                        "input"
+                    );
+
+                input.type =
+                    "range";
+
+                input.className =
+                    "funRange";
+
+                input.min =
+                    min;
+
+                input.max =
+                    max;
+
+                input.step =
+                    step;
+
+                input.value =
+                    value;
+
+
+                const output =
+                    document.createElement(
+                        "div"
+                    );
+
+                output.className =
+                    "funControlValue";
+
+                output.textContent =
+                    value;
+
+
+                input.addEventListener(
+                    "input",
+                    () => {
+
+                        output.textContent =
+                            input.value;
+
+                    }
+                );
+
+
+                row.append(
+                    label,
+                    input,
+                    output
+                );
+
+
+                return {
+                    row,
+                    input,
+                    output
+                };
+
+            }
+
+
+            function buildLinearLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Line Builder",
+                            "Construtor de Retas"
+                        ),
+                        t(
+                            "Move the slope and intercept until the line matches the target.",
+                            "Mova a inclinação e o intercepto até a reta combinar com o alvo."
+                        )
+                    );
+
+
+                const canvas =
+                    createCanvas();
+
+
+                panel.appendChild(
+                    canvas.wrapper
+                );
+
+
+                const controls =
+                    document.createElement(
+                        "div"
+                    );
+
+                controls.className =
+                    "funControls";
+
+
+                const slope =
+                    makeRange(
+                        t(
+                            "Slope",
+                            "Inclinação"
+                        ),
+                        -5,
+                        5,
+                        1,
+                        1
+                    );
+
+
+                const intercept =
+                    makeRange(
+                        t(
+                            "Intercept",
+                            "Intercepto"
+                        ),
+                        -8,
+                        8,
+                        1,
+                        0
+                    );
+
+
+                controls.append(
+                    slope.row,
+                    intercept.row
+                );
+
+
+                const check =
+                    document.createElement(
+                        "button"
+                    );
+
+                check.className =
+                    "funButton";
+
+                check.textContent =
+                    t(
+                        "Check line",
+                        "Verificar reta"
+                    );
+
+
+                panel.append(
+                    controls,
+                    check
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                const targetA =
+                    randomInt(
+                        -3,
+                        3
+                    ) ||
+                    1;
+
+
+                const targetB =
+                    randomInt(
+                        -5,
+                        5
+                    );
+
+
+                function draw() {
+
+                    drawCoordinateGrid(
+                        canvas.context,
+                        canvas.canvas
+                    );
+
+
+                    drawLinear(
+                        canvas.context,
+                        canvas.canvas,
+                        targetA,
+                        targetB,
+                        "#d46261",
+                        true
+                    );
+
+
+                    drawLinear(
+                        canvas.context,
+                        canvas.canvas,
+                        Number(
+                            slope.input.value
+                        ),
+                        Number(
+                            intercept.input.value
+                        ),
+                        "#e99b32",
+                        false
+                    );
+
+                }
+
+
+                slope.input.addEventListener(
+                    "input",
+                    draw
+                );
+
+
+                intercept.input.addEventListener(
+                    "input",
+                    draw
+                );
+
+
+                check.addEventListener(
+                    "click",
+                    () => {
+
+                        const same =
+                            Number(
+                                slope.input.value
+                            ) ===
+                            targetA &&
+                            Number(
+                                intercept.input.value
+                            ) ===
+                            targetB;
+
+
+                        result.textContent =
+                            same
+                                ? t(
+                                    "Line matched!",
+                                    "A reta combinou!"
+                                )
+                                : t(
+                                    `Target is y = ${targetA}x ${targetB >= 0 ? "+ " + targetB : "− " + Math.abs(targetB)}.`,
+                                    `O alvo é y = ${targetA}x ${targetB >= 0 ? "+ " + targetB : "− " + Math.abs(targetB)}.`
+                                );
+
+                    }
+                );
+
+
+                draw();
+
+            }
+
+
+            function buildQuadraticLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Parabola Playground",
+                            "Playground da Parábola"
+                        ),
+                        t(
+                            "Move a, b and c to shape the parabola.",
+                            "Mova a, b e c para modelar a parábola."
+                        )
+                    );
+
+
+                const canvas =
+                    createCanvas();
+
+
+                panel.appendChild(
+                    canvas.wrapper
+                );
+
+
+                const controls =
+                    document.createElement(
+                        "div"
+                    );
+
+                controls.className =
+                    "funControls";
+
+
+                const a =
+                    makeRange(
+                        "a",
+                        -3,
+                        3,
+                        1,
+                        1
+                    );
+
+
+                const b =
+                    makeRange(
+                        "b",
+                        -6,
+                        6,
+                        1,
+                        0
+                    );
+
+
+                const c =
+                    makeRange(
+                        "c",
+                        -8,
+                        8,
+                        1,
+                        0
+                    );
+
+
+                controls.append(
+                    a.row,
+                    b.row,
+                    c.row
+                );
+
+
+                const check =
+                    document.createElement(
+                        "button"
+                    );
+
+                check.className =
+                    "funButton";
+
+                check.textContent =
+                    t(
+                        "Check parabola",
+                        "Verificar parábola"
+                    );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                panel.append(
+                    controls,
+                    check,
+                    result
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                const target = {
+
+                    a:
+                        difficulty.id === "easy"
+                            ? 1
+                            : randomInt(
+                                1,
+                                difficulty.id === "extreme"
+                                    ? 3
+                                    : 2
+                            ),
+
+                    b:
+                        randomInt(
+                            -5,
+                            5
+                        ),
+
+                    c:
+                        randomInt(
+                            -6,
+                            6
+                        )
+
+                };
+
+
+                function draw() {
+
+                    drawCoordinateGrid(
+                        canvas.context,
+                        canvas.canvas
+                    );
+
+
+                    drawQuadratic(
+                        canvas.context,
+                        canvas.canvas,
+                        target.a,
+                        target.b,
+                        target.c,
+                        "#d46261"
+                    );
+
+
+                    drawQuadratic(
+                        canvas.context,
+                        canvas.canvas,
+                        Number(a.input.value),
+                        Number(b.input.value),
+                        Number(c.input.value),
+                        "#e99b32"
+                    );
+
+                }
+
+
+                [
+                    a,
+                    b,
+                    c
+                ].forEach(
+                    control =>
+                        control.input.addEventListener(
+                            "input",
+                            draw
+                        )
+                );
+
+
+                check.addEventListener(
+                    "click",
+                    () => {
+
+                        const match =
+                            Number(a.input.value) === target.a &&
+                            Number(b.input.value) === target.b &&
+                            Number(c.input.value) === target.c;
+
+
+                        result.textContent =
+                            match
+                                ? t(
+                                    "Parabola matched.",
+                                    "Parábola combinada."
+                                )
+                                : t(
+                                    `Target: y = ${target.a}x² ${target.b >= 0 ? "+ " + target.b : "− " + Math.abs(target.b)}x ${target.c >= 0 ? "+ " + target.c : "− " + Math.abs(target.c)}.`,
+                                    `Alvo: y = ${target.a}x² ${target.b >= 0 ? "+ " + target.b : "− " + Math.abs(target.b)}x ${target.c >= 0 ? "+ " + target.c : "− " + Math.abs(target.c)}.`
+                                );
+
+                    }
+                );
+
+
+                draw();
+
+            }
+
+
+            function createCanvas() {
+
+                const wrapper =
+                    document.createElement(
+                        "div"
+                    );
+
+                wrapper.className =
+                    "funCanvasWrap";
+
+
+                const canvas =
+                    document.createElement(
+                        "canvas"
+                    );
+
+                canvas.className =
+                    "funCanvas";
+
+                canvas.width =
+                    760;
+
+                canvas.height =
+                    480;
+
+
+                wrapper.appendChild(
+                    canvas
+                );
+
+
+                return {
+
+                    wrapper,
+
+                    canvas,
+
+                    context:
+                        canvas.getContext(
+                            "2d"
+                        )
+
+                };
+
+            }
+
+
+            function drawCoordinateGrid(
+                ctx,
+                canvas
+            ) {
+
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+
+                ctx.fillStyle =
+                    "#151620";
+
+                ctx.fillRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+
+                const scale =
+                    34;
+
+
+                const ox =
+                    canvas.width / 2;
+
+
+                const oy =
+                    canvas.height / 2;
+
+
+                ctx.strokeStyle =
+                    "rgba(255,255,255,.07)";
+
+                ctx.lineWidth =
+                    1;
+
+
+                for (
+                    let x = ox % scale;
+                    x < canvas.width;
+                    x += scale
+                ) {
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(
+                        x,
+                        0
+                    );
+
+                    ctx.lineTo(
+                        x,
+                        canvas.height
+                    );
+
+                    ctx.stroke();
+
+                }
+
+
+                for (
+                    let y = oy % scale;
+                    y < canvas.height;
+                    y += scale
+                ) {
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(
+                        0,
+                        y
+                    );
+
+                    ctx.lineTo(
+                        canvas.width,
+                        y
+                    );
+
+                    ctx.stroke();
+
+                }
+
+
+                ctx.strokeStyle =
+                    "rgba(255,255,255,.50)";
+
+                ctx.lineWidth =
+                    1.5;
+
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    ox,
+                    0
+                );
+
+                ctx.lineTo(
+                    ox,
+                    canvas.height
+                );
+
+                ctx.moveTo(
+                    0,
+                    oy
+                );
+
+                ctx.lineTo(
+                    canvas.width,
+                    oy
+                );
+
+                ctx.stroke();
+
+            }
+
+
+            function graphPoint(
+                canvas,
+                x,
+                y
+            ) {
+
+                const scale =
+                    34;
+
+
+                return {
+
+                    x:
+                        canvas.width / 2 +
+                        x * scale,
+
+                    y:
+                        canvas.height / 2 -
+                        y * scale
+
+                };
+
+            }
+
+
+            function drawLinear(
+                ctx,
+                canvas,
+                a,
+                b,
+                color,
+                dashed
+            ) {
+
+                ctx.save();
+
+                ctx.strokeStyle =
+                    color;
+
+                ctx.lineWidth =
+                    4;
+
+
+                if (dashed) {
+
+                    ctx.setLineDash(
+                        [8,7]
+                    );
+
+                }
+
+
+                ctx.beginPath();
+
+
+                for (
+                    let x = -12;
+                    x <= 12;
+                    x += .05
+                ) {
+
+                    const y =
+                        a * x +
+                        b;
+
+
+                    const p =
+                        graphPoint(
+                            canvas,
+                            x,
+                            y
+                        );
+
+
+                    if (
+                        x === -12
+                    ) {
+
+                        ctx.moveTo(
+                            p.x,
+                            p.y
+                        );
+
+                    } else {
+
+                        ctx.lineTo(
+                            p.x,
+                            p.y
+                        );
+
+                    }
+
+                }
+
+
+                ctx.stroke();
+
+                ctx.restore();
+
+            }
+
+
+            function drawQuadratic(
+                ctx,
+                canvas,
+                a,
+                b,
+                c,
+                color
+            ) {
+
+                ctx.save();
+
+                ctx.strokeStyle =
+                    color;
+
+                ctx.lineWidth =
+                    4;
+
+
+                ctx.beginPath();
+
+
+                let started =
+                    false;
+
+
+                for (
+                    let x = -11;
+                    x <= 11;
+                    x += .04
+                ) {
+
+                    const y =
+                        a *
+                        x *
+                        x +
+
+                        b *
+                        x +
+
+                        c;
+
+
+                    if (
+                        Math.abs(y) >
+                        12
+                    ) {
+
+                        started =
+                            false;
+
+                        continue;
+
+                    }
+
+
+                    const p =
+                        graphPoint(
+                            canvas,
+                            x,
+                            y
+                        );
+
+
+                    if (!started) {
+
+                        ctx.moveTo(
+                            p.x,
+                            p.y
+                        );
+
+                        started =
+                            true;
+
+                    } else {
+
+                        ctx.lineTo(
+                            p.x,
+                            p.y
+                        );
+
+                    }
+
+                }
+
+
+                ctx.stroke();
+
+                ctx.restore();
+
+            }
+
+
+            function buildGraphLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Coordinate Hunt",
+                            "Caça às Coordenadas"
+                        ),
+                        t(
+                            "Find the requested point on the graph.",
+                            "Encontre o ponto pedido no gráfico."
+                        )
+                    );
+
+
+                const canvas =
+                    createCanvas();
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                const x =
+                    randomInt(
+                        -7,
+                        7
+                    );
+
+
+                const y =
+                    randomInt(
+                        -5,
+                        5
+                    );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+                target.textContent =
+                    `(${x}, ${y})`;
+
+
+                panel.append(
+                    target,
+                    canvas.wrapper
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                drawCoordinateGrid(
+                    canvas.context,
+                    canvas.canvas
+                );
+
+
+                const p =
+                    graphPoint(
+                        canvas.canvas,
+                        x,
+                        y
+                    );
+
+
+                canvas.context.fillStyle =
+                    "#d46261";
+
+
+                canvas.context.beginPath();
+
+                canvas.context.arc(
+                    p.x,
+                    p.y,
+                    8,
+                    0,
+                    Math.PI * 2
+                );
+
+                canvas.context.fill();
+
+
+                canvas.canvas.addEventListener(
+                    "pointerdown",
+                    event => {
+
+                        const rect =
+                            canvas.canvas.getBoundingClientRect();
+
+
+                        const sx =
+                            canvas.canvas.width /
+                            rect.width;
+
+
+                        const sy =
+                            canvas.canvas.height /
+                            rect.height;
+
+
+                        const px =
+                            (
+                                event.clientX -
+                                rect.left
+                            ) *
+                            sx;
+
+
+                        const py =
+                            (
+                                event.clientY -
+                                rect.top
+                            ) *
+                            sy;
+
+
+                        const scale =
+                            34;
+
+
+                        const pickedX =
+                            Math.round(
+                                (
+                                    px -
+                                    canvas.canvas.width /
+                                    2
+                                ) /
+                                scale
+                            );
+
+
+                        const pickedY =
+                            Math.round(
+                                (
+                                    canvas.canvas.height /
+                                    2 -
+                                    py
+                                ) /
+                                scale
+                            );
+
+
+                        if (
+                            pickedX === x &&
+                            pickedY === y
+                        ) {
+
+                            result.textContent =
+                                t(
+                                    "Treasure found.",
+                                    "Tesouro encontrado."
+                                );
+
+                        } else {
+
+                            result.textContent =
+                                t(
+                                    `You clicked (${pickedX}, ${pickedY}). Try again.`,
+                                    `Você clicou em (${pickedX}, ${pickedY}). Tente novamente.`
+                                );
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            function buildFunctionArtLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Function Art",
+                            "Arte com Funções"
+                        ),
+                        t(
+                            "Add equations and watch them turn into a drawing.",
+                            "Adicione equações e veja elas virarem um desenho."
+                        )
+                    );
+
+
+                const canvas =
+                    createCanvas();
+
+
+                panel.appendChild(
+                    canvas.wrapper
+                );
+
+
+                const goal =
+                    document.createElement(
+                        "div"
+                    );
+
+                goal.className =
+                    "funPanel";
+
+
+                goal.innerHTML =
+                    `
+                        <h3>
+                            ${t(
+                                "Drawing challenge",
+                                "Desafio de desenho"
+                            )}
+                        </h3>
+
+                        <p class="funDescription">
+                            ${
+                                difficulty.id === "easy"
+                                    ? t(
+                                        "Make a simple tent.",
+                                        "Faça uma barraca simples."
+                                    )
+                                    : difficulty.id === "medium"
+                                        ? t(
+                                            "Build a small house.",
+                                            "Monte uma casinha."
+                                        )
+                                        : difficulty.id === "hard"
+                                            ? t(
+                                                "Build a mountain shape.",
+                                                "Monte uma forma de montanha."
+                                            )
+                                            : difficulty.id === "difficult"
+                                                ? t(
+                                                    "Try to build a rocket.",
+                                                    "Tente montar um foguete."
+                                                )
+                                                : t(
+                                                    "Create your own picture using at least six equations.",
+                                                    "Crie seu próprio desenho usando pelo menos seis equações."
+                                                )
+                            }
+                        </p>
+                    `;
+
+
+                panel.appendChild(
+                    goal
+                );
+
+
+                const equations =
+                    document.createElement(
+                        "div"
+                    );
+
+                equations.className =
+                    "funArtEquations";
+
+
+                panel.appendChild(
+                    equations
+                );
+
+
+                const actions =
+                    document.createElement(
+                        "div"
+                    );
+
+                actions.className =
+                    "mathActionRow";
+
+
+                const add =
+                    document.createElement(
+                        "button"
+                    );
+
+                add.className =
+                    "funButton";
+
+                add.textContent =
+                    t(
+                        "Add equation",
+                        "Adicionar equação"
+                    );
+
+
+                const preset =
+                    document.createElement(
+                        "button"
+                    );
+
+                preset.className =
+                    "funButton secondary";
+
+                preset.textContent =
+                    t(
+                        "Load example",
+                        "Carregar exemplo"
+                    );
+
+
+                actions.append(
+                    add,
+                    preset
+                );
+
+
+                panel.appendChild(
+                    actions
+                );
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                const equationValues =
+                    [];
+
+
+                function addEquation(
+                    value = "y = x"
+                ) {
+
+                    equationValues.push(
+                        value
+                    );
+
+                    renderEquations();
+                    draw();
+
+                }
+
+
+                function renderEquations() {
+
+                    equations.innerHTML =
+                        "";
+
+
+                    equationValues.forEach(
+                        (
+                            value,
+                            index
+                        ) => {
+
+                            const row =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            row.className =
+                                "funEquationRow";
+
+
+                            const input =
+                                document.createElement(
+                                    "input"
+                                );
+
+                            input.className =
+                                "funInput";
+
+                            input.value =
+                                value;
+
+
+                            input.addEventListener(
+                                "input",
+                                () => {
+
+                                    equationValues[
+                                        index
+                                    ] =
+                                        input.value;
+
+                                    draw();
+
+                                }
+                            );
+
+
+                            const remove =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            remove.className =
+                                "funButton secondary";
+
+                            remove.textContent =
+                                "×";
+
+
+                            remove.addEventListener(
+                                "click",
+                                () => {
+
+                                    equationValues.splice(
+                                        index,
+                                        1
+                                    );
+
+                                    renderEquations();
+                                    draw();
+
+                                }
+                            );
+
+
+                            row.append(
+                                input,
+                                remove
+                            );
+
+
+                            equations.appendChild(
+                                row
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                function parse(
+                    value
+                ) {
+
+                    const text =
+                        value
+                            .toLowerCase()
+                            .replace(
+                                /\s+/g,
+                                ""
+                            );
+
+
+                    if (
+                        text.startsWith(
+                            "x="
+                        )
+                    ) {
+
+                        const number =
+                            Number(
+                                text.slice(2)
+                            );
+
+
+                        return Number.isFinite(
+                            number
+                        )
+                            ? {
+                                type:
+                                    "vertical",
+
+                                value:
+                                    number
+                            }
+                            : null;
+
+                    }
+
+
+                    if (
+                        !text.startsWith(
+                            "y="
+                        )
+                    ) {
+                        return null;
+                    }
+
+
+                    const body =
+                        text.slice(2);
+
+
+                    const quadratic =
+                        body.match(
+                            /^(-?\d*\.?\d*)x\^2([+-]\d*\.?\d*)x([+-]\d*\.?\d*)$/
+                        );
+
+
+                    if (quadratic) {
+
+                        return {
+
+                            type:
+                                "quadratic",
+
+                            a:
+                                coefficient(
+                                    quadratic[1]
+                                ),
+
+                            b:
+                                Number(
+                                    quadratic[2]
+                                ),
+
+                            c:
+                                Number(
+                                    quadratic[3]
+                                )
+
+                        };
+
+                    }
+
+
+                    const linear =
+                        body.match(
+                            /^(-?\d*\.?\d*)x([+-]\d*\.?\d*)$/
+                        );
+
+
+                    if (linear) {
+
+                        return {
+
+                            type:
+                                "linear",
+
+                            a:
+                                coefficient(
+                                    linear[1]
+                                ),
+
+                            b:
+                                Number(
+                                    linear[2]
+                                )
+
+                        };
+
+                    }
+
+
+                    const horizontal =
+                        Number(
+                            body
+                        );
+
+
+                    if (
+                        Number.isFinite(
+                            horizontal
+                        )
+                    ) {
+
+                        return {
+
+                            type:
+                                "horizontal",
+
+                            value:
+                                horizontal
+
+                        };
+
+                    }
+
+
+                    return null;
+
+                }
+
+
+                function coefficient(
+                    value
+                ) {
+
+                    if (
+                        value === "" ||
+                        value === "+"
+                    ) {
+                        return 1;
+                    }
+
+
+                    if (
+                        value === "-"
+                    ) {
+                        return -1;
+                    }
+
+
+                    return Number(
+                        value
+                    );
+
+                }
+
+
+                function draw() {
+
+                    drawCoordinateGrid(
+                        canvas.context,
+                        canvas.canvas
+                    );
+
+
+                    equationValues.forEach(
+                        (
+                            raw,
+                            index
+                        ) => {
+
+                            const eq =
+                                parse(
+                                    raw
+                                );
+
+
+                            if (!eq) {
+                                return;
+                            }
+
+
+                            canvas.context.strokeStyle =
+                                [
+                                    "#e99b32",
+                                    "#69569d",
+                                    "#5fc56c",
+                                    "#d46261",
+                                    "#7fb3e6",
+                                    "#d39a68"
+                                ][
+                                    index % 6
+                                ];
+
+
+                            canvas.context.lineWidth =
+                                4;
+
+
+                            canvas.context.beginPath();
+
+
+                            if (
+                                eq.type ===
+                                "vertical"
+                            ) {
+
+                                const point =
+                                    graphPoint(
+                                        canvas.canvas,
+                                        eq.value,
+                                        0
+                                    );
+
+
+                                canvas.context.moveTo(
+                                    point.x,
+                                    0
+                                );
+
+
+                                canvas.context.lineTo(
+                                    point.x,
+                                    canvas.canvas.height
+                                );
+
+                            } else {
+
+                                let started =
+                                    false;
+
+
+                                for (
+                                    let x = -11;
+                                    x <= 11;
+                                    x += .03
+                                ) {
+
+                                    let y;
+
+
+                                    if (
+                                        eq.type ===
+                                        "linear"
+                                    ) {
+
+                                        y =
+                                            eq.a *
+                                            x +
+                                            eq.b;
+
+                                    } else if (
+                                        eq.type ===
+                                        "quadratic"
+                                    ) {
+
+                                        y =
+                                            eq.a *
+                                            x *
+                                            x +
+
+                                            eq.b *
+                                            x +
+
+                                            eq.c;
+
+                                    } else {
+
+                                        y =
+                                            eq.value;
+
+                                    }
+
+
+                                    if (
+                                        !Number.isFinite(
+                                            y
+                                        ) ||
+                                        Math.abs(y) > 13
+                                    ) {
+
+                                        started =
+                                            false;
+
+                                        continue;
+
+                                    }
+
+
+                                    const point =
+                                        graphPoint(
+                                            canvas.canvas,
+                                            x,
+                                            y
+                                        );
+
+
+                                    if (!started) {
+
+                                        canvas.context.moveTo(
+                                            point.x,
+                                            point.y
+                                        );
+
+                                        started =
+                                            true;
+
+                                    } else {
+
+                                        canvas.context.lineTo(
+                                            point.x,
+                                            point.y
+                                        );
+
+                                    }
+
+                                }
+
+                            }
+
+
+                            canvas.context.stroke();
+
+                        }
+                    );
+
+                }
+
+
+                add.addEventListener(
+                    "click",
+                    () =>
+                        addEquation()
+                );
+
+
+                preset.addEventListener(
+                    "click",
+                    () => {
+
+                        const presets = {
+
+                            easy: [
+                                "y = x + 2",
+                                "y = -x + 2",
+                                "y = 0"
+                            ],
+
+                            medium: [
+                                "y = 0",
+                                "x = -3",
+                                "x = 3",
+                                "y = 2x + 6",
+                                "y = -2x + 6"
+                            ],
+
+                            hard: [
+                                "y = 0.7x + 2",
+                                "y = -0.7x + 2",
+                                "y = 0"
+                            ],
+
+                            difficult: [
+                                "x = -2",
+                                "x = 2",
+                                "y = 0",
+                                "y = 4",
+                                "y = 2x + 8",
+                                "y = -2x + 8"
+                            ],
+
+                            extreme: [
+                                "y = x",
+                                "y = -x",
+                                "y = x + 3",
+                                "y = -x + 3",
+                                "x = -4",
+                                "x = 4"
+                            ]
+
+                        };
+
+
+                        equationValues.splice(
+                            0,
+                            equationValues.length,
+                            ...presets[
+                                difficulty.id
+                            ]
+                        );
+
+
+                        renderEquations();
+                        draw();
+
+
+                        result.textContent =
+                            t(
+                                "Example loaded. Change the equations and make your own picture.",
+                                "Exemplo carregado. Mude as equações e faça seu próprio desenho."
+                            );
+
+                    }
+                );
+
+
+                if (
+                    difficulty.id ===
+                    "extreme"
+                ) {
+
+                    equationValues.push(
+                        "y = x"
+                    );
+
+                } else {
+
+                    equationValues.push(
+                        "y = x + 2"
+                    );
+
+                    equationValues.push(
+                        "y = -x + 2"
+                    );
+
+                }
+
+
+                renderEquations();
+                draw();
+
+            }
+
+
+            function buildShapeLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Shape Builder",
+                            "Construtor de Formas"
+                        ),
+                        t(
+                            "Pick the shape with the requested number of sides and inspect its properties.",
+                            "Escolha a forma com o número pedido de lados e veja suas propriedades."
+                        )
+                    );
+
+
+                const targetSides =
+                    difficulty.id === "easy"
+                        ? 3
+                        : difficulty.id === "medium"
+                            ? 4
+                            : randomInt(
+                                3,
+                                6
+                            );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+                target.textContent =
+                    t(
+                        `Build a ${targetSides}-sided shape.`,
+                        `Monte uma forma de ${targetSides} lados.`
+                    );
+
+
+                const preview =
+                    document.createElement(
+                        "div"
+                    );
+
+                preview.className =
+                    "funShapePreview";
+
+
+                const buttons =
+                    document.createElement(
+                        "div"
+                    );
+
+                buttons.className =
+                    "funShapeGrid";
+
+
+                const info =
+                    document.createElement(
+                        "div"
+                    );
+
+                info.className =
+                    "funInfoGrid";
+
+
+                const names = {
+
+                    3:
+                        t(
+                            "Triangle",
+                            "Triângulo"
+                        ),
+
+                    4:
+                        t(
+                            "Quadrilateral",
+                            "Quadrilátero"
+                        ),
+
+                    5:
+                        t(
+                            "Pentagon",
+                            "Pentágono"
+                        ),
+
+                    6:
+                        t(
+                            "Hexagon",
+                            "Hexágono"
+                        )
+
+                };
+
+
+                [3,4,5,6]
+                    .forEach(
+                        sides => {
+
+                            const button =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            button.className =
+                                "funShapeButton";
+
+                            button.textContent =
+                                names[sides];
+
+
+                            button.addEventListener(
+                                "click",
+                                () => {
+
+                                    preview.innerHTML =
+                                        "";
+
+
+                                    const shape =
+                                        document.createElement(
+                                            "div"
+                                        );
+
+
+                                    shape.className =
+                                        (
+                                            [
+                                                "shapeTriangle",
+                                                "shapeSquare",
+                                                "shapePentagon",
+                                                "shapeHexagon"
+                                            ]
+                                        )[sides - 3];
+
+
+                                    preview.appendChild(
+                                        shape
+                                    );
+
+
+                                    info.innerHTML =
+                                        `
+                                            <div class="funInfoBox">
+                                                <strong>
+                                                    ${t(
+                                                        "Sides",
+                                                        "Lados"
+                                                    )}
+                                                </strong>
+
+                                                <span>
+                                                    ${sides}
+                                                </span>
+                                            </div>
+
+                                            <div class="funInfoBox">
+                                                <strong>
+                                                    ${t(
+                                                        "Name",
+                                                        "Nome"
+                                                    )}
+                                                </strong>
+
+                                                <span>
+                                                    ${names[sides]}
+                                                </span>
+                                            </div>
+
+                                            <div class="funInfoBox">
+                                                <strong>
+                                                    ${t(
+                                                        "Interior sum",
+                                                        "Soma interna"
+                                                    )}
+                                                </strong>
+
+                                                <span>
+                                                    ${
+                                                        (sides - 2) *
+                                                        180
+                                                    }°
+                                                </span>
+                                            </div>
+                                        `;
+
+
+                                    if (
+                                        sides ===
+                                        targetSides
+                                    ) {
+
+                                        button.classList.add(
+                                            "active"
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+
+                            buttons.appendChild(
+                                button
+                            );
+
+                        }
+                    );
+
+
+                panel.append(
+                    target,
+                    preview,
+                    buttons,
+                    info
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                buttons
+                    .querySelector(
+                        `button:nth-child(${targetSides - 2})`
+                    )
+                    ?.click();
+
+            }
+
+
+            function buildAngleLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Angle Dial",
+                            "Controle de Ângulo"
+                        ),
+                        t(
+                            "Rotate the angle until it reaches the target.",
+                            "Gire o ângulo até chegar ao alvo."
+                        )
+                    );
+
+
+                const targetAngle =
+                    difficulty.id === "easy"
+                        ? 45
+                        : difficulty.id === "medium"
+                            ? 90
+                            : randomInt(
+                                20,
+                                170
+                            );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+                target.textContent =
+                    `${targetAngle}°`;
+
+
+                const dial =
+                    document.createElement(
+                        "div"
+                    );
+
+                dial.className =
+                    "funAngle";
+
+
+                const center =
+                    document.createElement(
+                        "div"
+                    );
+
+                center.className =
+                    "funAngleCenter";
+
+
+                dial.appendChild(
+                    center
+                );
+
+
+                const slider =
+                    document.createElement(
+                        "input"
+                    );
+
+                slider.type =
+                    "range";
+
+                slider.min =
+                    "0";
+
+                slider.max =
+                    "180";
+
+                slider.value =
+                    "45";
+
+                slider.className =
+                    "funRange";
+
+
+                const value =
+                    document.createElement(
+                        "div"
+                    );
+
+                value.className =
+                    "funNumberDisplay";
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                panel.append(
+                    target,
+                    dial,
+                    slider,
+                    value
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function update() {
+
+                    const angle =
+                        Number(
+                            slider.value
+                        );
+
+
+                    value.textContent =
+                        `${angle}°`;
+
+
+                    dial.style.setProperty(
+                        "--angle",
+                        `${angle}deg`
+                    );
+
+
+                    if (
+                        Math.abs(
+                            angle -
+                            targetAngle
+                        ) <=
+                        2
+                    ) {
+
+                        result.textContent =
+                            t(
+                                "Angle matched.",
+                                "Ângulo combinado."
+                            );
+
+                    } else {
+
+                        result.textContent =
+                            t(
+                                "Keep rotating.",
+                                "Continue girando."
+                            );
+
+                    }
+
+                }
+
+
+                slider.addEventListener(
+                    "input",
+                    update
+                );
+
+
+                update();
+
+            }
+
+
+            function buildAreaLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Rectangle Workshop",
+                            "Oficina do Retângulo"
+                        ),
+                        t(
+                            "Resize the rectangle and watch area and perimeter update live.",
+                            "Redimensione o retângulo e veja a área e o perímetro atualizarem."
+                        )
+                    );
+
+
+                const width =
+                    makeRange(
+                        t(
+                            "Width",
+                            "Largura"
+                        ),
+                        1,
+                        difficulty.id === "extreme"
+                            ? 40
+                            : 20,
+                        1,
+                        6
+                    );
+
+
+                const height =
+                    makeRange(
+                        t(
+                            "Height",
+                            "Altura"
+                        ),
+                        1,
+                        difficulty.id === "extreme"
+                            ? 40
+                            : 20,
+                        1,
+                        4
+                    );
+
+
+                const info =
+                    document.createElement(
+                        "div"
+                    );
+
+                info.className =
+                    "funInfoGrid";
+
+
+                const area =
+                    document.createElement(
+                        "div"
+                    );
+
+                area.className =
+                    "funInfoBox";
+
+
+                const perimeter =
+                    document.createElement(
+                        "div"
+                    );
+
+                perimeter.className =
+                    "funInfoBox";
+
+
+                const ratio =
+                    document.createElement(
+                        "div"
+                    );
+
+                ratio.className =
+                    "funInfoBox";
+
+
+                info.append(
+                    area,
+                    perimeter,
+                    ratio
+                );
+
+
+                panel.append(
+                    width.row,
+                    height.row,
+                    info
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                function update() {
+
+                    const w =
+                        Number(
+                            width.input.value
+                        );
+
+
+                    const h =
+                        Number(
+                            height.input.value
+                        );
+
+
+                    area.innerHTML =
+                        `
+                            <strong>
+                                ${t(
+                                    "Area",
+                                    "Área"
+                                )}
+                            </strong>
+
+                            <span>
+                                ${w * h}
+                            </span>
+                        `;
+
+
+                    perimeter.innerHTML =
+                        `
+                            <strong>
+                                ${t(
+                                    "Perimeter",
+                                    "Perímetro"
+                                )}
+                            </strong>
+
+                            <span>
+                                ${
+                                    2 *
+                                    (
+                                        w +
+                                        h
+                                    )
+                                }
+                            </span>
+                        `;
+
+
+                    ratio.innerHTML =
+                        `
+                            <strong>
+                                ${t(
+                                    "Ratio",
+                                    "Proporção"
+                                )}
+                            </strong>
+
+                            <span>
+                                ${w}:${h}
+                            </span>
+                        `;
+
+                }
+
+
+                width.input.addEventListener(
+                    "input",
+                    update
+                );
+
+
+                height.input.addEventListener(
+                    "input",
+                    update
+                );
+
+
+                update();
+
+            }
+
+
+            function buildCoordinateLab(
+                root
+            ) {
+
+                const panel =
+                    makePanel(
+                        t(
+                            "Treasure Map",
+                            "Mapa do Tesouro"
+                        ),
+                        t(
+                            "Click the map where the treasure coordinate is located.",
+                            "Clique no mapa onde está localizada a coordenada do tesouro."
+                        )
+                    );
+
+
+                const map =
+                    document.createElement(
+                        "div"
+                    );
+
+                map.className =
+                    "funMap";
+
+
+                const canvas =
+                    document.createElement(
+                        "canvas"
+                    );
+
+                canvas.width =
+                    600;
+
+                canvas.height =
+                    600;
+
+                canvas.className =
+                    "funMapCanvas";
+
+
+                map.appendChild(
+                    canvas
+                );
+
+
+                const targetX =
+                    randomInt(
+                        -7,
+                        7
+                    );
+
+
+                const targetY =
+                    randomInt(
+                        -7,
+                        7
+                    );
+
+
+                const target =
+                    document.createElement(
+                        "div"
+                    );
+
+                target.className =
+                    "funTarget";
+
+                target.textContent =
+                    `(${targetX}, ${targetY})`;
+
+
+                const result =
+                    status(
+                        panel
+                    );
+
+
+                panel.append(
+                    target,
+                    map
+                );
+
+
+                root.appendChild(
+                    panel
+                );
+
+
+                const ctx =
+                    canvas.getContext(
+                        "2d"
+                    );
+
+
+                drawMap();
+
+
+                canvas.addEventListener(
+                    "pointerdown",
+                    event => {
+
+                        const rect =
+                            canvas.getBoundingClientRect();
+
+
+                        const x =
+                            (
+                                event.clientX -
+                                rect.left
+                            ) /
+                            rect.width *
+                            15 -
+                            7.5;
+
+
+                        const y =
+                            7.5 -
+                            (
+                                event.clientY -
+                                rect.top
+                            ) /
+                            rect.height *
+                            15;
+
+
+                        const pickedX =
+                            Math.round(
+                                x
+                            );
+
+
+                        const pickedY =
+                            Math.round(
+                                y
+                            );
+
+
+                        drawMap(
+                            pickedX,
+                            pickedY
+                        );
+
+
+                        if (
+                            pickedX ===
+                                targetX &&
+                            pickedY ===
+                                targetY
+                        ) {
+
+                            result.textContent =
+                                t(
+                                    "Treasure found!",
+                                    "Tesouro encontrado!"
+                                );
+
+                        } else {
+
+                            result.textContent =
+                                t(
+                                    `You found (${pickedX}, ${pickedY}). Keep looking.`,
+                                    `Você encontrou (${pickedX}, ${pickedY}). Continue procurando.`
+                                );
+
+                        }
+
+                    }
+                );
+
+
+                function drawMap(
+                    pickedX,
+                    pickedY
+                ) {
+
+                    ctx.clearRect(
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+
+                    ctx.fillStyle =
+                        "#151620";
+
+                    ctx.fillRect(
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+
+                    const scale =
+                        canvas.width /
+                        15;
+
+
+                    ctx.strokeStyle =
+                        "rgba(255,255,255,.08)";
+
+                    ctx.lineWidth =
+                        1;
+
+
+                    for (
+                        let i = 0;
+                        i <= 15;
+                        i++
+                    ) {
+
+                        const p =
+                            i *
+                            scale;
+
+
+                        ctx.beginPath();
+
+                        ctx.moveTo(
+                            p,
+                            0
+                        );
+
+                        ctx.lineTo(
+                            p,
+                            canvas.height
+                        );
+
+                        ctx.moveTo(
+                            0,
+                            p
+                        );
+
+                        ctx.lineTo(
+                            canvas.width,
+                            p
+                        );
+
+                        ctx.stroke();
+
+                    }
+
+
+                    const originX =
+                        7.5 *
+                        scale;
+
+
+                    const originY =
+                        7.5 *
+                        scale;
+
+
+                    ctx.strokeStyle =
+                        "rgba(255,255,255,.45)";
+
+                    ctx.lineWidth =
+                        2;
+
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(
+                        originX,
+                        0
+                    );
+
+                    ctx.lineTo(
+                        originX,
+                        canvas.height
+                    );
+
+                    ctx.moveTo(
+                        0,
+                        originY
+                    );
+
+                    ctx.lineTo(
+                        canvas.width,
+                        originY
+                    );
+
+                    ctx.stroke();
+
+
+                    if (
+                        pickedX !== undefined
+                    ) {
+
+                        const px =
+                            (
+                                pickedX +
+                                7.5
+                            ) *
+                            scale;
+
+
+                        const py =
+                            (
+                                7.5 -
+                                pickedY
+                            ) *
+                            scale;
+
+
+                        ctx.fillStyle =
+                            "#e99b32";
+
+
+                        ctx.beginPath();
+
+                        ctx.arc(
+                            px,
+                            py,
+                            8,
+                            0,
+                            Math.PI * 2
+                        );
+
+                        ctx.fill();
+
+                    }
+
+                }
+
+            }
+
+
+            function createConfetti() {
+
+                const container =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                container.style.position =
+                    "fixed";
+
+                container.style.inset =
+                    "0";
+
+                container.style.pointerEvents =
+                    "none";
+
+                container.style.overflow =
+                    "hidden";
+
+                container.style.zIndex =
+                    "999";
+
+
+                for (
+                    let i = 0;
+                    i < 60;
+                    i++
+                ) {
+
+                    const piece =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    piece.style.position =
+                        "absolute";
+
+                    piece.style.top =
+                        "-15px";
+
+                    piece.style.left =
+                        `${Math.random() * 100}%`;
+
+                    piece.style.width =
+                        "7px";
+
+                    piece.style.height =
+                        "11px";
+
+                    piece.style.background =
+                        [
+                            "#ffd56e",
+                            "#69569d",
+                            "#5fc56c",
+                            "#e99b32",
+                            "#d46261"
+                        ][
+                            i % 5
+                        ];
+
+                    piece.style.borderRadius =
+                        "2px";
+
+                    piece.style.animation =
+                        `mathFunConfetti ${
+                            1.5 +
+                            Math.random() *
+                            1.5
+                        }s linear ${
+                            Math.random() *
+                            .7
+                        }s forwards`;
+
+
+                    container.appendChild(
+                        piece
+                    );
+
+                }
+
+
+                const style =
+                    document.createElement(
+                        "style"
+                    );
+
+
+                style.textContent = `
+
+                    @keyframes mathFunConfetti {
+
+                        to {
+
+                            top:
+                                110%;
+
+                            transform:
+                                translateX(
+                                    ${
+                                        (
+                                            Math.random() -
+                                            .5
+                                        ) *
+                                        140
+                                    }px
+                                )
+                                rotate(
+                                    720deg
+                                );
+
+                        }
+
+                    }
+
+                `;
+
+
+                document.head.appendChild(
+                    style
+                );
+
+
+                document.body.appendChild(
+                    container
+                );
+
+
+                setTimeout(
+                    () =>
+                        container.remove(),
+                    3500
+                );
+
+            }
+
+
+            window.addEventListener(
+                "languageChanged",
+                () => {
+
+                    window.location.reload();
+
+                }
+            );
+
+        })();
+
+    </script>
+
+
+    <script>
+
+        const stars =
+            document.querySelector(
+                ".stars"
+            );
+
+
+        if (
+            stars &&
+            !stars.children.length
+        ) {
+
+            for (
+                let i = 0;
+                i < 45;
+                i++
+            ) {
+
+                const star =
+                    document.createElement(
+                        "span"
+                    );
+
+                star.className =
+                    "star";
+
+                star.style.left =
+                    `${Math.random() * 100}%`;
+
+                star.style.top =
+                    `${Math.random() * 100}%`;
+
+                star.style.width =
+                    `${1 + Math.random() * 2}px`;
+
+                star.style.height =
+                    star.style.width;
+
+                stars.appendChild(
+                    star
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

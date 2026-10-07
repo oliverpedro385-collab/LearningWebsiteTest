@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <script>
+
+        if (
+            localStorage.getItem(
+                "darkMode"
+            ) === "true"
+        ) {
+
+            document.documentElement.classList.add(
+                "darkMode"
+            );
+
+        }
+
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <title>
+        Science Lab
+    </title>
+
+
+    <style>
+
+        .sciencePage {
+
+            max-width:
+                1100px;
+
+            position:
+                relative;
+
+            z-index:
+                1;
+
+        }
+
+
+        .scienceHero {
+
+            max-width:
+                760px;
+
+            margin:
+                25px auto 20px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .scienceHero h1 {
+
+            margin-bottom:
+                8px;
+
+        }
+
+
+        .scienceHero p {
+
+            margin:
+                0;
+
+            opacity:
+                .72;
+
+            line-height:
+                1.55;
+
+        }
+
+
+        .scienceTabBar {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    1fr
+                );
+
+            gap:
+                10px;
+
+            max-width:
+                900px;
+
+            margin:
+                25px auto 20px;
+
+        }
+
+
+        .scienceTab {
+
+            min-height:
+                44px;
+
+            border:
+                none;
+
+            border-radius:
+                14px;
+
+            padding:
+                10px 15px;
+
+            background:
+                var(--container-color);
+
+            color:
+                var(--text-color);
+
+            font:
+                inherit;
+
+            font-weight:
+                800;
+
+            cursor:
+                pointer;
+
+            box-shadow:
+                0 6px 18px rgba(
+                    0,
+                    0,
+                    0,
+                    .05
+                );
+
+            transition:
+                transform .18s ease,
+                background-color .2s ease;
+
+        }
+
+
+        .scienceTab:hover {
+
+            transform:
+                translateY(
+                    -2px
+                );
+
+        }
+
+
+        .scienceTab.active {
+
+            background:
+                #e99b32;
+
+            color:
+                white;
+
+        }
+
+
+        html.darkMode
+        .scienceTab.active {
+
+            background:
+                #69569d;
+
+            color:
+                #f4efff;
+
+        }
+
+
+        .scienceTabPanel {
+
+            display:
+                none;
+
+            animation:
+                sciencePanelIn .22s ease-out;
+
+        }
+
+
+        .scienceTabPanel.active {
+
+            display:
+                block;
+
+        }
+
+
+        @keyframes sciencePanelIn {
+
+            from {
+
+                opacity:
+                    0;
+
+                transform:
+                    translateY(
+                        7px
+                    );
+
+            }
+
+            to {
+
+                opacity:
+                    1;
+
+                transform:
+                    translateY(
+                        0
+                    );
+
+            }
+
+        }
+
+
+        .sciencePanelIntro {
+
+            max-width:
+                700px;
+
+            margin:
+                0 auto 22px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .sciencePanelIntro h2 {
+
+            margin-bottom:
+                6px;
+
+        }
+
+
+        .sciencePanelIntro p {
+
+            margin:
+                0;
+
+            opacity:
+                .7;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        .scienceTopicGrid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap:
+                18px;
+
+            max-width:
+                980px;
+
+            margin:
+                0 auto;
+
+        }
+
+
+        .scienceTopicCard {
+
+            background:
+                var(--container-color);
+
+            border-radius:
+                20px;
+
+            padding:
+                20px;
+
+            box-shadow:
+                0 9px 24px rgba(
+                    0,
+                    0,
+                    0,
+                    .06
+                );
+
+            border:
+                1px solid rgba(
+                    110,
+                    100,
+                    120,
+                    .08
+                );
+
+        }
+
+
+        .scienceTopicCard h3 {
+
+            margin:
+                0 0 7px;
+
+        }
+
+
+        .scienceTopicCard > p {
+
+            margin:
+                0 0 16px;
+
+            opacity:
+                .7;
+
+            line-height:
+                1.45;
+
+        }
+
+
+        .scienceTopicBadge {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            min-height:
+                24px;
+
+            padding:
+                4px 9px;
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(
+                    105,
+                    86,
+                    157,
+                    .10
+                );
+
+            font-size:
+                10px;
+
+            font-weight:
+                900;
+
+            margin-bottom:
+                10px;
+
+        }
+
+
+        .scienceDifficultyTitle {
+
+            font-size:
+                11px;
+
+            font-weight:
+                900;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .08em;
+
+            opacity:
+                .55;
+
+            margin-bottom:
+                9px;
+
+        }
+
+
+        .scienceDifficultyRows {
+
+            display:
+                grid;
+
+            gap:
+                8px;
+
+        }
+
+
+        .scienceDifficultyRow {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                95px
+                minmax(
+                    0,
+                    1fr
+                );
+
+            gap:
+                8px;
+
+            align-items:
+                center;
+
+        }
+
+
+        .scienceDifficultyName {
+
+            font-size:
+                11px;
+
+            font-weight:
+                900;
+
+            opacity:
+                .72;
+
+        }
+
+
+        .scienceModeButtons {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr
+                1fr;
+
+            gap:
+                7px;
+
+        }
+
+
+        .scienceModeButton {
+
+            min-height:
+                38px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                7px 6px;
+
+            border-radius:
+                10px;
+
+            text-decoration:
+                none;
+
+            color:
+                var(--text-color);
+
+            font-size:
+                11px;
+
+            font-weight:
+                900;
+
+            transition:
+                transform .15s ease,
+                background-color .2s ease;
+
+        }
+
+
+        .sciencePractice {
+
+            background:
+                rgba(
+                    233,
+                    155,
+                    50,
+                    .11
+                );
+
+        }
+
+
+        .scienceFun {
+
+            background:
+                rgba(
+                    105,
+                    86,
+                    157,
+                    .12
+                );
+
+        }
+
+
+        .scienceModeButton:hover {
+
+            transform:
+                translateY(
+                    -2px
+                );
+
+        }
+
+
+        .scienceQuickGuide {
+
+            max-width:
+                980px;
+
+            margin:
+                26px auto 0;
+
+            background:
+                var(--container-color);
+
+            border-radius:
+                18px;
+
+            padding:
+                18px;
+
+            box-shadow:
+                0 8px 22px rgba(
+                    0,
+                    0,
+                    0,
+                    .05
+                );
+
+        }
+
+
+        .scienceQuickGuide h3 {
+
+            margin:
+                0 0 7px;
+
+        }
+
+
+        .scienceQuickGuide p {
+
+            margin:
+                0;
+
+            opacity:
+                .7;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        .scienceBackRow {
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            margin:
+                18px 0 0;
+
+        }
+
+
+        @media (
+            max-width: 800px
+        ) {
+
+            .scienceTabBar {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+
+            }
+
+
+            .scienceTopicGrid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+
+        @media (
+            max-width: 540px
+        ) {
+
+            .scienceDifficultyRow {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="sunRays"></div>
+
+    <div
+        class="stars"
+        aria-hidden="true"
+    ></div>
+
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        type="button"
+    >
+
+        <span id="settingsIcon">
+            ⚙
+        </span>
+
+    </button>
+
+
+    <main class="container sciencePage">
+
+        <a
+            href="index.html"
+            class="backButton"
+        >
+            ↶
+        </a>
+
+
+        <section class="scienceHero">
+
+            <h1 id="scienceTitle">
+                Science Lab
+            </h1>
+
+            <p id="scienceIntro">
+                Explore living things, matter, Earth, and space through practice and interactive experiments.
+            </p>
+
+        </section>
+
+
+        <nav
+            class="scienceTabBar"
+            aria-label="Science sections"
+        >
+
+            <button
+                type="button"
+                class="scienceTab active"
+                data-tab="life"
+            >
+                Life Science
+            </button>
+
+            <button
+                type="button"
+                class="scienceTab"
+                data-tab="physical"
+            >
+                Physical Science
+            </button>
+
+            <button
+                type="button"
+                class="scienceTab"
+                data-tab="earth"
+            >
+                Earth Science
+            </button>
+
+            <button
+                type="button"
+                class="scienceTab"
+                data-tab="space"
+            >
+                Space Science
+            </button>
+
+        </nav>
+
+
+        <section
+            class="scienceTabPanel active"
+            data-panel="life"
+        >
+
+            <div class="sciencePanelIntro">
+
+                <h2>
+                    Life Science
+                </h2>
+
+                <p>
+                    Explore cells, body systems, ecosystems, and genetics.
+                </p>
+
+            </div>
+
+            <div
+                class="scienceTopicGrid"
+                id="lifeGrid"
+            ></div>
+
+        </section>
+
+
+        <section
+            class="scienceTabPanel"
+            data-panel="physical"
+        >
+
+            <div class="sciencePanelIntro">
+
+                <h2>
+                    Physical Science
+                </h2>
+
+                <p>
+                    Experiment with matter, forces, energy, and electricity.
+                </p>
+
+            </div>
+
+            <div
+                class="scienceTopicGrid"
+                id="physicalGrid"
+            ></div>
+
+        </section>
+
+
+        <section
+            class="scienceTabPanel"
+            data-panel="earth"
+        >
+
+            <div class="sciencePanelIntro">
+
+                <h2>
+                    Earth Science
+                </h2>
+
+                <p>
+                    Explore Earth's systems, weather, rocks, and the water cycle.
+                </p>
+
+            </div>
+
+            <div
+                class="scienceTopicGrid"
+                id="earthGrid"
+            ></div>
+
+        </section>
+
+
+        <section
+            class="scienceTabPanel"
+            data-panel="space"
+        >
+
+            <div class="sciencePanelIntro">
+
+                <h2>
+                    Space Science
+                </h2>
+
+                <p>
+                    Explore planets, gravity, stars, and space exploration.
+                </p>
+
+            </div>
+
+            <div
+                class="scienceTopicGrid"
+                id="spaceGrid"
+            ></div>
+
+
+            <div class="scienceQuickGuide">
+
+                <h3>
+                    Explore beyond Earth
+                </h3>
+
+                <p>
+                    Start with the solar system, then experiment with gravity and stars before moving into space exploration.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <div class="scienceBackRow">
+
+            <a
+                href="index.html"
+                class="backButton"
+            >
+                ↶
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="scienceQuestions.js"></script>
+
+
+    <script>
+
+        (() => {
+
+            "use strict";
+
+
+            const lab =
+                window.ScienceLab;
+
+
+            if (!lab) {
+                return;
+            }
+
+
+            function isPortuguese() {
+
+                const language =
+                    localStorage.getItem(
+                        "siteLanguage"
+                    );
+
+                return (
+                    language === "pt-BR" ||
+                    language === "pt"
+                );
+
+            }
+
+
+            function t(
+                en,
+                pt
+            ) {
+
+                return isPortuguese()
+                    ? pt
+                    : en;
+
+            }
+
+
+            const difficultyLabel = {
+
+                easy: {
+                    en: "Easy",
+                    pt: "Fácil"
+                },
+
+                medium: {
+                    en: "Medium",
+                    pt: "Médio"
+                },
+
+                hard: {
+                    en: "Hard",
+                    pt: "Difícil"
+                },
+
+                difficult: {
+                    en: "Difficult",
+                    pt: "Muito difícil"
+                },
+
+                extreme: {
+                    en: "Extreme",
+                    pt: "Extremo"
+                }
+
+            };
+
+
+            function createTopicCard(
+                topic
+            ) {
+
+                const card =
+                    document.createElement(
+                        "article"
+                    );
+
+                card.className =
+                    "scienceTopicCard";
+
+
+                const badge =
+                    document.createElement(
+                        "div"
+                    );
+
+                badge.className =
+                    "scienceTopicBadge";
+
+                badge.textContent =
+                    t(
+                        "Science Lab",
+                        "Laboratório de Ciências"
+                    );
+
+
+                const title =
+                    document.createElement(
+                        "h3"
+                    );
+
+                title.textContent =
+                    isPortuguese()
+                        ? topic.pt
+                        : topic.en;
+
+
+                const description =
+                    document.createElement(
+                        "p"
+                    );
+
+                description.textContent =
+                    isPortuguese()
+                        ? topic.descriptionPt
+                        : topic.descriptionEn;
+
+
+                const difficultyTitle =
+                    document.createElement(
+                        "div"
+                    );
+
+                difficultyTitle.className =
+                    "scienceDifficultyTitle";
+
+                difficultyTitle.textContent =
+                    t(
+                        "Choose a difficulty",
+                        "Escolha uma dificuldade"
+                    );
+
+
+                const rows =
+                    document.createElement(
+                        "div"
+                    );
+
+                rows.className =
+                    "scienceDifficultyRows";
+
+
+                lab.difficulties.forEach(
+                    difficulty => {
+
+                        const row =
+                            document.createElement(
+                                "div"
+                            );
+
+                        row.className =
+                            "scienceDifficultyRow";
+
+
+                        const name =
+                            document.createElement(
+                                "div"
+                            );
+
+                        name.className =
+                            "scienceDifficultyName";
+
+                        name.textContent =
+                            isPortuguese()
+                                ? difficulty.pt
+                                : difficulty.en;
+
+
+                        const buttons =
+                            document.createElement(
+                                "div"
+                            );
+
+                        buttons.className =
+                            "scienceModeButtons";
+
+
+                        const practice =
+                            document.createElement(
+                                "a"
+                            );
+
+                        practice.className =
+                            "scienceModeButton sciencePractice";
+
+                        practice.textContent =
+                            t(
+                                "Practice",
+                                "Prática"
+                            );
+
+                        practice.href =
+                            `scienceQuiz.html?topic=${encodeURIComponent(topic.id)}&difficulty=${encodeURIComponent(difficulty.id)}&mode=practice`;
+
+
+                        const fun =
+                            document.createElement(
+                                "a"
+                            );
+
+                        fun.className =
+                            "scienceModeButton scienceFun";
+
+                        fun.textContent =
+                            t(
+                                "Fun Lab",
+                                "Laboratório"
+                            );
+
+                        fun.href =
+                            `scienceQuiz.html?topic=${encodeURIComponent(topic.id)}&difficulty=${encodeURIComponent(difficulty.id)}&mode=fun`;
+
+
+                        buttons.append(
+                            practice,
+                            fun
+                        );
+
+
+                        row.append(
+                            name,
+                            buttons
+                        );
+
+
+                        rows.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+
+                card.append(
+                    badge,
+                    title,
+                    description,
+                    difficultyTitle,
+                    rows
+                );
+
+
+                return card;
+
+            }
+
+
+            function render() {
+
+                const grids = {
+
+                    life:
+                        document.getElementById(
+                            "lifeGrid"
+                        ),
+
+                    physical:
+                        document.getElementById(
+                            "physicalGrid"
+                        ),
+
+                    earth:
+                        document.getElementById(
+                            "earthGrid"
+                        ),
+
+                    space:
+                        document.getElementById(
+                            "spaceGrid"
+                        )
+
+                };
+
+
+                Object.entries(
+                    grids
+                ).forEach(
+                    ([id, grid]) => {
+
+                        grid.innerHTML =
+                            "";
+
+
+                        lab.tabs[id]
+                            .topics
+                            .forEach(
+                                topic => {
+
+                                    grid.appendChild(
+                                        createTopicCard(
+                                            topic
+                                        )
+                                    );
+
+                                }
+                            );
+
+                    }
+                );
+
+
+                document.getElementById(
+                    "scienceTitle"
+                ).textContent =
+                    t(
+                        "Science Lab",
+                        "Laboratório de Ciências"
+                    );
+
+
+                document.getElementById(
+                    "scienceIntro"
+                ).textContent =
+                    t(
+                        "Explore living things, matter, Earth, and space through practice and interactive experiments.",
+                        "Explore seres vivos, matéria, Terra e espaço através de prática e experimentos interativos."
+                    );
+
+
+                document.querySelector(
+                    '[data-tab="life"]'
+                ).textContent =
+                    t(
+                        "Life Science",
+                        "Ciências da Vida"
+                    );
+
+
+                document.querySelector(
+                    '[data-tab="physical"]'
+                ).textContent =
+                    t(
+                        "Physical Science",
+                        "Ciências Físicas"
+                    );
+
+
+                document.querySelector(
+                    '[data-tab="earth"]'
+                ).textContent =
+                    t(
+                        "Earth Science",
+                        "Ciências da Terra"
+                    );
+
+
+                document.querySelector(
+                    '[data-tab="space"]'
+                ).textContent =
+                    t(
+                        "Space Science",
+                        "Ciências Espaciais"
+                    );
+
+            }
+
+
+            document.querySelectorAll(
+                ".scienceTab"
+            ).forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            const target =
+                                button.dataset.tab;
+
+
+                            document.querySelectorAll(
+                                ".scienceTab"
+                            ).forEach(
+                                item => {
+
+                                    item.classList.toggle(
+                                        "active",
+                                        item === button
+                                    );
+
+                                }
+                            );
+
+
+                            document.querySelectorAll(
+                                ".scienceTabPanel"
+                            ).forEach(
+                                panel => {
+
+                                    panel.classList.toggle(
+                                        "active",
+                                        panel.dataset.panel === target
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            window.addEventListener(
+                "languageChanged",
+                render
+            );
+
+
+            render();
+
+        })();
+
+    </script>
+
+
+    <script>
+
+        const stars =
+            document.querySelector(
+                ".stars"
+            );
+
+
+        if (
+            stars &&
+            !stars.children.length
+        ) {
+
+            for (
+                let i = 0;
+                i < 45;
+                i++
+            ) {
+
+                const star =
+                    document.createElement(
+                        "span"
+                    );
+
+                star.className =
+                    "star";
+
+                star.style.left =
+                    `${Math.random() * 100}%`;
+
+                star.style.top =
+                    `${Math.random() * 100}%`;
+
+                star.style.width =
+                    `${1 + Math.random() * 2}px`;
+
+                star.style.height =
+                    star.style.width;
+
+                stars.appendChild(
+                    star
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

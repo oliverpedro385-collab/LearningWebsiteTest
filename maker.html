@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Maker</title>
+
+
+    <script>
+        if (
+            localStorage.getItem("darkMode") === "true"
+        ) {
+            document.documentElement.classList.add("darkMode");
+        }
+    </script>
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <a
+        href="index.html"
+        class="backButton"
+        aria-label="Back"
+    >
+        ↶
+    </a>
+
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        aria-label="Settings"
+    >
+        ⚙
+    </button>
+
+
+
+    <main class="container makerPage">
+
+
+        <div class="subjectHeading">
+
+
+            <div
+                class="subjectEyebrow"
+                id="makerEyebrow"
+            >
+                Mid-Day
+            </div>
+
+
+            <h1 id="makerTitle">
+                Maker
+            </h1>
+
+
+        </div>
+
+
+        <h2 id="makerChooseGrade">
+            Choose your grade.
+        </h2>
+
+
+        <div class="makerGradeGrid">
+
+
+            <a
+                href="makerProjects.html?grade=1"
+                class="gradeButton"
+            >
+                Grade 1
+            </a>
+
+
+            <a
+                href="makerProjects.html?grade=2"
+                class="gradeButton"
+            >
+                Grade 2
+            </a>
+
+
+            <a
+                href="makerProjects.html?grade=3"
+                class="gradeButton"
+            >
+                Grade 3
+            </a>
+
+
+            <a
+                href="makerProjects.html?grade=4"
+                class="gradeButton"
+            >
+                Grade 4
+            </a>
+
+
+            <a
+                href="makerProjects.html?grade=5"
+                class="gradeButton"
+            >
+                Grade 5
+            </a>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="makerData.js"></script>
+
+
+    <script>
+
+        function updateMakerPageLanguage() {
+
+            const language =
+                localStorage.getItem(
+                    "siteLanguage"
+                ) ||
+                "en";
+
+
+            document.getElementById(
+                "makerEyebrow"
+            ).textContent =
+                makerUI[
+                    language
+                ].midDay;
+
+
+            document.getElementById(
+                "makerTitle"
+            ).textContent =
+                makerUI[
+                    language
+                ].maker;
+
+
+            document.getElementById(
+                "makerChooseGrade"
+            ).textContent =
+                makerUI[
+                    language
+                ].chooseGrade;
+
+
+            document.documentElement.lang =
+                language === "pt-BR"
+                    ? "pt-BR"
+                    : "en";
+
+        }
+
+
+        updateMakerPageLanguage();
+
+
+        window.addEventListener(
+            "languageChanged",
+            updateMakerPageLanguage
+        );
+
+    </script>
+
+
+</body>
+
+</html>

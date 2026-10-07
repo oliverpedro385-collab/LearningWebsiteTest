@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <script>
+        if (
+            localStorage.getItem("darkMode") === "true"
+        ) {
+            document.documentElement.classList.add("darkMode");
+        }
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <title>Math Lab</title>
+
+    <style>
+
+        .mathPage {
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mathHero {
+            margin: 25px auto 20px;
+            max-width: 760px;
+            text-align: center;
+        }
+
+        .mathHero h1 {
+            margin-bottom: 8px;
+        }
+
+        .mathHero p {
+            opacity: .72;
+            line-height: 1.55;
+        }
+
+        .mathTabBar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 900px;
+            margin: 25px auto 20px;
+        }
+
+        .mathTab {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 15px;
+            background: var(--container-color);
+            color: var(--text-color);
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,.05);
+            transition:
+                transform .18s ease,
+                background-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .mathTab:hover {
+            transform: translateY(-2px);
+        }
+
+        .mathTab.active {
+            background: #e99b32;
+            color: white;
+            box-shadow: 0 8px 20px rgba(96,59,17,.16);
+        }
+
+        html.darkMode .mathTab.active {
+            background: #69569d;
+            color: #f4efff;
+            box-shadow: 0 8px 20px rgba(0,0,0,.22);
+        }
+
+        .mathTabPanel {
+            display: none;
+            animation: mathPanelIn .22s ease-out;
+        }
+
+        .mathTabPanel.active {
+            display: block;
+        }
+
+        @keyframes mathPanelIn {
+            from {
+                opacity: 0;
+                transform: translateY(7px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mathPanelIntro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 22px;
+        }
+
+        .mathPanelIntro h2 {
+            margin-bottom: 6px;
+        }
+
+        .mathPanelIntro p {
+            margin: 0;
+            opacity: .7;
+            line-height: 1.5;
+        }
+
+        .mathTopicGrid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .mathTopicCard {
+            background: var(--container-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 9px 24px rgba(0,0,0,.06);
+            border: 1px solid rgba(110,100,120,.08);
+        }
+
+        .mathTopicCard h3 {
+            margin: 0 0 7px;
+        }
+
+        .mathTopicCard > p {
+            margin: 0 0 16px;
+            opacity: .7;
+            line-height: 1.45;
+        }
+
+        .mathTopicBadge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(105,86,157,.10);
+            font-size: 10px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .mathDifficultyTitle {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            opacity: .55;
+            margin-bottom: 9px;
+        }
+
+        .mathDifficultyRows {
+            display: grid;
+            gap: 8px;
+        }
+
+        .mathDifficultyRow {
+            display: grid;
+            grid-template-columns: 95px minmax(0,1fr);
+            gap: 8px;
+            align-items: center;
+        }
+
+        .mathDifficultyName {
+            font-size: 11px;
+            font-weight: 900;
+            opacity: .72;
+        }
+
+        .mathModeButtons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+        }
+
+        .mathModeButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 7px 6px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 11px;
+            font-weight: 900;
+            transition:
+                transform .15s ease,
+                background-color .2s ease;
+        }
+
+        .mathPractice {
+            background: rgba(233,155,50,.11);
+        }
+
+        .mathFun {
+            background: rgba(105,86,157,.12);
+        }
+
+        .mathModeButton:hover {
+            transform: translateY(-2px);
+        }
+
+        .mathQuickGuide {
+            max-width: 980px;
+            margin: 26px auto 0;
+            background: var(--container-color);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 8px 22px rgba(0,0,0,.05);
+        }
+
+        .mathQuickGuide h3 {
+            margin: 0 0 7px;
+        }
+
+        .mathQuickGuide p {
+            margin: 0;
+            opacity: .7;
+            line-height: 1.5;
+        }
+
+        .mathBackRow {
+            display: flex;
+            justify-content: center;
+            margin: 18px 0 0;
+        }
+
+        @media (max-width: 800px) {
+
+            .mathTabBar {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .mathTopicGrid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 540px) {
+
+            .mathDifficultyRow {
+                grid-template-columns: 1fr;
+            }
+
+            .mathDifficultyName {
+                margin-bottom: -2px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="sunRays"></div>
+
+    <div
+        class="stars"
+        aria-hidden="true"
+    ></div>
+
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+        type="button"
+    >
+        <span id="settingsIcon">
+            ⚙
+        </span>
+    </button>
+
+
+    <main class="container mathPage">
+
+        <a
+            href="index.html"
+            class="backButton"
+        >
+            ↶
+        </a>
+
+
+        <section class="mathHero">
+
+            <h1 id="mathTitle">
+                Math Lab
+            </h1>
+
+            <p id="mathIntro">
+                Pick a topic, choose a difficulty, and learn through practice or interactive experiments.
+            </p>
+
+        </section>
+
+
+        <nav
+            class="mathTabBar"
+            aria-label="Math sections"
+        >
+
+            <button
+                class="mathTab active"
+                type="button"
+                data-tab="operations"
+            >
+                Operations
+            </button>
+
+            <button
+                class="mathTab"
+                type="button"
+                data-tab="numbers"
+            >
+                Numbers
+            </button>
+
+            <button
+                class="mathTab"
+                type="button"
+                data-tab="functions"
+            >
+                Functions
+            </button>
+
+            <button
+                class="mathTab"
+                type="button"
+                data-tab="geometry"
+            >
+                Geometry
+            </button>
+
+        </nav>
+
+
+        <section
+            class="mathTabPanel active"
+            data-panel="operations"
+        >
+
+            <div class="mathPanelIntro">
+
+                <h2>
+                    Operations
+                </h2>
+
+                <p>
+                    Practice the basics or turn them into little challenges.
+                </p>
+
+            </div>
+
+            <div
+                class="mathTopicGrid"
+                id="operationsGrid"
+            ></div>
+
+        </section>
+
+
+        <section
+            class="mathTabPanel"
+            data-panel="numbers"
+        >
+
+            <div class="mathPanelIntro">
+
+                <h2>
+                    Numbers
+                </h2>
+
+                <p>
+                    Fractions, decimals, percentages, powers and roots with their own interactive labs.
+                </p>
+
+            </div>
+
+            <div
+                class="mathTopicGrid"
+                id="numbersGrid"
+            ></div>
+
+        </section>
+
+
+        <section
+            class="mathTabPanel"
+            data-panel="functions"
+        >
+
+            <div class="mathPanelIntro">
+
+                <h2>
+                    Functions
+                </h2>
+
+                <p>
+                    This is where Math gets visual: machines, tables, sliders, graphs and Function Art.
+                </p>
+
+            </div>
+
+            <div
+                class="mathTopicGrid"
+                id="functionsGrid"
+            ></div>
+
+
+            <div class="mathQuickGuide">
+
+                <h3>
+                    Function route
+                </h3>
+
+                <p>
+                    Basics → tables → linear functions → quadratics → graphs → Function Art.
+                    The Fun Lab lets you experiment instead of only answering questions.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="mathTabPanel"
+            data-panel="geometry"
+        >
+
+            <div class="mathPanelIntro">
+
+                <h2>
+                    Geometry
+                </h2>
+
+                <p>
+                    Build shapes, rotate angles, resize rectangles and hunt coordinates.
+                </p>
+
+            </div>
+
+            <div
+                class="mathTopicGrid"
+                id="geometryGrid"
+            ></div>
+
+        </section>
+
+
+        <div class="mathBackRow">
+
+            <a
+                href="index.html"
+                class="backButton"
+            >
+                ↶
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="mathQuestions.js"></script>
+
+
+    <script>
+
+        (() => {
+
+            "use strict";
+
+            const lab =
+                window.MathLab;
+
+            if (!lab) {
+                return;
+            }
+
+
+            function isPortuguese() {
+
+                const language =
+                    localStorage.getItem(
+                        "siteLanguage"
+                    );
+
+                return (
+                    language === "pt-BR" ||
+                    language === "pt"
+                );
+            }
+
+
+            function t(
+                en,
+                pt
+            ) {
+                return isPortuguese()
+                    ? pt
+                    : en;
+            }
+
+
+            const difficultyText = {
+
+                easy: {
+                    en: "Easy",
+                    pt: "Fácil"
+                },
+
+                medium: {
+                    en: "Medium",
+                    pt: "Médio"
+                },
+
+                hard: {
+                    en: "Hard",
+                    pt: "Difícil"
+                },
+
+                difficult: {
+                    en: "Difficult",
+                    pt: "Muito difícil"
+                },
+
+                extreme: {
+                    en: "Extreme",
+                    pt: "Extremo"
+                }
+
+            };
+
+
+            function topicCard(
+                topic
+            ) {
+
+                const card =
+                    document.createElement(
+                        "article"
+                    );
+
+                card.className =
+                    "mathTopicCard";
+
+
+                const badge =
+                    document.createElement(
+                        "div"
+                    );
+
+                badge.className =
+                    "mathTopicBadge";
+
+                badge.textContent =
+                    topic.id === "function-art"
+                        ? t(
+                            "Graph Lab",
+                            "Laboratório de gráficos"
+                        )
+                        : t(
+                            "Topic Lab",
+                            "Laboratório do tema"
+                        );
+
+
+                const title =
+                    document.createElement(
+                        "h3"
+                    );
+
+                title.textContent =
+                    isPortuguese()
+                        ? topic.pt
+                        : topic.en;
+
+
+                const description =
+                    document.createElement(
+                        "p"
+                    );
+
+                description.textContent =
+                    isPortuguese()
+                        ? topic.descriptionPt
+                        : topic.descriptionEn;
+
+
+                const difficultyTitle =
+                    document.createElement(
+                        "div"
+                    );
+
+                difficultyTitle.className =
+                    "mathDifficultyTitle";
+
+                difficultyTitle.textContent =
+                    t(
+                        "Choose a difficulty",
+                        "Escolha uma dificuldade"
+                    );
+
+
+                const rows =
+                    document.createElement(
+                        "div"
+                    );
+
+                rows.className =
+                    "mathDifficultyRows";
+
+
+                lab.difficulties.forEach(
+                    difficulty => {
+
+                        const row =
+                            document.createElement(
+                                "div"
+                            );
+
+                        row.className =
+                            "mathDifficultyRow";
+
+
+                        const name =
+                            document.createElement(
+                                "div"
+                            );
+
+                        name.className =
+                            "mathDifficultyName";
+
+                        name.textContent =
+                            isPortuguese()
+                                ? difficulty.pt
+                                : difficulty.en;
+
+
+                        const buttons =
+                            document.createElement(
+                                "div"
+                            );
+
+                        buttons.className =
+                            "mathModeButtons";
+
+
+                        const practice =
+                            document.createElement(
+                                "a"
+                            );
+
+                        practice.className =
+                            "mathModeButton mathPractice";
+
+                        practice.textContent =
+                            t(
+                                "Practice",
+                                "Prática"
+                            );
+
+                        practice.href =
+                            `mathQuiz.html?topic=${encodeURIComponent(topic.id)}&difficulty=${encodeURIComponent(difficulty.id)}&mode=practice`;
+
+
+                        const fun =
+                            document.createElement(
+                                "a"
+                            );
+
+                        fun.className =
+                            "mathModeButton mathFun";
+
+                        fun.textContent =
+                            t(
+                                "Fun Lab",
+                                "Laboratório"
+                            );
+
+                        fun.href =
+                            `mathQuiz.html?topic=${encodeURIComponent(topic.id)}&difficulty=${encodeURIComponent(difficulty.id)}&mode=fun`;
+
+
+                        buttons.append(
+                            practice,
+                            fun
+                        );
+
+                        row.append(
+                            name,
+                            buttons
+                        );
+
+                        rows.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+
+                card.append(
+                    badge,
+                    title,
+                    description,
+                    difficultyTitle,
+                    rows
+                );
+
+
+                return card;
+            }
+
+
+            function render() {
+
+                const grids = {
+
+                    operations:
+                        document.getElementById(
+                            "operationsGrid"
+                        ),
+
+                    numbers:
+                        document.getElementById(
+                            "numbersGrid"
+                        ),
+
+                    functions:
+                        document.getElementById(
+                            "functionsGrid"
+                        ),
+
+                    geometry:
+                        document.getElementById(
+                            "geometryGrid"
+                        )
+
+                };
+
+
+                Object.entries(
+                    grids
+                ).forEach(
+                    ([id, grid]) => {
+
+                        grid.innerHTML =
+                            "";
+
+                        lab.tabs[id]
+                            .topics
+                            .forEach(
+                                topic => {
+
+                                    grid.appendChild(
+                                        topicCard(
+                                            topic
+                                        )
+                                    );
+
+                                }
+                            );
+
+                    }
+                );
+
+
+                document.getElementById(
+                    "mathTitle"
+                ).textContent =
+                    t(
+                        "Math Lab",
+                        "Laboratório de Matemática"
+                    );
+
+
+                document.getElementById(
+                    "mathIntro"
+                ).textContent =
+                    t(
+                        "Pick a topic, choose a difficulty, and learn through practice or interactive experiments.",
+                        "Escolha um tema, uma dificuldade e aprenda com prática ou experimentos interativos."
+                    );
+
+
+                document
+                    .querySelector(
+                        '[data-tab="operations"]'
+                    )
+                    .textContent =
+                    t(
+                        "Operations",
+                        "Operações"
+                    );
+
+
+                document
+                    .querySelector(
+                        '[data-tab="numbers"]'
+                    )
+                    .textContent =
+                    t(
+                        "Numbers",
+                        "Números"
+                    );
+
+
+                document
+                    .querySelector(
+                        '[data-tab="functions"]'
+                    )
+                    .textContent =
+                    t(
+                        "Functions",
+                        "Funções"
+                    );
+
+
+                document
+                    .querySelector(
+                        '[data-tab="geometry"]'
+                    )
+                    .textContent =
+                    t(
+                        "Geometry",
+                        "Geometria"
+                    );
+
+            }
+
+
+            document
+                .querySelectorAll(
+                    ".mathTab"
+                )
+                .forEach(
+                    button => {
+
+                        button.addEventListener(
+                            "click",
+                            () => {
+
+                                const target =
+                                    button.dataset.tab;
+
+
+                                document
+                                    .querySelectorAll(
+                                        ".mathTab"
+                                    )
+                                    .forEach(
+                                        item => {
+
+                                            item.classList.toggle(
+                                                "active",
+                                                item === button
+                                            );
+
+                                        }
+                                    );
+
+
+                                document
+                                    .querySelectorAll(
+                                        ".mathTabPanel"
+                                    )
+                                    .forEach(
+                                        panel => {
+
+                                            panel.classList.toggle(
+                                                "active",
+                                                panel.dataset.panel === target
+                                            );
+
+                                        }
+                                    );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            window.addEventListener(
+                "languageChanged",
+                render
+            );
+
+
+            render();
+
+        })();
+
+    </script>
+
+
+    <script>
+
+        const stars =
+            document.querySelector(
+                ".stars"
+            );
+
+
+        if (
+            stars &&
+            !stars.children.length
+        ) {
+
+            for (
+                let i = 0;
+                i < 45;
+                i++
+            ) {
+
+                const star =
+                    document.createElement(
+                        "span"
+                    );
+
+                star.className =
+                    "star";
+
+                star.style.left =
+                    `${Math.random() * 100}%`;
+
+                star.style.top =
+                    `${Math.random() * 100}%`;
+
+                star.style.width =
+                    `${1 + Math.random() * 2}px`;
+
+                star.style.height =
+                    star.style.width;
+
+                stars.appendChild(
+                    star
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

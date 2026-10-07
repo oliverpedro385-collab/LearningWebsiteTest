@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+
+    <!-- Prevent dark mode flash -->
+
+    <script>
+        if (
+            localStorage.getItem(
+                "darkMode"
+            ) === "true"
+        ) {
+            document.documentElement.classList.add(
+                "darkMode"
+            );
+        }
+    </script>
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+    <title>
+        My Learning Website
+    </title>
+
+</head>
+
+
+<body>
+
+
+    <!-- SETTINGS -->
+
+    <button
+        id="settingsButton"
+        class="settingsButton"
+    >
+
+        <span id="settingsIcon">
+            ⚙
+        </span>
+
+    </button>
+
+
+
+    <!-- USERNAME SETUP -->
+
+    <div
+        id="usernameOverlay"
+        class="usernameOverlay"
+    >
+
+        <div class="usernameBox">
+
+            <h1 data-i18n="welcome">
+                Welcome
+            </h1>
+
+
+            <p
+                data-i18n="whatShouldWeCallYou"
+            >
+                What should we call you?
+            </p>
+
+
+            <input
+                type="text"
+                id="usernameInput"
+                data-i18n-placeholder="enterYourName"
+                placeholder="Enter your name"
+                maxlength="20"
+            >
+
+
+            <button
+                id="usernameButton"
+                data-i18n="continue"
+            >
+                Continue
+            </button>
+
+
+            <p id="usernameError"></p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MAIN MENU -->
+
+    <div class="container">
+
+        <h1>
+
+            <span data-i18n="welcome">
+                Welcome
+            </span>
+
+            ,
+
+            <span id="studentName">
+                Student
+            </span>
+
+            !
+
+        </h1>
+
+
+        <p
+            data-i18n="chooseSubject"
+        >
+            Choose a subject to start learning.
+        </p>
+
+
+        <div class="subjectContainer">
+
+
+            <a
+                href="math.html"
+                class="subjectButton"
+                data-i18n="math"
+            >
+                Math
+            </a>
+
+
+            <a
+                href="maker.html"
+                class="subjectButton"
+            >
+                 Maker
+            </a>
+
+            <a
+                href="technology.html"
+                class="subjectButton"
+                data-i18n="technology"
+            >
+                Technology
+            </a>
+
+
+            <a
+                href="./english.html"
+                class="subjectButton"
+            >
+                English
+            </a>
+
+
+            <a
+                href="./science.html"
+                 class="subjectButton"
+            >
+                 Science
+            </a>
+
+
+            <a
+                href="./history.html"
+                class="subjectButton"
+            >
+                History
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- LIBRARY -->
+
+    <section class="librarySection">
+
+
+        <h2 data-i18n="library">
+            Library
+        </h2>
+
+
+        <p
+            data-i18n="libraryDescription"
+        >
+            Read about different topics and subjects.
+        </p>
+
+
+        <div
+            id="libraryBooks"
+            class="libraryBooks"
+        ></div>
+
+
+    </section>
+
+
+
+    <!-- LIBRARY BOOK -->
+
+    <div
+        id="libraryOverlay"
+        class="libraryOverlay"
+    >
+
+        <div
+            id="libraryBook"
+            class="libraryBook"
+        >
+
+
+            <button
+                id="closeLibrary"
+                class="closeLibrary"
+            >
+                ×
+            </button>
+
+
+
+            <div
+                class="bookPage bookLeft"
+            >
+
+                <div class="bookDecor">
+
+                    <span id="libraryIcon">
+                        📖
+                    </span>
+
+                </div>
+
+
+                <h2 id="libraryTitle">
+                    Book Title
+                </h2>
+
+
+                <div
+                    class="bookLines"
+                ></div>
+
+            </div>
+
+
+
+            <div
+                class="bookPage bookRight"
+            >
+
+                <p
+                    id="libraryContent"
+                >
+                    Book content goes here.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- SCRIPTS -->
+
+    <script src="user.js"></script>
+
+    <script src="language.js"></script>
+
+
+    <script>
+(function () {
+    "use strict";
+
+    /*
+        ========================================================
+        ELEMENTS
+        ========================================================
+    */
+
+    const usernameOverlay =
+        document.getElementById(
+            "usernameOverlay"
+        );
+
+    const usernameInput =
+        document.getElementById(
+            "usernameInput"
+        );
+
+    const usernameButton =
+        document.getElementById(
+            "usernameButton"
+        );
+
+    const usernameError =
+        document.getElementById(
+            "usernameError"
+        );
+
+    const studentName =
+        document.getElementById(
+            "studentName"
+        );
+
+    /*
+        ========================================================
+        VALIDATION
+        ========================================================
+    */
+
+    function validateUsername(value) {
+        const username =
+            value.trim();
+
+        if (
+            username.length === 0
+        ) {
+            return {
+                valid: false,
+                message:
+                    "Please enter a name."
+            };
+        }
+
+        if (
+            username.length > 20
+        ) {
+            return {
+                valid: false,
+                message:
+                    "Your name can be up to 20 characters."
+            };
+        }
+
+        return {
+            valid: true,
+            name: username
+        };
+    }
+
+    /*
+        ========================================================
+        SHOW ERROR
+        ========================================================
+    */
+
+    function showError(message) {
+        if (!usernameError) {
+            return;
+        }
+
+        usernameError.textContent =
+            message;
+
+        usernameError.style.color =
+            "#d95f59";
+    }
+
+    /*
+        ========================================================
+        CLEAR ERROR
+        ========================================================
+    */
+
+    function clearError() {
+        if (!usernameError) {
+            return;
+        }
+
+        usernameError.textContent =
+            "";
+
+        usernameError.style.color =
+            "";
+    }
+
+    /*
+        ========================================================
+        SHOW / HIDE PICKER
+        ========================================================
+    */
+
+    function showUsernamePicker() {
+        if (!usernameOverlay) {
+            return;
+        }
+
+        usernameOverlay.style.display =
+            "flex";
+
+        /*
+            Small timeout lets the browser
+            finish displaying the overlay
+            before focusing the field.
+        */
+        setTimeout(function () {
+            if (usernameInput) {
+                usernameInput.focus();
+
+                /*
+                    On mobile, select the existing
+                    value when the picker opens.
+                */
+                usernameInput.select();
+            }
+        }, 50);
+    }
+
+    function hideUsernamePicker() {
+        if (!usernameOverlay) {
+            return;
+        }
+
+        usernameOverlay.style.display =
+            "none";
+    }
+
+    /*
+        ========================================================
+        LOAD SAVED NAME
+        ========================================================
+    */
+
+    function loadUsername() {
+        let username = "";
+
+        if (
+            typeof window.getUsername ===
+            "function"
+        ) {
+            username =
+                window.getUsername();
+        } else {
+            /*
+                Failsafe in case user.js failed
+                to load for some reason.
+            */
+            try {
+                username =
+                    (
+                        localStorage.getItem(
+                            "learningWebsiteUsername"
+                        ) || ""
+                    ).trim();
+            } catch (error) {
+                username = "";
+            }
+        }
+
+        if (username) {
+            if (studentName) {
+                studentName.textContent =
+                    username;
+            }
+
+            if (usernameInput) {
+                usernameInput.value =
+                    username;
+            }
+
+            hideUsernamePicker();
+
+            return;
+        }
+
+        if (studentName) {
+            studentName.textContent =
+                "Student";
+        }
+
+        if (usernameInput) {
+            usernameInput.value =
+                "";
+        }
+
+        showUsernamePicker();
+    }
+
+    /*
+        ========================================================
+        SAVE NAME
+        ========================================================
+    */
+
+    function saveUsername() {
+        if (!usernameInput) {
+            return;
+        }
+
+        const result =
+            validateUsername(
+                usernameInput.value
+            );
+
+        if (!result.valid) {
+            showError(
+                result.message
+            );
+
+            usernameInput.focus();
+
+            return;
+        }
+
+        clearError();
+
+        let saved = false;
+
+        if (
+            typeof window.setUsername ===
+            "function"
+        ) {
+            saved =
+                window.setUsername(
+                    result.name
+                );
+        } else {
+            /*
+                Failsafe if user.js did not load.
+            */
+            try {
+                localStorage.setItem(
+                    "learningWebsiteUsername",
+                    result.name
+                );
+
+                saved = true;
+            } catch (error) {
+                saved = false;
+            }
+        }
+
+        if (!saved) {
+            showError(
+                "Could not save your name. Please try again."
+            );
+
+            return;
+        }
+
+        if (studentName) {
+            studentName.textContent =
+                result.name;
+        }
+
+        usernameInput.value =
+            result.name;
+
+        hideUsernamePicker();
+    }
+
+    /*
+        ========================================================
+        BUTTON
+        ========================================================
+    */
+
+    if (usernameButton) {
+        usernameButton.addEventListener(
+            "click",
+            function (event) {
+                event.preventDefault();
+
+                saveUsername();
+            }
+        );
+    }
+
+    /*
+        ========================================================
+        ENTER KEY
+        ========================================================
+    */
+
+    if (usernameInput) {
+        usernameInput.addEventListener(
+            "keydown",
+            function (event) {
+                if (
+                    event.key === "Enter"
+                ) {
+                    event.preventDefault();
+
+                    saveUsername();
+                }
+            }
+        );
+
+        /*
+            Clear the error as soon as
+            the person starts typing again.
+        */
+        usernameInput.addEventListener(
+            "input",
+            function () {
+                clearError();
+            }
+        );
+    }
+
+    /*
+        ========================================================
+        USERNAME CHANGED ELSEWHERE
+        ========================================================
+    */
+
+    window.addEventListener(
+        "usernameChanged",
+        function (event) {
+            const username =
+                event.detail &&
+                typeof event.detail.username ===
+                    "string"
+                    ? event.detail.username.trim()
+                    : "";
+
+            if (username) {
+                if (studentName) {
+                    studentName.textContent =
+                        username;
+                }
+
+                if (usernameInput) {
+                    usernameInput.value =
+                        username;
+                }
+
+                hideUsernamePicker();
+            } else {
+                if (studentName) {
+                    studentName.textContent =
+                        "Student";
+                }
+
+                if (usernameInput) {
+                    usernameInput.value =
+                        "";
+                }
+
+                showUsernamePicker();
+            }
+        }
+    );
+
+    /*
+        ========================================================
+        START
+        ========================================================
+    */
+
+    loadUsername();
+
+    console.log(
+        "[Username] Picker ready."
+    );
+})();
+</script>
+
+    <script>
+(function () {
+
+    const books = {
+        math: {
+            icon: "📐",
+            title: "Matemática",
+            description: "Aprenda matemática de forma simples.",
+            pages: [
+                {
+                    title: "Números",
+                    text: "Os números são usados para contar, medir e comparar.\n\nExemplo:\n3 + 2 = 5."
+                },
+                {
+                    title: "Adição",
+                    text: "A adição junta quantidades.\n\nExemplo:\n7 + 5 = 12."
+                },
+                {
+                    title: "Subtração",
+                    text: "A subtração retira uma quantidade de outra.\n\nExemplo:\n12 - 5 = 7."
+                },
+                {
+                    title: "Geometria",
+                    text: "A geometria estuda formas, tamanhos e posições.\n\nExemplos: círculo, triângulo, quadrado e retângulo."
+                },
+                {
+                    title: "Frações",
+                    text: "Uma fração representa partes iguais de um todo.\n\n1/2 significa uma de duas partes iguais."
+                }
+            ]
+        },
+
+        english: {
+            icon: "🔤",
+            title: "Inglês",
+            description: "Aprenda palavras e frases em inglês.",
+            pages: [
+                {
+                    title: "Saudações",
+                    text: "Hello = Olá\nHi = Oi\nGood morning = Bom dia\nGood evening = Boa noite."
+                },
+                {
+                    title: "Pronomes",
+                    text: "I = eu\nYou = você\nHe = ele\nShe = ela\nWe = nós\nThey = eles/elas."
+                },
+                {
+                    title: "Verbo to be",
+                    text: "O verbo to be pode significar ser ou estar.\n\nI am\nYou are\nHe is\nShe is\nWe are\nThey are."
+                },
+                {
+                    title: "Vocabulário",
+                    text: "House = casa\nBook = livro\nSchool = escola\nWater = água."
+                },
+                {
+                    title: "Frases",
+                    text: "Uma frase simples pode ter sujeito + verbo + complemento.\n\nExemplo:\nI like music."
+                }
+            ]
+        },
+
+        history: {
+            icon: "🏛️",
+            title: "História",
+            description: "Conheça diferentes períodos e fontes históricas.",
+            pages: [
+                {
+                    title: "O que é História?",
+                    text: "História é o estudo das sociedades humanas e de suas mudanças ao longo do tempo."
+                },
+                {
+                    title: "Fontes históricas",
+                    text: "Fontes históricas são vestígios usados para estudar o passado.\n\nElas podem ser escritas, materiais, orais ou visuais."
+                },
+                {
+                    title: "Antigo Egito",
+                    text: "A civilização egípcia se desenvolveu às margens do rio Nilo.\n\nOs egípcios também desenvolveram os hieróglifos."
+                },
+                {
+                    title: "Grécia Antiga",
+                    text: "A Grécia Antiga possuía várias cidades-Estado.\n\nAtenas ficou conhecida por sua participação no desenvolvimento da democracia."
+                },
+                {
+                    title: "Brasil",
+                    text: "A história do Brasil envolve povos indígenas, colonização portuguesa, africanos e seus descendentes, além de muitos outros grupos.\n\nA Independência ocorreu em 1822."
+                }
+            ]
+        },
+
+        science: {
+            icon: "🔬",
+            title: "Ciências",
+            description: "Descubra como o mundo funciona.",
+            pages: [
+                {
+                    title: "Seres vivos",
+                    text: "Seres vivos realizam processos como alimentação, crescimento e reprodução."
+                },
+                {
+                    title: "Células",
+                    text: "A célula é uma unidade básica dos seres vivos."
+                },
+                {
+                    title: "Sistema Solar",
+                    text: "O Sistema Solar é formado pelo Sol e pelos corpos que orbitam ao seu redor."
+                },
+                {
+                    title: "Matéria",
+                    text: "Os três estados mais conhecidos da matéria são sólido, líquido e gasoso."
+                },
+                {
+                    title: "Energia",
+                    text: "A energia pode aparecer de diferentes formas, como térmica, elétrica, luminosa e mecânica."
+                }
+            ]
+        }
+    };
+
+
+    let currentBook = null;
+    let currentPage = 0;
+
+
+    /*
+        GET OR CREATE LIBRARY OVERLAY
+    */
+
+    function getOverlay() {
+
+        let overlay =
+            document.getElementById("libraryOverlay");
+
+        if (overlay) {
+            return overlay;
+        }
+
+
+        overlay = document.createElement("div");
+
+        overlay.id = "libraryOverlay";
+        overlay.className = "libraryOverlay";
+
+        overlay.innerHTML = `
+            <div class="libraryBook">
+
+                <button
+                    type="button"
+                    class="closeLibrary"
+                    id="libraryCloseButton"
+                >
+                    ✕
+                </button>
+
+                <div class="bookPage bookLeft">
+
+                    <div class="bookContent">
+
+                        <div
+                            id="libraryBookIcon"
+                            class="libraryBookIcon"
+                        ></div>
+
+                        <h2 id="libraryBookTitle"></h2>
+
+                        <p id="libraryBookDescription"></p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="bookPage bookRight">
+
+                    <div class="bookContent">
+
+                        <h2 id="libraryPageTitle"></h2>
+
+                        <div id="libraryContent"></div>
+
+                        <div
+                            style="
+                                display:flex;
+                                justify-content:space-between;
+                                align-items:center;
+                                gap:10px;
+                                margin-top:30px;
+                            "
+                        >
+
+                            <button
+                                type="button"
+                                id="libraryPrevious"
+                            >
+                                ← Anterior
+                            </button>
+
+                            <span id="libraryPageCounter">
+                                Página 1 de 1
+                            </span>
+
+                            <button
+                                type="button"
+                                id="libraryNext"
+                            >
+                                Próxima →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+
+        overlay.querySelector(
+            "#libraryCloseButton"
+        ).addEventListener(
+            "click",
+            closeBook
+        );
+
+
+        overlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (event.target === overlay) {
+                    closeBook();
+                }
+
+            }
+        );
+
+
+        overlay.querySelector(
+            "#libraryPrevious"
+        ).addEventListener(
+            "click",
+            previousPage
+        );
+
+
+        overlay.querySelector(
+            "#libraryNext"
+        ).addEventListener(
+            "click",
+            nextPage
+        );
+
+
+        return overlay;
+    }
+
+
+    /*
+        DISPLAY CURRENT PAGE
+    */
+
+    function updateBook() {
+
+        if (!currentBook) {
+            return;
+        }
+
+        const book =
+            books[currentBook];
+
+        const page =
+            book.pages[currentPage];
+
+        const overlay =
+            getOverlay();
+
+
+        overlay.querySelector(
+            "#libraryBookIcon"
+        ).textContent =
+            book.icon;
+
+
+        overlay.querySelector(
+            "#libraryBookTitle"
+        ).textContent =
+            book.title;
+
+
+        overlay.querySelector(
+            "#libraryBookDescription"
+        ).textContent =
+            book.description;
+
+
+        overlay.querySelector(
+            "#libraryPageTitle"
+        ).textContent =
+            page.title;
+
+
+        overlay.querySelector(
+            "#libraryContent"
+        ).textContent =
+            page.text;
+
+
+        overlay.querySelector(
+            "#libraryPageCounter"
+        ).textContent =
+            `Página ${currentPage + 1} de ${book.pages.length}`;
+
+
+        overlay.querySelector(
+            "#libraryPrevious"
+        ).disabled =
+            currentPage === 0;
+
+
+        overlay.querySelector(
+            "#libraryNext"
+        ).disabled =
+            currentPage === book.pages.length - 1;
+    }
+
+
+    /*
+        OPEN
+    */
+
+    function openBook(bookId) {
+
+        if (!books[bookId]) {
+            console.error(
+                "Unknown library book:",
+                bookId
+            );
+
+            return;
+        }
+
+
+        currentBook =
+            bookId;
+
+        currentPage =
+            0;
+
+
+        const overlay =
+            getOverlay();
+
+
+        updateBook();
+
+
+        overlay.classList.add(
+            "open"
+        );
+
+
+        const bookElement =
+            overlay.querySelector(
+                ".libraryBook"
+            );
+
+
+        bookElement.classList.remove(
+            "opening"
+        );
+
+
+        /*
+            Force the animation to restart.
+        */
+
+        void bookElement.offsetWidth;
+
+
+        bookElement.classList.add(
+            "opening"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+    }
+
+
+    /*
+        CLOSE
+    */
+
+    function closeBook() {
+
+        const overlay =
+            document.getElementById(
+                "libraryOverlay"
+            );
+
+        if (!overlay) {
+            return;
+        }
+
+
+        overlay.classList.remove(
+            "open"
+        );
+
+
+        currentBook =
+            null;
+
+        currentPage =
+            0;
+
+
+        document.body.style.overflow =
+            "";
+    }
+
+
+    /*
+        NEXT
+    */
+
+    function nextPage() {
+
+        if (!currentBook) {
+            return;
+        }
+
+
+        const book =
+            books[currentBook];
+
+
+        if (
+            currentPage <
+            book.pages.length - 1
+        ) {
+
+            currentPage++;
+
+            updateBook();
+
+        }
+    }
+
+
+    /*
+        PREVIOUS
+    */
+
+    function previousPage() {
+
+        if (!currentBook) {
+            return;
+        }
+
+
+        if (currentPage > 0) {
+
+            currentPage--;
+
+            updateBook();
+
+        }
+    }
+
+
+    /*
+        CONNECT EVERY BOOK
+    */
+
+    function connectBooks() {
+
+        const bookCards =
+            document.querySelectorAll(
+                ".libraryBookCard"
+            );
+
+
+        bookCards.forEach(
+            function (card, index) {
+
+                card.style.cursor =
+                    "pointer";
+
+
+                card.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
+
+                        /*
+                            Accept either:
+                            data-book
+                            data-book-id
+                            or card order.
+                        */
+
+                        const id =
+                            card.dataset.book ||
+                            card.dataset.bookId;
+
+
+                        if (id && books[id]) {
+
+                            openBook(id);
+
+                            return;
+
+                        }
+
+
+                        const fallbackIds =
+                            [
+                                "math",
+                                "english",
+                                "history",
+                                "science"
+                            ];
+
+
+                        if (
+                            fallbackIds[index]
+                        ) {
+
+                            openBook(
+                                fallbackIds[index]
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+    }
+
+
+    /*
+        KEYBOARD
+    */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            const overlay =
+                document.getElementById(
+                    "libraryOverlay"
+                );
+
+
+            if (
+                !overlay ||
+                !overlay.classList.contains("open")
+            ) {
+                return;
+            }
+
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeBook();
+
+            }
+
+
+            if (
+                event.key === "ArrowRight"
+            ) {
+
+                nextPage();
+
+            }
+
+
+            if (
+                event.key === "ArrowLeft"
+            ) {
+
+                previousPage();
+
+            }
+
+        }
+    );
+
+
+    /*
+        START
+    */
+
+    function startLibrary() {
+
+        getOverlay();
+
+        connectBooks();
+
+        console.log(
+            "[Library] Working."
+        );
+
+    }
+
+
+    if (
+        document.readyState === "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            startLibrary
+        );
+
+    } else {
+
+        startLibrary();
+
+    }
+
+})();
+</script>
+
+    <script src="user.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+    <script src="library.js"></script>
+
+
+</body>
+
+</html>
