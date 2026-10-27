@@ -1,0 +1,4564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    try {
+      if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('darkMode');
+    } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <title>Modo Professor de Matemática</title>
+  <style>
+    :root {
+      --teacher-accent: #e99b32;
+      --teacher-purple: #69569d;
+      --teacher-ink: #20202a;
+      --teacher-panel: var(--container-color, #fff);
+      --teacher-text: var(--text-color, #242331);
+      --teacher-muted: rgba(100, 96, 116, .78);
+      --teacher-line: rgba(100, 90, 120, .16);
+    }
+
+    html.darkMode {
+      --teacher-accent: #9b86df;
+      --teacher-purple: #b5a3f2;
+      --teacher-ink: #171721;
+      --teacher-panel: #211f2d;
+      --teacher-text: #f0edf9;
+      --teacher-muted: rgba(226, 222, 240, .72);
+      --teacher-line: rgba(220, 215, 240, .14);
+    }
+
+    /* Soft math symbols across the background. */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .19;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='220' viewBox='0 0 260 220'%3E%3Cg fill='%2369569d' font-family='Arial,sans-serif' font-weight='600' font-size='18' opacity='.48'%3E%3Ctext x='24' y='38'%3E%2B%3C/text%3E%3Ctext x='112' y='72'%3E%CF%80%3C/text%3E%3Ctext x='198' y='40'%3E%E2%88%9A%3C/text%3E%3Ctext x='54' y='135'%3E%C3%97%3C/text%3E%3Ctext x='164' y='150'%3E%C3%B7%3C/text%3E%3Ctext x='232' y='196'%3E%E2%88%91%3C/text%3E%3Ctext x='98' y='207'%3Ex%C2%B2%3C/text%3E%3Ctext x='214' y='100'%3E=%3C/text%3E%3C/g%3E%3C/svg%3E");
+      background-size: 260px 220px;
+    }
+
+    html.darkMode body::before {
+      opacity: .15;
+      filter: brightness(1.8);
+    }
+
+    .teacherPage {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, calc(100% - 28px));
+      margin: 24px auto 52px;
+      color: var(--teacher-text);
+    }
+
+    #settingsButton {
+      z-index: 20;
+    }
+
+    .teacherTop {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .teacherBack {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: var(--teacher-text);
+      background: rgba(105,86,157,.1);
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-weight: 850;
+    }
+
+    .teacherEyebrow {
+      margin: 0 0 6px;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: 10px;
+      font-weight: 950;
+      color: var(--teacher-purple);
+    }
+
+    .teacherHeader h1 {
+      font-size: clamp(28px,4vw,43px);
+      line-height: 1.08;
+      margin: 0 0 8px;
+      letter-spacing: -.035em;
+    }
+
+    .teacherHeader p {
+      max-width: 700px;
+      margin: 0;
+      color: var(--teacher-muted);
+      line-height: 1.55;
+    }
+
+    .teacherStatus {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 850;
+      background: var(--teacher-panel);
+    }
+
+    .teacherStatusDot {
+      height: 7px;
+      width: 7px;
+      border-radius: 50%;
+      background: #5fc56c;
+      display: inline-block;
+    }
+
+    .teacherShell {
+      display: grid;
+      grid-template-columns: 230px minmax(0,1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .teacherRail,
+    .teacherMainCard {
+      background: var(--teacher-panel);
+      border: 1px solid var(--teacher-line);
+      border-radius: 20px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.055);
+    }
+
+    .teacherRail {
+      padding: 13px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .teacherRailLabel {
+      margin: 7px 9px 10px;
+      color: var(--teacher-muted);
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .1em;
+    }
+
+    .teacherTab {
+      border: 0;
+      width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      margin: 4px 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--teacher-text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .teacherTabSymbol {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-size: 17px;
+      background: rgba(105,86,157,.1);
+      flex-shrink: 0;
+    }
+
+    .teacherTab.active {
+      background: rgba(105,86,157,.14);
+      box-shadow: inset 0 0 0 1px rgba(105,86,157,.18);
+    }
+
+    .teacherRailHint {
+      margin: 14px 7px 5px;
+      padding-top: 13px;
+      border-top: 1px solid var(--teacher-line);
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--teacher-muted);
+    }
+
+    .teacherMainCard {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .teacherWorkspaceGrid {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .teacherWorkspacePanel {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--teacher-line);
+      border-radius: 15px;
+      background: color-mix(in srgb, var(--teacher-panel) 94%, #8f7ac7 6%);
+    }
+
+    .teacherCalcPanel {
+      grid-column: 1 / -1;
+    }
+
+    .teacherWorkspacePanel .teacherSectionHead {
+      padding: 16px 18px 13px;
+    }
+
+    .teacherWorkspacePanel .teacherSectionBody {
+      padding: 17px 18px 20px;
+    }
+
+    .teacherWorkspacePanel .teacherSectionHead h2 {
+      font-size: 18px;
+    }
+
+    .teacherWorkspacePanel .teacherOutput {
+      margin-top: 16px;
+    }
+
+    .teacherTopActions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .teacherThemeToggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 39px;
+      padding: 9px 13px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 12px;
+      background: var(--teacher-panel);
+      color: var(--teacher-text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .teacherThemeToggle:hover {
+      border-color: var(--teacher-purple);
+    }
+
+    html.darkMode body {
+      color: var(--teacher-text);
+    }
+
+    html.darkMode .teacherBack {
+      color: var(--teacher-text);
+    }
+
+    html.darkMode .teacherWorkspacePanel {
+      background: color-mix(in srgb, var(--teacher-panel) 94%, #8f7ac7 6%);
+    }
+
+    html.darkMode .teacherSecondary {
+      color: var(--teacher-text);
+    }
+
+    html.darkMode .teacherStatus {
+      background: #211f2d;
+      color: var(--teacher-text);
+    }
+
+    html.darkMode .teacherTab.active {
+      background: rgba(155,134,223,.2);
+    }
+
+    html.darkMode .teacherTabSymbol {
+      background: rgba(155,134,223,.18);
+    }
+
+    html.darkMode .teacherSymbol {
+      background: rgba(155,134,223,.08);
+    }
+
+    html.darkMode .teacherInput,
+    html.darkMode .teacherSelect,
+    html.darkMode .teacherTextarea {
+      background: #191823;
+      border-color: var(--teacher-line);
+      color: var(--teacher-text);
+    }
+
+    .teacherSectionHead {
+      padding: 20px 22px 17px;
+      border-bottom: 1px solid var(--teacher-line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .teacherSectionHead h2 {
+      font-size: 21px;
+      margin: 0 0 5px;
+    }
+
+    .teacherSectionHead p {
+      margin: 0;
+      color: var(--teacher-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .teacherSectionBody {
+      padding: 20px 22px 24px;
+    }
+
+    .teacherView[hidden] {
+      display: none !important;
+    }
+
+    .teacherLabel {
+      display: block;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .teacherInput,
+    .teacherSelect,
+    .teacherTextarea {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 44px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 11px;
+      padding: 10px 12px;
+      color: var(--teacher-text);
+      background: var(--teacher-panel);
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .teacherTextarea {
+      min-height: 100px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .teacherPrimary,
+    .teacherSecondary,
+    .teacherDanger {
+      min-height: 42px;
+      border: 0;
+      border-radius: 11px;
+      padding: 9px 14px;
+      background: var(--teacher-accent);
+      color: white;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    .teacherSecondary {
+      background: rgba(105,86,157,.12);
+      color: var(--teacher-text);
+    }
+
+    .teacherDanger {
+      background: rgba(212,98,97,.14);
+      color: #c24b4b;
+    }
+
+    .teacherPrimary:hover,
+    .teacherSecondary:hover,
+    .teacherDanger:hover {
+      transform: translateY(-1px);
+      filter: brightness(.98);
+    }
+
+    .teacherButtonRow {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .teacherMathInputRow {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: 9px;
+      align-items: end;
+    }
+
+    .teacherSymbolLabel {
+      margin: 18px 0 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 950;
+      color: var(--teacher-muted);
+    }
+
+    .teacherSymbols {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .teacherSymbol {
+      min-width: 42px;
+      min-height: 39px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 10px;
+      background: rgba(105,86,157,.06);
+      color: var(--teacher-text);
+      font-size: 17px;
+      font-weight: 850;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+
+    .teacherExamples {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 11px;
+    }
+
+    .teacherExample {
+      min-height: 34px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--teacher-text);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 7px 11px;
+      cursor: pointer;
+    }
+
+    .teacherOutput {
+      margin-top: 20px;
+      border: 1px solid rgba(105,86,157,.2);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #1c1d27;
+      color: #f4f0ff;
+    }
+
+    .teacherOutputTop {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 13px;
+      background: #252633;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .teacherWindowDot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      background: #e76f51;
+    }
+
+    .teacherWindowDot:nth-child(2) {
+      background: #e9b949;
+    }
+
+    .teacherWindowDot:nth-child(3) {
+      background: #5fc56c;
+    }
+
+    .teacherOutputTitle {
+      color: #d5d4e2;
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-left: 7px;
+    }
+
+    .teacherOutputBody {
+      padding: 15px;
+    }
+
+    .teacherOutputEmpty {
+      color: #a5a4b8;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .teacherOutputPrompt {
+      color: #f5dfa1;
+      font: 700 15px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+      margin-bottom: 11px;
+    }
+
+    .teacherStepList {
+      list-style: none;
+      counter-reset: step;
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .teacherStepList li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 27px minmax(0,1fr);
+      gap: 9px;
+      align-items: start;
+      font: 12px/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #e7e5ef;
+    }
+
+    .teacherStepList li::before {
+      content: counter(step);
+      display: grid;
+      place-items: center;
+      height: 23px;
+      width: 23px;
+      border-radius: 7px;
+      background: rgba(155,134,223,.2);
+      color: #d5c7ff;
+      font: 900 10px/1 sans-serif;
+    }
+
+    .teacherStepDetail {
+      color: #a9a8ba;
+      font: 11px/1.5 system-ui,sans-serif;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .teacherFinal {
+      border-top: 1px solid rgba(255,255,255,.13);
+      margin-top: 14px;
+      padding-top: 13px;
+      color: #b6efc1;
+      font: 900 16px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .teacherError {
+      color: #ffab9d;
+      border-top: 1px solid rgba(255,255,255,.12);
+      margin-top: 12px;
+      padding-top: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .teacherMuted {
+      color: var(--teacher-muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .teacherGraphControls {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 110px 110px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .teacherCanvasWrap {
+      border: 1px solid var(--teacher-line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      margin-top: 15px;
+    }
+
+    #teacherGraphCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1000 / 600;
+      touch-action: pan-y;
+    }
+
+    .teacherGraphTableWrap {
+      margin-top: 13px;
+      overflow: auto;
+      border: 1px solid var(--teacher-line);
+      border-radius: 12px;
+    }
+
+    .teacherGraphTable {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .teacherGraphTable th,
+    .teacherGraphTable td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--teacher-line);
+      white-space: nowrap;
+    }
+
+    .teacherGraphTable th {
+      background: rgba(105,86,157,.08);
+    }
+
+    .teacherGraphTable tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .teacherDrawTools {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 13px;
+    }
+
+    .teacherToolField {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 11px;
+      padding: 8px 10px;
+      min-height: 34px;
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .teacherToolField input[type="color"] {
+      width: 28px;
+      height: 25px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .teacherToolField input[type="range"] {
+      width: 95px;
+    }
+
+    .teacherDrawCanvasWrap {
+      border: 1px solid var(--teacher-line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    #teacherDrawCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1200 / 650;
+      background-color: #fff;
+      background-image: radial-gradient(#d9d6e1 1px, transparent 1px);
+      background-size: 20px 20px;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .teacherNotesTop {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 13px;
+    }
+
+    .teacherNotesGrid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .teacherSticky {
+      min-height: 170px;
+      border-radius: 8px 8px 12px 12px;
+      padding: 12px;
+      box-shadow: 0 5px 14px rgba(0,0,0,.07);
+      border: 1px solid rgba(0,0,0,.06);
+      color: #292638;
+    }
+
+    .teacherStickyTop {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+
+    .teacherStickyTitle {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: inherit;
+      font: 900 13px/1.4 system-ui,sans-serif;
+    }
+
+    .teacherSticky textarea {
+      display: block;
+      width: 100%;
+      min-height: 113px;
+      resize: vertical;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: inherit;
+      font: 12px/1.6 system-ui,sans-serif;
+    }
+
+    .teacherSticky button {
+      border: 0;
+      border-radius: 7px;
+      background: rgba(0,0,0,.08);
+      color: inherit;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .teacherNoteFooter {
+      margin-top: 14px;
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .teacherToast {
+      min-height: 18px;
+      color: var(--teacher-muted);
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    .teacherFooterNote {
+      margin: 18px 2px 0;
+      color: var(--teacher-muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    /* 3D Lab */
+    .teacherLabIntro {
+      padding: 20px 22px 0;
+    }
+
+    .teacherLabIntro h2 {
+      margin: 0 0 6px;
+      font-size: 23px;
+    }
+
+    .teacherLabIntro p {
+      margin: 0;
+      color: var(--teacher-muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .teacherLabTabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 16px 22px 0;
+    }
+
+    .teacherLabTab {
+      min-height: 39px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 11px;
+      padding: 9px 13px;
+      background: transparent;
+      color: var(--teacher-text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .teacherLabTab.active {
+      background: rgba(105,86,157,.14);
+      border-color: rgba(105,86,157,.35);
+    }
+
+    .teacherLabPane[hidden] {
+      display: none !important;
+    }
+
+    .teacherLabPane {
+      padding: 18px 22px 24px;
+    }
+
+    .teacherLabControls {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .teacherLabControls .spanAll {
+      grid-column: 1 / -1;
+    }
+
+    .teacherLabCanvasWrap {
+      width: 100%;
+      border: 1px solid var(--teacher-line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #141622;
+      position: relative;
+    }
+
+    .teacherLabCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      touch-action: none;
+      cursor: grab;
+      background: #141622;
+    }
+
+    .teacherLabCanvas:active {
+      cursor: grabbing;
+    }
+
+    .teacherLabHint {
+      color: var(--teacher-muted);
+      font-size: 11px;
+      line-height: 1.55;
+      margin: 10px 0 0;
+    }
+
+    .teacherLabControlBar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .teacherLabControlBar .teacherToolField {
+      background: var(--teacher-panel);
+    }
+
+    .teacherLabStats {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .teacherLabStat {
+      padding: 12px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 12px;
+      background: rgba(105,86,157,.055);
+      min-width: 0;
+    }
+
+    .teacherLabStatLabel {
+      display: block;
+      font-size: 10px;
+      color: var(--teacher-muted);
+      font-weight: 850;
+      margin-bottom: 5px;
+    }
+
+    .teacherLabStatValue {
+      display: block;
+      font-size: clamp(14px,2vw,20px);
+      line-height: 1.25;
+      font-weight: 950;
+      overflow-wrap: anywhere;
+    }
+
+    .teacherTankGrid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .teacherTankCard {
+      border: 1px solid var(--teacher-line);
+      border-radius: 14px;
+      padding: 14px;
+      min-width: 0;
+      background: rgba(105,86,157,.045);
+    }
+
+    .teacherTankCard h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    .teacherTankFields {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 9px;
+    }
+
+    .teacherTankFields .spanAll {
+      grid-column: 1 / -1;
+    }
+
+    .teacherTankFields .teacherInput {
+      min-width: 0;
+    }
+
+    .teacherPourControls {
+      display: flex;
+      gap: 9px;
+      align-items: end;
+      flex-wrap: wrap;
+      padding: 13px;
+      border: 1px solid var(--teacher-line);
+      border-radius: 14px;
+      margin-top: 14px;
+    }
+
+    .teacherPourControls > div {
+      flex: 1 1 130px;
+    }
+
+    .teacherPourControls .teacherButtonRow {
+      flex: 2 1 300px;
+    }
+
+    .teacherPourControls .teacherButtonRow button {
+      flex: 1 1 auto;
+    }
+
+    .teacherLabNote {
+      border-left: 3px solid var(--teacher-purple);
+      padding: 9px 12px;
+      margin: 13px 0 0;
+      color: var(--teacher-muted);
+      background: rgba(105,86,157,.06);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .teacherLiquidLegend {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--teacher-muted);
+      font-size: 11px;
+      margin: 9px 2px 0;
+    }
+
+    .teacherFieldError {
+      color: #c24b4b;
+      font-size: 11px;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+
+    html.darkMode .teacherLabTab.active {
+      background: rgba(155,134,223,.2);
+      border-color: rgba(155,134,223,.4);
+    }
+
+    html.darkMode .teacherLabStat {
+      background: rgba(155,134,223,.08);
+    }
+
+    html.darkMode .teacherTankCard {
+      background: rgba(155,134,223,.06);
+    }
+
+    @media(max-width:850px) {
+      .teacherShell {
+        grid-template-columns: 1fr;
+      }
+
+      .teacherRail {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 5px;
+      }
+
+      .teacherRailLabel,
+      .teacherRailHint {
+        display: none;
+      }
+
+      .teacherTab {
+        justify-content: center;
+        gap: 8px;
+        font-size: 12px;
+        padding: 9px 7px;
+        min-height: 48px;
+      }
+
+      .teacherTabSymbol {
+        width: 27px;
+        height: 27px;
+      }
+
+      .teacherWorkspaceGrid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 11px;
+      }
+
+      .teacherCalcPanel {
+        grid-column: auto;
+      }
+
+      .teacherNotesGrid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .teacherLabPane {
+        padding: 15px;
+      }
+
+      .teacherLabIntro {
+        padding: 17px 15px 0;
+      }
+
+      .teacherLabTabs {
+        padding: 14px 15px 0;
+      }
+
+      .teacherTankGrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:560px) {
+      .teacherPage {
+        width: calc(100% - 18px);
+        margin-top: 15px;
+      }
+
+      .teacherSectionHead {
+        padding: 16px;
+      }
+
+      .teacherSectionBody {
+        padding: 15px;
+      }
+
+      .teacherWorkspacePanel .teacherSectionHead {
+        padding: 14px;
+      }
+
+      .teacherWorkspacePanel .teacherSectionBody {
+        padding: 13px;
+      }
+
+      .teacherMathInputRow {
+        grid-template-columns: 1fr;
+      }
+
+      .teacherGraphControls {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .teacherGraphControls > div:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .teacherNotesGrid {
+        grid-template-columns: 1fr;
+      }
+
+      .teacherOutputBody {
+        padding: 12px;
+      }
+
+      .teacherStatus {
+        display: none;
+      }
+
+      .teacherTopActions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .teacherLabControls {
+        grid-template-columns: 1fr;
+      }
+
+      .teacherLabControls .spanAll {
+        grid-column: auto;
+      }
+
+      .teacherLabStats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .teacherLabStat:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .teacherLabPane {
+        padding: 12px;
+      }
+
+      .teacherLabIntro {
+        padding: 15px 12px 0;
+      }
+
+      .teacherLabTabs {
+        padding: 12px 12px 0;
+      }
+
+      .teacherTankFields {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sunRays"></div>
+  <div class="stars" aria-hidden="true"></div>
+  <button id="settingsButton" class="settingsButton" type="button" aria-label="Abrir configurações"><span id="settingsIcon">⚙</span></button>
+
+  <main class="teacherPage">
+    <div class="teacherTop">
+      <a class="teacherBack" href="math.html">↶ <span>Voltar para Matemática</span></a>
+      <div class="teacherTopActions">
+        <div class="teacherStatus"><span class="teacherStatusDot"></span> Espaço de trabalho local</div>
+        <button id="teacherDarkToggle" class="teacherThemeToggle" type="button" aria-pressed="false">Modo escuro</button>
+      </div>
+    </div>
+
+    <header class="teacherHeader" style="margin-bottom:22px">
+      <p class="teacherEyebrow">Área de trabalho</p>
+      <h1>Modo Professor de Matemática</h1>
+      <p>Monte contas, resolva equações passo a passo, explore gráficos, desenhe como em um quadro e organize suas ideias com notas adesivas.</p>
+    </header>
+
+    <div class="teacherShell">
+      <aside class="teacherRail" aria-label="Seções do espaço de trabalho">
+        <p class="teacherRailLabel">Área de trabalho</p>
+        <button class="teacherTab active" data-view="workspace" type="button" aria-selected="true"><span class="teacherTabSymbol">▤</span><span>Espaço de trabalho</span></button>
+        <button class="teacherTab" data-view="graph" type="button" aria-selected="false"><span class="teacherTabSymbol">x²</span><span>Gráficos de funções</span></button>
+        <button class="teacherTab" data-view="lab" type="button" aria-selected="false"><span class="teacherTabSymbol">3D</span><span>Laboratório 3D</span></button>
+        <p class="teacherRailHint">Cálculos, desenho e notas ficam juntos. Os gráficos 2D e o Laboratório 3D têm seções próprias.</p>
+      </aside>
+
+      <section class="teacherMainCard">
+        <section class="teacherView" id="teacherViewWorkspace">
+          <div class="teacherWorkspaceGrid">
+            <section class="teacherWorkspacePanel teacherCalcPanel" id="teacherViewCalc">
+              <div class="teacherSectionHead">
+                <div>
+                  <h2>Calculadora com resolução</h2>
+                  <p>Faça contas ou resolva uma equação do 1º grau. A saída mostra as transformações usadas.</p>
+                </div>
+              </div>
+
+              <div class="teacherSectionBody">
+                <form id="teacherCalcForm">
+                  <div class="teacherMathInputRow">
+                    <div>
+                      <label class="teacherLabel" for="teacherExpression">Expressão ou equação</label>
+                      <input id="teacherExpression" class="teacherInput" type="text" autocomplete="off" spellcheck="false" value="2x + 3 = 11" placeholder="Ex.: 2x + 3 = 11" aria-describedby="teacherInputHelp">
+                    </div>
+                    <button class="teacherPrimary" type="submit">Resolver passo a passo</button>
+                  </div>
+
+                  <p id="teacherInputHelp" class="teacherMuted" style="margin:8px 0 0">Use x para incógnitas. Exemplos válidos: <code>3*(x-2)=12</code>, <code>(12+8)/4</code>, <code>sqrt(81)</code>, <code>25%*80</code>.</p>
+                </form>
+
+                <p class="teacherSymbolLabel">Símbolos matemáticos</p>
+                <div class="teacherSymbols" id="teacherSymbols">
+                  <button class="teacherSymbol" type="button" data-insert=" + ">+</button>
+                  <button class="teacherSymbol" type="button" data-insert=" - ">−</button>
+                  <button class="teacherSymbol" type="button" data-insert=" * ">×</button>
+                  <button class="teacherSymbol" type="button" data-insert=" / ">÷</button>
+                  <button class="teacherSymbol" type="button" data-insert=" ^ ">xʸ</button>
+                  <button class="teacherSymbol" type="button" data-insert="sqrt(">√</button>
+                  <button class="teacherSymbol" type="button" data-insert="(">(</button>
+                  <button class="teacherSymbol" type="button" data-insert=")">)</button>
+                  <button class="teacherSymbol" type="button" data-insert=" %">%</button>
+                  <button class="teacherSymbol" type="button" data-insert=" = ">=</button>
+                  <button class="teacherSymbol" type="button" data-insert="x">x</button>
+                  <button class="teacherSymbol" type="button" data-insert="pi">π</button>
+                  <button class="teacherSymbol" type="button" data-insert="sin(">sin</button>
+                  <button class="teacherSymbol" type="button" data-insert="cos(">cos</button>
+                  <button class="teacherSymbol" type="button" data-insert="tan(">tan</button>
+                  <button class="teacherSymbol" type="button" data-insert="log(">log</button>
+                  <button class="teacherSymbol" type="button" data-insert="ln(">ln</button>
+                  <button class="teacherSymbol" type="button" data-insert="abs(">|x|</button>
+                </div>
+
+                <p class="teacherSymbolLabel">Exemplos rápidos</p>
+                <div class="teacherExamples">
+                  <button class="teacherExample" type="button" data-example="2x + 3 = 11">2x + 3 = 11</button>
+                  <button class="teacherExample" type="button" data-example="3*(x - 2) = 12">3(x − 2) = 12</button>
+                  <button class="teacherExample" type="button" data-example="2x + 3 = x + 7">2x + 3 = x + 7</button>
+                  <button class="teacherExample" type="button" data-example="(12 + 8) / 4">(12 + 8) ÷ 4</button>
+                  <button class="teacherExample" type="button" data-example="25% * 80">25% de 80</button>
+                  <button class="teacherExample" type="button" data-example="sqrt(81) + 2^3">√81 + 2³</button>
+                </div>
+
+                <div class="teacherOutput" aria-live="polite">
+                  <div class="teacherOutputTop">
+                    <span class="teacherWindowDot"></span>
+                    <span class="teacherWindowDot"></span>
+                    <span class="teacherWindowDot"></span>
+                    <span class="teacherOutputTitle">Saída · resolução detalhada</span>
+                  </div>
+                  <div class="teacherOutputBody" id="teacherCalcOutput">
+                    <div class="teacherOutputEmpty">A resolução aparecerá aqui, com cada etapa em ordem.</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="teacherWorkspacePanel teacherDrawPanel" id="teacherViewDraw">
+              <div class="teacherSectionHead">
+                <div>
+                  <h2>Quadro de desenho</h2>
+                  <p>Marcador livre: desenhe à mão livre, circule números ou esboce uma ideia.</p>
+                </div>
+              </div>
+
+              <div class="teacherSectionBody">
+                <div class="teacherDrawTools">
+                  <label class="teacherToolField" for="teacherDrawColor">Cor <input id="teacherDrawColor" type="color" value="#69569d" aria-label="Cor do marcador"></label>
+                  <label class="teacherToolField" for="teacherDrawSize">Espessura <input id="teacherDrawSize" type="range" min="2" max="28" value="6"><span id="teacherDrawSizeValue">6 px</span></label>
+                  <button class="teacherSecondary" type="button" id="teacherEraser">Borracha</button>
+                  <button class="teacherSecondary" type="button" id="teacherDrawUndo">Desfazer traço</button>
+                  <button class="teacherDanger" type="button" id="teacherDrawClear">Limpar quadro</button>
+                </div>
+
+                <div class="teacherDrawCanvasWrap">
+                  <canvas id="teacherDrawCanvas" width="1200" height="650" aria-label="Quadro branco para desenhar com o marcador"></canvas>
+                </div>
+
+                <div class="teacherNoteFooter">
+                  <span class="teacherMuted">Dica: use o mouse, o dedo ou uma caneta digital. Os traços ficam nesta sessão até você limpar ou recarregar a página.</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="teacherWorkspacePanel teacherNotesPanel" id="teacherViewNotes">
+              <div class="teacherSectionHead">
+                <div>
+                  <h2>Notas adesivas</h2>
+                  <p>Rascunhos, lembretes, passos de uma aula ou exemplos para resolver depois.</p>
+                </div>
+              </div>
+
+              <div class="teacherSectionBody">
+                <div class="teacherNotesTop">
+                  <p class="teacherMuted" style="margin:0">Suas notas são salvas neste navegador.</p>
+                  <div class="teacherButtonRow">
+                    <button class="teacherSecondary" type="button" id="teacherClearNotes">Apagar todas</button>
+                    <button class="teacherPrimary" type="button" id="teacherAddNote">+ Nova nota</button>
+                  </div>
+                </div>
+                <div class="teacherNotesGrid" id="teacherNotesGrid"></div>
+                <div id="teacherNoteToast" class="teacherToast" aria-live="polite"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="teacherView" id="teacherViewGraph" hidden>
+          <div class="teacherSectionHead">
+            <div>
+              <h2>Gráfico de funções</h2>
+              <p>Digite uma função em y = f(x), escolha o intervalo e veja o gráfico com uma tabela de valores.</p>
+            </div>
+          </div>
+          <div class="teacherSectionBody">
+            <form id="teacherGraphForm">
+              <div class="teacherGraphControls">
+                <div>
+                  <label class="teacherLabel" for="teacherGraphExpression">Função y =</label>
+                  <input id="teacherGraphExpression" class="teacherInput" type="text" value="x^2 - 4" spellcheck="false" autocomplete="off" placeholder="Ex.: x^2 - 4">
+                </div>
+                <div>
+                  <label class="teacherLabel" for="teacherGraphMin">x mínimo</label>
+                  <input id="teacherGraphMin" class="teacherInput" type="number" value="-10" min="-1000" max="1000" step="1">
+                </div>
+                <div>
+                  <label class="teacherLabel" for="teacherGraphMax">x máximo</label>
+                  <input id="teacherGraphMax" class="teacherInput" type="number" value="10" min="-1000" max="1000" step="1">
+                </div>
+              </div>
+              <div class="teacherButtonRow" style="margin-top:12px">
+                <button class="teacherPrimary" type="submit">Desenhar gráfico</button>
+                <button class="teacherSecondary" type="button" id="teacherGraphReset">Restaurar exemplo</button>
+              </div>
+            </form>
+
+            <div class="teacherCanvasWrap">
+              <canvas id="teacherGraphCanvas" width="1000" height="600" aria-label="Gráfico cartesiano da função selecionada"></canvas>
+            </div>
+
+            <div class="teacherGraphTableWrap">
+              <table class="teacherGraphTable">
+                <thead>
+                  <tr><th>x</th><th>Substituição</th><th>y</th></tr>
+                </thead>
+                <tbody id="teacherGraphRows">
+                  <tr><td colspan="3">O gráfico e a tabela aparecerão aqui.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="teacherFooterNote">O desenho usa amostras numéricas para visualizar a função. Descontinuidades e valores fora do domínio podem aparecer como lacunas.</p>
+          </div>
+        </section>
+
+        <!-- 3D LAB -->
+        <section class="teacherView" id="teacherViewLab" hidden>
+          <div class="teacherLabIntro">
+            <p class="teacherEyebrow">Exploração visual</p>
+            <h2>Laboratório 3D</h2>
+            <p>Explore superfícies matemáticas, compare recipientes e veja como litros, mililitros e volume se relacionam. Arraste os modelos para girá-los.</p>
+          </div>
+
+          <div class="teacherLabTabs" role="tablist" aria-label="Ferramentas do laboratório 3D">
+            <button class="teacherLabTab active" data-lab-view="surface" type="button" role="tab" aria-selected="true">Superfícies 3D</button>
+            <button class="teacherLabTab" data-lab-view="liquid" type="button" role="tab" aria-selected="false">Líquidos & litros</button>
+          </div>
+
+          <section class="teacherLabPane" id="teacherLabSurface" role="tabpanel">
+            <div class="teacherLabControls">
+              <div class="spanAll">
+                <label class="teacherLabel" for="teacherSurfaceExpression">Função z = f(x, y)</label>
+                <input id="teacherSurfaceExpression" class="teacherInput" type="text" value="10 - x^2 - y^2" spellcheck="false" autocomplete="off" placeholder="Ex.: sin(x)*cos(y)">
+                <p class="teacherMuted" style="margin:7px 0 0">Use x e y. Exemplos: <code>10 - x^2 - y^2</code>, <code>sin(x)*cos(y)</code>, <code>sqrt(9 - x^2 - y^2)</code>.</p>
+              </div>
+              <div>
+                <label class="teacherLabel" for="teacherSurfaceMin">Limite mínimo (x e y)</label>
+                <input id="teacherSurfaceMin" class="teacherInput" type="number" value="-5" min="-20" max="20" step="0.5">
+              </div>
+              <div>
+                <label class="teacherLabel" for="teacherSurfaceMax">Limite máximo (x e y)</label>
+                <input id="teacherSurfaceMax" class="teacherInput" type="number" value="5" min="-20" max="20" step="0.5">
+              </div>
+            </div>
+
+            <div class="teacherButtonRow">
+              <button class="teacherPrimary" id="teacherSurfaceDraw" type="button">Desenhar superfície</button>
+              <button class="teacherSecondary" id="teacherSurfaceReset" type="button">Restaurar exemplo</button>
+            </div>
+
+            <div class="teacherLabCanvasWrap" style="margin-top:14px">
+              <canvas class="teacherLabCanvas" id="teacherSurfaceCanvas" width="1000" height="650" aria-label="Superfície matemática tridimensional interativa"></canvas>
+            </div>
+
+            <div class="teacherLabControlBar">
+              <label class="teacherToolField" for="teacherSurfaceZoom">Zoom <input id="teacherSurfaceZoom" type="range" min="130" max="300" value="215" step="5"><span id="teacherSurfaceZoomValue">215</span></label>
+              <button class="teacherSecondary" id="teacherSurfaceCameraReset" type="button">Reiniciar câmera</button>
+            </div>
+
+            <p class="teacherLabHint">Arraste a superfície para girar a câmera. Use o controle de zoom para se aproximar ou afastar. As cores representam a altura relativa da função.</p>
+            <div class="teacherLabNote">Esta visualização é uma superfície 3D numérica: o site calcula muitos pontos da função e os conecta para formar a malha. Funções com raízes fora do domínio mostram lacunas onde não há valor real.</div>
+            <div class="teacherFieldError" id="teacherSurfaceError" aria-live="polite"></div>
+          </section>
+
+          <section class="teacherLabPane" id="teacherLabLiquid" role="tabpanel" hidden>
+            <div class="teacherTankGrid">
+              <section class="teacherTankCard">
+                <h3>Recipiente A</h3>
+                <div class="teacherTankFields">
+                  <div class="spanAll">
+                    <label class="teacherLabel" for="teacherLiquidShapeA">Formato</label>
+                    <select id="teacherLiquidShapeA" class="teacherInput teacherLiquidShape">
+                      <option value="box">Caixa retangular</option>
+                      <option value="cylinder">Cilindro</option>
+                      <option value="sphere">Esfera</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="teacherLabel" id="teacherDimLabelAA" for="teacherDimAA">Comprimento (cm)</label>
+                    <input id="teacherDimAA" class="teacherInput teacherDimension" type="number" value="20" min="0.1" max="10000" step="0.1">
+                  </div>
+                  <div id="teacherDimWrapBA">
+                    <label class="teacherLabel" id="teacherDimLabelBA" for="teacherDimBA">Largura (cm)</label>
+                    <input id="teacherDimBA" class="teacherInput teacherDimension" type="number" value="15" min="0.1" max="10000" step="0.1">
+                  </div>
+                  <div class="spanAll">
+                    <label class="teacherLabel" id="teacherDimLabelHA" for="teacherDimHA">Altura (cm)</label>
+                    <input id="teacherDimHA" class="teacherInput teacherDimension" type="number" value="30" min="0.1" max="10000" step="0.1">
+                  </div>
+                </div>
+
+                <div class="teacherLabStats">
+                  <div class="teacherLabStat"><span class="teacherLabStatLabel">Capacidade</span><strong class="teacherLabStatValue" id="teacherTankCapacityA">9 L</strong></div>
+                  <div class="teacherLabStat"><span class="teacherLabStatLabel">Água atual</span><strong class="teacherLabStatValue" id="teacherTankCurrentA">3,5 L</strong></div>
+                  <div class="teacherLabStat"><span class="teacherLabStatLabel">Preenchido</span><strong class="teacherLabStatValue" id="teacherTankPercentA">38,9%</strong></div>
+                </div>
+              </section>
+
+              <section class="teacherTankCard">
+                <h3>Recipiente B</h3>
+                <div class="teacherTankFields">
+                  <div class="spanAll">
+                    <label class="teacherLabel" for="teacherLiquidShapeB">Formato</label>
+                    <select id="teacherLiquidShapeB" class="teacherInput teacherLiquidShape">
+                      <option value="box">Caixa retangular</option>
+                      <option value="cylinder" selected>Cilindro</option>
+                      <option value="sphere">Esfera</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="teacherLabel" id="teacherDimLabelAB" for="teacherDimAB">Raio (cm)</label>
+                    <input id="teacherDimAB" class="teacherInput teacherDimension" type="number" value="8" min="0.1" max="10000" step="0.1">
+                  </div>
+                  <div id="teacherDimWrapBB" hidden>
+                    <label class="teacherLabel" id="teacherDimLabelBB" for="teacherDimBB">Largura (cm)</label>
+                    <input id="teacherDimBB" class="teacherInput teacherDimension" type="number" value="15" min="0.1" max="10000" step="0.1">
+                  </div>
+                  <div class="spanAll">
+                    <label class="teacherLabel" id="teacherDimLabelHB" for="teacherDimHB">Altura (cm)</label>
+                    <input id="teacherDimHB" class="teacherInput teacherDimension" type="number" value="25" min="0.1" max="10000" step="0.1">
+                  </div>
+                </div>
+
+                <div class="teacherLabStats">
+                  <div class="teacherLabStat"><span class="teacherLabStatLabel">Capacidade</span><strong class="teacherLabStatValue" id="teacherTankCapacityB">5,03 L</strong></div>
+                  <div class="teacherLabStat"><span class="teacherLabStatLabel">Água atual</span><strong class="teacherLabStatValue" id="teacherTankCurrentB">1,25 L</strong></div>
+                  <div class="teacherLabStat"><span class="teacherLabStatLabel">Preenchido</span><strong class="teacherLabStatValue" id="teacherTankPercentB">24,9%</strong></div>
+                </div>
+              </section>
+            </div>
+
+            <div class="teacherLabCanvasWrap">
+              <canvas class="teacherLabCanvas" id="teacherLiquidCanvas" width="1000" height="600" aria-label="Dois recipientes tridimensionais com água que pode ser transferida entre eles"></canvas>
+            </div>
+            <div class="teacherLiquidLegend"><span>Recipiente A</span><span>Azul = água · arraste para girar os recipientes</span><span>Recipiente B</span></div>
+
+            <div class="teacherPourControls">
+              <div>
+                <label class="teacherLabel" for="teacherPourAmount">Quantidade para transferir (litros)</label>
+                <input id="teacherPourAmount" class="teacherInput" type="number" value="0.5" min="0.01" max="1000000" step="0.1">
+              </div>
+              <div class="teacherButtonRow">
+                <button class="teacherPrimary" type="button" id="teacherPourAToB">A → B</button>
+                <button class="teacherPrimary" type="button" id="teacherPourBToA">B → A</button>
+                <button class="teacherSecondary" type="button" id="teacherFillA">Encher A</button>
+                <button class="teacherSecondary" type="button" id="teacherFillB">Encher B</button>
+                <button class="teacherSecondary" type="button" id="teacherEmptyA">Esvaziar A</button>
+                <button class="teacherSecondary" type="button" id="teacherEmptyB">Esvaziar B</button>
+              </div>
+            </div>
+
+            <div class="teacherLabStats">
+              <div class="teacherLabStat"><span class="teacherLabStatLabel">Água total</span><strong class="teacherLabStatValue" id="teacherTotalWater">4,75 L</strong></div>
+              <div class="teacherLabStat"><span class="teacherLabStatLabel">Equivalência</span><strong class="teacherLabStatValue" id="teacherTotalMl">4.750 mL</strong></div>
+              <div class="teacherLabStat"><span class="teacherLabStatLabel">Unidades</span><strong class="teacherLabStatValue">1 L = 1.000 cm³</strong></div>
+            </div>
+
+            <div class="teacherLabNote">A transferência conserva a quantidade de água: o recipiente de origem perde exatamente o volume que o destino recebe. Se o destino não tiver espaço suficiente, só é transferida a quantidade que cabe. A animação é uma visualização educativa, não uma simulação física de fluidos de alta precisão.</div>
+            <p class="teacherFieldError" id="teacherLiquidMessage" aria-live="polite"></p>
+          </section>
+        </section>
+
+      </section>
+    </div>
+  </main>
+
+  <script src="user.js"></script>
+  <script src="language.js"></script>
+  <script src="theme.js"></script>
+  <script src="settings.js"></script>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const $ = (id) => document.getElementById(id);
+    const expressionInput = $('teacherExpression');
+    const output = $('teacherCalcOutput');
+
+    // Main navigation.
+    const tabs = [...document.querySelectorAll('.teacherTab')];
+
+    const views = {
+      workspace: $('teacherViewWorkspace'),
+      graph: $('teacherViewGraph'),
+      lab: $('teacherViewLab')
+    };
+
+    tabs.forEach((tab) => tab.addEventListener('click', () => {
+      tabs.forEach((item) => {
+        const selected = item.dataset.view === tab.dataset.view;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-selected', String(selected));
+      });
+
+      Object.entries(views).forEach(([name, view]) => {
+        view.hidden = name !== tab.dataset.view;
+      });
+
+      if (tab.dataset.view === 'graph') drawGraph();
+
+      if (tab.dataset.view === 'lab') {
+        draw3DSurface();
+        renderLiquidScene();
+      }
+    }));
+
+    // Light/dark toggle, using the same saved preference as the site.
+    const darkToggle = $('teacherDarkToggle');
+
+    function syncTeacherDarkToggle() {
+      const enabled = document.documentElement.classList.contains('darkMode');
+      darkToggle.textContent = enabled ? 'Modo claro' : 'Modo escuro';
+      darkToggle.setAttribute('aria-pressed', String(enabled));
+    }
+
+    darkToggle.addEventListener('click', () => {
+      const enabled = !document.documentElement.classList.contains('darkMode');
+
+      document.documentElement.classList.toggle('darkMode', enabled);
+
+      try {
+        localStorage.setItem('darkMode', enabled ? 'true' : 'false');
+      } catch (_) {}
+
+      syncTeacherDarkToggle();
+    });
+
+    syncTeacherDarkToggle();
+
+    // ==========================================================
+    // SAFE MATHEMATICAL EXPRESSION PARSER
+    // ==========================================================
+
+    function normalizeMath(source) {
+      return String(source)
+        .replace(/[×·]/g, '*')
+        .replace(/[÷]/g, '/')
+        .replace(/[−–—]/g, '-')
+        .replace(/π/g, 'pi')
+        .replace(/√\s*\(/g, 'sqrt(')
+        .replace(/√\s*(\d+(?:\.\d+)?)/g, 'sqrt($1)')
+        .trim();
+    }
+
+    function tokenize(source) {
+      const s = normalizeMath(source);
+      const raw = [];
+      let i = 0;
+
+      while (i < s.length) {
+        if (/\s/.test(s[i])) {
+          i++;
+          continue;
+        }
+
+        const number = s.slice(i).match(/^(?:\d+[.,]\d*|[.,]\d+|\d+)(?:e[+-]?\d+)?/i);
+
+        if (number) {
+          raw.push({
+            type: 'number',
+            value: Number(number[0].replace(',', '.')),
+            raw: number[0]
+          });
+
+          i += number[0].length;
+          continue;
+        }
+
+        const ident = s.slice(i).match(/^[a-zA-Z]+/);
+
+        if (ident) {
+          const value = ident[0].toLowerCase();
+
+          raw.push({
+            type: 'id',
+            value,
+            raw: ident[0]
+          });
+
+          i += ident[0].length;
+          continue;
+        }
+
+        if ('+-*/^()%,='.includes(s[i])) {
+          raw.push({
+            type: s[i] === '(' ? 'lparen' :
+                  s[i] === ')' ? 'rparen' : s[i],
+            value: s[i],
+            raw: s[i]
+          });
+
+          i++;
+          continue;
+        }
+
+        throw new Error(`Símbolo não reconhecido: “${s[i]}”.`);
+      }
+
+      // Implicit multiplication: 2x, 3(...), (x+1)(x-1), and similar.
+      const expanded = [];
+
+      for (let j = 0; j < raw.length; j++) {
+        const current = raw[j];
+        const previous = expanded[expanded.length - 1];
+
+        if (previous) {
+          const prevCanEnd =
+            previous.type === 'number' ||
+            previous.type === 'rparen' ||
+            (
+              previous.type === 'id' &&
+              ['x', 'y', 'pi', 'e'].includes(previous.value)
+            ) ||
+            previous.type === '%';
+
+          const currentCanStart =
+            current.type === 'number' ||
+            current.type === 'lparen' ||
+            current.type === 'id';
+
+          const isFunctionCall =
+            previous.type === 'id' &&
+            ['sqrt', 'abs', 'sin', 'cos', 'tan', 'ln', 'log'].includes(previous.value) &&
+            current.type === 'lparen';
+
+          if (prevCanEnd && currentCanStart && !isFunctionCall) {
+            expanded.push({ type: '*', value: '*', raw: '*' });
+          }
+        }
+
+        expanded.push(current);
+      }
+
+      return expanded;
+    }
+
+    function parseMath(source) {
+      const tokens = tokenize(source);
+      let pos = 0;
+
+      const peek = () => tokens[pos];
+
+      const take = (type) => {
+        if (peek() && peek().type === type) {
+          return tokens[pos++];
+        }
+
+        return null;
+      };
+
+      function primary() {
+        const num = take('number');
+
+        if (num) {
+          return { type: 'number', value: num.value, raw: num.raw };
+        }
+
+        if (take('lparen')) {
+          const node = expression();
+
+          if (!take('rparen')) {
+            throw new Error('Falta fechar um parêntese.');
+          }
+
+          return { type: 'group', child: node };
+        }
+
+        const id = take('id');
+
+        if (id) {
+          if (id.value === 'x' || id.value === 'y') {
+            return { type: 'variable', name: id.value };
+          }
+
+          if (id.value === 'pi') {
+            return { type: 'number', value: Math.PI, raw: 'π' };
+          }
+
+          if (id.value === 'e') {
+            return { type: 'number', value: Math.E, raw: 'e' };
+          }
+
+          if (['sqrt', 'abs', 'sin', 'cos', 'tan', 'ln', 'log'].includes(id.value)) {
+            if (!take('lparen')) {
+              throw new Error(`Use ${id.value}(valor).`);
+            }
+
+            const arg = expression();
+
+            if (!take('rparen')) {
+              throw new Error('Falta fechar o parêntese da função.');
+            }
+
+            return { type: 'func', name: id.value, arg };
+          }
+
+          throw new Error(
+            `Não reconheço “${id.raw}”. Use x, pi, e, sqrt(), abs(), sin(), cos(), tan(), ln() ou log().`
+          );
+        }
+
+        throw new Error('Esperava um número ou um parêntese.');
+      }
+
+      function postfix() {
+        let node = primary();
+
+        while (take('%')) {
+          node = { type: 'percent', child: node };
+        }
+
+        return node;
+      }
+
+      function power() {
+        let node = postfix();
+
+        if (take('^')) {
+          node = {
+            type: 'binary',
+            op: '^',
+            left: node,
+            right: unary()
+          };
+        }
+
+        return node;
+      }
+
+      function unary() {
+        if (take('+')) {
+          return { type: 'unary', op: '+', child: unary() };
+        }
+
+        if (take('-')) {
+          return { type: 'unary', op: '-', child: unary() };
+        }
+
+        return power();
+      }
+
+      function term() {
+        let node = unary();
+
+        while (peek() && ['*', '/'].includes(peek().type)) {
+          const op = tokens[pos++].type;
+
+          node = {
+            type: 'binary',
+            op,
+            left: node,
+            right: unary()
+          };
+        }
+
+        return node;
+      }
+
+      function expression() {
+        let node = term();
+
+        while (peek() && ['+', '-'].includes(peek().type)) {
+          const op = tokens[pos++].type;
+
+          node = {
+            type: 'binary',
+            op,
+            left: node,
+            right: term()
+          };
+        }
+
+        return node;
+      }
+
+      const ast = expression();
+
+      if (pos !== tokens.length) {
+        throw new Error(`Não consegui interpretar “${tokens[pos].raw}”. Confira a expressão.`);
+      }
+
+      return ast;
+    }
+
+    function fmt(n) {
+      if (!Number.isFinite(n)) return String(n);
+
+      if (Math.abs(n) < 1e-12) n = 0;
+
+      if (
+        Math.abs(n - Math.round(n)) < 1e-10 &&
+        Math.abs(n) < 1e12
+      ) {
+        return String(Math.round(n));
+      }
+
+      return Number(n.toPrecision(10)).toString().replace('.', ',');
+    }
+
+    function fmtMath(n) {
+      return fmt(n).replace(',', '.');
+    }
+
+    function renderExpression(node) {
+      if (node.type === 'number') {
+        return node.raw === 'π' ? 'π' :
+               node.raw === 'e' ? 'e' :
+               fmt(node.value);
+      }
+
+      if (node.type === 'variable') return node.name;
+      if (node.type === 'group') return `(${renderExpression(node.child)})`;
+
+      if (node.type === 'unary') {
+        return node.op === '-' ?
+          `−${renderExpression(node.child)}` :
+          renderExpression(node.child);
+      }
+
+      if (node.type === 'percent') {
+        return `${renderExpression(node.child)}%`;
+      }
+
+      if (node.type === 'func') {
+        return `${node.name}(${renderExpression(node.arg)})`;
+      }
+
+      if (node.type === 'binary') {
+        const sym = {
+          '*': '×',
+          '/': '÷',
+          '^': '^',
+          '+': '+',
+          '-': '−'
+        }[node.op];
+
+        return `${renderExpression(node.left)} ${sym} ${renderExpression(node.right)}`;
+      }
+
+      return '?';
+    }
+
+    function evaluateAst(node, xValue, steps) {
+      if (node.type === 'number') return node.value;
+
+      if (node.type === 'variable') {
+        if (node.name !== 'x') {
+          throw new Error('A variável y é usada nas superfícies 3D. Nesta calculadora, use x ou um número.');
+        }
+
+        if (typeof xValue !== 'number') {
+          throw new Error('A expressão tem x. Para encontrar x, escreva uma equação com =, como 2x + 3 = 11.');
+        }
+
+        return xValue;
+      }
+
+      if (node.type === 'group') {
+        return evaluateAst(node.child, xValue, steps);
+      }
+
+      if (node.type === 'unary') {
+        const n = evaluateAst(node.child, xValue, steps);
+        const v = node.op === '-' ? -n : n;
+
+        if (node.op === '-') {
+          steps.push({
+            math: `−(${fmt(n)}) = ${fmt(v)}`,
+            detail: 'Aplicamos o sinal negativo ao valor.'
+          });
+        }
+
+        return v;
+      }
+
+      if (node.type === 'percent') {
+        const n = evaluateAst(node.child, xValue, steps);
+        const v = n / 100;
+
+        steps.push({
+          math: `${fmt(n)}% = ${fmt(n)} ÷ 100 = ${fmt(v)}`,
+          detail: 'Porcentagem significa “a cada 100”.'
+        });
+
+        return v;
+      }
+
+      if (node.type === 'func') {
+        const n = evaluateAst(node.arg, xValue, steps);
+        let v;
+
+        if (node.name === 'sqrt') {
+          if (n < 0) throw new Error('A raiz quadrada real de um número negativo não está definida.');
+          v = Math.sqrt(n);
+        } else if (node.name === 'abs') {
+          v = Math.abs(n);
+        } else if (node.name === 'sin') {
+          v = Math.sin(n);
+        } else if (node.name === 'cos') {
+          v = Math.cos(n);
+        } else if (node.name === 'tan') {
+          v = Math.tan(n);
+        } else if (node.name === 'ln') {
+          if (n <= 0) throw new Error('ln só aceita valores maiores que zero.');
+          v = Math.log(n);
+        } else {
+          if (n <= 0) throw new Error('log só aceita valores maiores que zero.');
+          v = Math.log10(n);
+        }
+
+        const details = {
+          sqrt: 'Calculamos a raiz quadrada.',
+          abs: 'Tomamos o valor absoluto.',
+          sin: 'Calculamos o seno em radianos.',
+          cos: 'Calculamos o cosseno em radianos.',
+          tan: 'Calculamos a tangente em radianos.',
+          ln: 'Calculamos o logaritmo natural.',
+          log: 'Calculamos o logaritmo decimal.'
+        };
+
+        steps.push({
+          math: `${node.name}(${fmt(n)}) = ${fmt(v)}`,
+          detail: details[node.name]
+        });
+
+        return v;
+      }
+
+      const a = evaluateAst(node.left, xValue, steps);
+      const b = evaluateAst(node.right, xValue, steps);
+      let v;
+
+      const sym = {
+        '*': '×',
+        '/': '÷',
+        '^': '^',
+        '+': '+',
+        '-': '−'
+      }[node.op];
+
+      if (node.op === '+') v = a + b;
+      else if (node.op === '-') v = a - b;
+      else if (node.op === '*') v = a * b;
+      else if (node.op === '/') {
+        if (Math.abs(b) < 1e-14) throw new Error('Não é possível dividir por zero.');
+        v = a / b;
+      } else if (node.op === '^') {
+        v = Math.pow(a, b);
+        if (!Number.isFinite(v)) throw new Error('Essa potência não produziu um resultado real finito.');
+      }
+
+      steps.push({
+        math: `${fmt(a)} ${sym} ${fmt(b)} = ${fmt(v)}`,
+        detail: ({
+          '+': 'Somamos os valores.',
+          '-': 'Calculamos a diferença.',
+          '*': 'Multiplicamos os valores.',
+          '/': 'Dividimos o primeiro valor pelo segundo.',
+          '^': 'Calculamos a potência.'
+        })[node.op]
+      });
+
+      return v;
+    }
+
+    const nearZero = (n) => Math.abs(n) < 1e-10;
+
+    function addLinear(a, b, c, d) {
+      return { a: a + c, b: b + d };
+    }
+
+    function scaleLinear(v, s) {
+      return { a: v.a * s, b: v.b * s };
+    }
+
+    function linearize(node) {
+      if (node.type === 'number') return { a: 0, b: node.value };
+
+      if (node.type === 'variable') {
+        if (node.name === 'y') {
+          throw new Error('A calculadora de equações usa x como incógnita. Use y somente na seção de superfícies 3D.');
+        }
+
+        return { a: 1, b: 0 };
+      }
+
+      if (node.type === 'group') return linearize(node.child);
+
+      if (node.type === 'unary') {
+        return scaleLinear(linearize(node.child), node.op === '-' ? -1 : 1);
+      }
+
+      if (node.type === 'percent') {
+        return scaleLinear(linearize(node.child), .01);
+      }
+
+      if (node.type === 'func') {
+        const l = linearize(node.arg);
+
+        if (!nearZero(l.a)) {
+          throw new Error('Para resolver uma equação, x precisa aparecer de forma linear; não use x dentro de uma raiz ou função trigonométrica.');
+        }
+
+        const steps = [];
+        return { a: 0, b: evaluateAst(node, undefined, steps) };
+      }
+
+      const left = linearize(node.left);
+      const right = linearize(node.right);
+
+      if (node.op === '+') return addLinear(left.a,left.b,right.a,right.b);
+      if (node.op === '-') return addLinear(left.a,left.b,-right.a,-right.b);
+
+      if (node.op === '*') {
+        if (!nearZero(left.a) && !nearZero(right.a)) {
+          throw new Error('Esta equação tem x multiplicado por x, então não é uma equação linear de 1º grau.');
+        }
+
+        if (!nearZero(left.a)) return scaleLinear(left,right.b);
+        if (!nearZero(right.a)) return scaleLinear(right,left.b);
+
+        return { a: 0, b: left.b * right.b };
+      }
+
+      if (node.op === '/') {
+        if (!nearZero(right.a)) {
+          throw new Error('Não divida por uma expressão que contém x para resolver uma equação linear.');
+        }
+
+        if (nearZero(right.b)) {
+          throw new Error('Não é possível dividir por zero.');
+        }
+
+        return scaleLinear(left,1/right.b);
+      }
+
+      if (node.op === '^') {
+        if (!nearZero(right.a)) {
+          throw new Error('O expoente não pode conter x em uma equação linear.');
+        }
+
+        if (!nearZero(left.a)) {
+          if (nearZero(right.b-1)) return left;
+          if (nearZero(right.b)) return { a: 0, b: 1 };
+
+          throw new Error('A potência de x precisa ser 1 para esta ferramenta resolver a equação do 1º grau.');
+        }
+
+        return { a: 0, b: Math.pow(left.b,right.b) };
+      }
+
+      throw new Error('Operação não disponível nesta equação.');
+    }
+
+    function termText(coef, variable = 'x', first = true) {
+      if (nearZero(coef)) return '';
+
+      const sign = coef < 0 ? '−' : '+';
+      const abs = Math.abs(coef);
+      const number = (nearZero(abs - 1) && variable) ? '' : fmt(abs);
+      const body = variable ? `${number}${variable}` : fmt(abs);
+
+      if (first) return (coef < 0 ? '−' : '') + body;
+
+      return ` ${sign} ${body}`;
+    }
+
+    function linearText(l) {
+      let s = '';
+
+      if (!nearZero(l.a)) s = termText(l.a,'x',true);
+      if (!nearZero(l.b)) s += termText(l.b,'',s === '');
+
+      return s || '0';
+    }
+
+    function tidySide(l) {
+      return linearText(l);
+    }
+
+    function fmtEquation(a,b) {
+      return `${a} = ${b}`;
+    }
+
+    function renderOutput(prompt, steps, finalText, errorText) {
+      output.replaceChildren();
+
+      const promptLine = document.createElement('div');
+      promptLine.className = 'teacherOutputPrompt';
+      promptLine.textContent = `> ${prompt}`;
+      output.appendChild(promptLine);
+
+      if (steps && steps.length) {
+        const list = document.createElement('ol');
+        list.className = 'teacherStepList';
+
+        steps.forEach((step) => {
+          const li = document.createElement('li');
+          const wrap = document.createElement('div');
+          const math = document.createElement('div');
+
+          math.textContent = typeof step === 'string' ? step : step.math;
+          wrap.appendChild(math);
+
+          if (typeof step !== 'string' && step.detail) {
+            const detail = document.createElement('span');
+            detail.className = 'teacherStepDetail';
+            detail.textContent = step.detail;
+            wrap.appendChild(detail);
+          }
+
+          li.appendChild(wrap);
+          list.appendChild(li);
+        });
+
+        output.appendChild(list);
+      }
+
+      if (finalText) {
+        const final = document.createElement('div');
+        final.className = 'teacherFinal';
+        final.textContent = finalText;
+        output.appendChild(final);
+      }
+
+      if (errorText) {
+        const err = document.createElement('div');
+        err.className = 'teacherError';
+        err.textContent = errorText;
+        output.appendChild(err);
+      }
+    }
+
+    function solveEquation(source) {
+      const pieces = source.split('=');
+
+      if (
+        pieces.length !== 2 ||
+        !pieces[0].trim() ||
+        !pieces[1].trim()
+      ) {
+        throw new Error('Escreva uma única igualdade, por exemplo: 2x + 3 = 11.');
+      }
+
+      const leftAst = parseMath(pieces[0]);
+      const rightAst = parseMath(pieces[1]);
+
+      const left = linearize(leftAst);
+      const right = linearize(rightAst);
+      const steps = [];
+
+      const cleanLeft = tidySide(left);
+      const cleanRight = tidySide(right);
+
+      const originalLeft = normalizeMath(pieces[0]).replace(/\s+/g, '');
+      const originalRight = normalizeMath(pieces[1]).replace(/\s+/g, '');
+      const normalizedCleanLeft = normalizeMath(cleanLeft).replace(/\s+/g, '');
+      const normalizedCleanRight = normalizeMath(cleanRight).replace(/\s+/g, '');
+
+      if (
+        originalLeft !== normalizedCleanLeft ||
+        originalRight !== normalizedCleanRight
+      ) {
+        steps.push({
+          math: fmtEquation(cleanLeft, cleanRight),
+          detail: 'Simplificamos os dois lados e aplicamos a distributiva quando há parênteses.'
+        });
+      }
+
+      const coefficient = left.a - right.a;
+      const rhs = right.b - left.b;
+
+      if (!nearZero(left.b)) {
+        const actionText = left.b > 0 ?
+          `subtraia ${fmt(left.b)}` :
+          `some ${fmt(-left.b)}`;
+
+        steps.push({
+          math: fmtEquation(
+            tidySide({a:left.a,b:0}),
+            tidySide({a:right.a,b:rhs})
+          ),
+          detail: `Faça a mesma operação nos dois lados para eliminar o termo constante: ${actionText}.`
+        });
+      }
+
+      if (!nearZero(right.a)) {
+        const rightTerm = tidySide({a:right.a,b:0});
+
+        steps.push({
+          math: fmtEquation(
+            tidySide({a:coefficient,b:0}),
+            fmt(rhs)
+          ),
+          detail: `Subtraia ${rightTerm} dos dois lados para deixar os termos com x em um único lado.`
+        });
+      }
+
+      if (nearZero(coefficient)) {
+        if (nearZero(rhs)) {
+          return {
+            steps,
+            final: 'Todos os valores de x satisfazem a igualdade.',
+            extra: 'Os dois lados se simplificaram para a mesma expressão.'
+          };
+        }
+
+        return {
+          steps,
+          final: 'Não existe valor de x que satisfaça a igualdade.',
+          extra: 'Os termos com x se cancelaram, mas sobraram números diferentes.'
+        };
+      }
+
+      if (steps.length === 0) {
+        steps.push({
+          math: fmtEquation(tidySide({a:coefficient,b:0}), fmt(rhs)),
+          detail: nearZero(coefficient - 1) ?
+            'x já está isolado.' :
+            'A equação está simplificada. Agora vamos isolar x.'
+        });
+      }
+
+      const answer = rhs / coefficient;
+
+      if (nearZero(coefficient - 1)) {
+        if (!steps.some(step =>
+          typeof step.math === 'string' &&
+          step.math.replace(/[−–—]/g, '-') ===
+          `x = ${fmt(rhs)}`.replace(/[−–—]/g, '-')
+        )) {
+          steps.push({
+            math: `x = ${fmt(rhs)}`,
+            detail: 'O coeficiente de x é 1, então x já está isolado.'
+          });
+        }
+      } else if (nearZero(coefficient + 1)) {
+        steps.push({
+          math: `x = ${fmt(answer)}`,
+          detail: 'Multiplicamos os dois lados por −1 para deixar x positivo.'
+        });
+      } else {
+        steps.push({
+          math: `x = ${fmt(rhs)} ÷ ${fmt(coefficient)} = ${fmt(answer)}`,
+          detail: `Dividimos os dois lados por ${fmt(coefficient)} para isolar x.`
+        });
+      }
+
+      const leftCheckSteps = [];
+      const rightCheckSteps = [];
+
+      const leftValue = evaluateAst(leftAst, answer, leftCheckSteps);
+      const rightValue = evaluateAst(rightAst, answer, rightCheckSteps);
+
+      steps.push({
+        math: `Conferência: ${fmt(leftValue)} = ${fmt(rightValue)}`,
+        detail: nearZero(leftValue - rightValue) ?
+          'Substituímos o valor encontrado na equação original. Os dois lados são iguais.' :
+          'Os dois lados não coincidiram; confira a expressão e os passos.'
+      });
+
+      return { steps, final: `Resposta: x = ${fmt(answer)}` };
+    }
+
+    $('teacherCalcForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const source = expressionInput.value.trim();
+
+      if (!source) {
+        renderOutput('Nenhuma expressão', [], '', 'Digite uma conta ou equação primeiro.');
+        return;
+      }
+
+      try {
+        if (source.includes('=')) {
+          const solved = solveEquation(source);
+          const steps = solved.steps.slice();
+
+          if (solved.extra) {
+            steps.push({ math: solved.extra, detail: '' });
+          }
+
+          renderOutput(source, steps, solved.final);
+        } else {
+          const ast = parseMath(source);
+          const steps = [];
+          const result = evaluateAst(ast, undefined, steps);
+
+          if (!steps.length) {
+            steps.push({
+              math: `${fmt(result)}`,
+              detail: 'A expressão já está em sua forma numérica.'
+            });
+          }
+
+          renderOutput(source, steps, `Resultado: ${fmt(result)}`);
+        }
+      } catch (error) {
+        renderOutput(
+          source,
+          [],
+          '',
+          error instanceof Error ? error.message : 'Não foi possível resolver essa expressão.'
+        );
+      }
+    });
+
+    document.querySelectorAll('[data-insert]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const input = expressionInput;
+        const start = input.selectionStart ?? input.value.length;
+        const end = input.selectionEnd ?? input.value.length;
+        const insert = button.dataset.insert;
+
+        input.value = input.value.slice(0,start) + insert + input.value.slice(end);
+        input.focus();
+
+        const cursor = start + insert.length;
+        input.setSelectionRange(cursor,cursor);
+      });
+    });
+
+    document.querySelectorAll('[data-example]').forEach((button) => {
+      button.addEventListener('click', () => {
+        expressionInput.value = button.dataset.example;
+        $('teacherCalcForm').requestSubmit();
+      });
+    });
+
+    $('teacherCalcForm').requestSubmit();
+
+    // ==========================================================
+    // 2D FUNCTION GRAPH
+    // ==========================================================
+
+    const graphCanvas = $('teacherGraphCanvas');
+    const graphCtx = graphCanvas.getContext('2d');
+
+    function drawGraph() {
+      if (!graphCanvas || !graphCtx) return;
+
+      const expression = $('teacherGraphExpression').value.trim() || 'x';
+      let min = Number($('teacherGraphMin').value);
+      let max = Number($('teacherGraphMax').value);
+
+      if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) {
+        min = -10;
+        max = 10;
+      }
+
+      min = Math.max(-1000,min);
+      max = Math.min(1000,max);
+
+      let ast;
+
+      try {
+        ast = parseMath(expression);
+
+        if (expression.includes('=')) {
+          throw new Error('Digite apenas a expressão de y, sem “y =”.');
+        }
+      } catch (e) {
+        paintGraphGrid(min,max);
+        $('teacherGraphRows').innerHTML = `<tr><td colspan="3">${escapeHTML(e.message)}</td></tr>`;
+        return;
+      }
+
+      const W = graphCanvas.width;
+      const H = graphCanvas.height;
+      const pad = {l:65,r:28,t:25,b:50};
+      const xScale = (W-pad.l-pad.r)/(max-min);
+      const samples = [];
+
+      for (let px=0; px<=W-pad.l-pad.r; px+=2) {
+        const x = min + px/xScale;
+        const steps = [];
+
+        try {
+          const y = evaluateAst(ast,x,steps);
+
+          if (Number.isFinite(y) && Math.abs(y)<1e5) {
+            samples.push({x,y});
+          } else {
+            samples.push(null);
+          }
+        } catch (_) {
+          samples.push(null);
+        }
+      }
+
+      const allY = samples.filter(Boolean).map(p => p.y);
+      let low = allY.length ? Math.min(...allY) : -10;
+      let high = allY.length ? Math.max(...allY) : 10;
+
+      if (low === high) {
+        low -= 1;
+        high += 1;
+      }
+
+      const span = high-low;
+      low -= span*.12;
+      high += span*.12;
+
+      const yScale = (H-pad.t-pad.b)/(high-low);
+      const X = x => pad.l+(x-min)*xScale;
+      const Y = y => H-pad.b-(y-low)*yScale;
+
+      graphCtx.clearRect(0,0,W,H);
+      graphCtx.fillStyle = '#fff';
+      graphCtx.fillRect(0,0,W,H);
+      graphCtx.strokeStyle = '#e7e3ee';
+      graphCtx.lineWidth = 1;
+      graphCtx.font = '12px system-ui';
+      graphCtx.fillStyle = '#777285';
+
+      const xStep = niceStep(max-min);
+      const yStep = niceStep(high-low);
+
+      for (let x=Math.ceil(min/xStep)*xStep; x<=max+1e-8; x+=xStep) {
+        const px = X(x);
+        graphCtx.beginPath();
+        graphCtx.moveTo(px,pad.t);
+        graphCtx.lineTo(px,H-pad.b);
+        graphCtx.stroke();
+        graphCtx.fillText(fmt(x),px-9,H-pad.b+20);
+      }
+
+      for (let y=Math.ceil(low/yStep)*yStep; y<=high+1e-8; y+=yStep) {
+        const py = Y(y);
+        graphCtx.beginPath();
+        graphCtx.moveTo(pad.l,py);
+        graphCtx.lineTo(W-pad.r,py);
+        graphCtx.stroke();
+        graphCtx.fillText(fmt(y),8,py+4);
+      }
+
+      graphCtx.strokeStyle = '#4d4860';
+      graphCtx.lineWidth = 1.8;
+
+      if (min<=0 && max>=0) {
+        graphCtx.beginPath();
+        graphCtx.moveTo(X(0),pad.t);
+        graphCtx.lineTo(X(0),H-pad.b);
+        graphCtx.stroke();
+      }
+
+      if (low<=0 && high>=0) {
+        graphCtx.beginPath();
+        graphCtx.moveTo(pad.l,Y(0));
+        graphCtx.lineTo(W-pad.r,Y(0));
+        graphCtx.stroke();
+      }
+
+      graphCtx.fillStyle = '#4d4860';
+      graphCtx.font = 'bold 13px system-ui';
+      graphCtx.fillText('y',pad.l-22,pad.t+8);
+      graphCtx.fillText('x',W-pad.r-3,H-pad.b+35);
+
+      graphCtx.strokeStyle = '#69569d';
+      graphCtx.lineWidth = 3;
+      graphCtx.lineJoin = 'round';
+      graphCtx.lineCap = 'round';
+      graphCtx.beginPath();
+
+      let started = false;
+      let previous = null;
+
+      samples.forEach(p => {
+        if (!p) {
+          started = false;
+          previous = null;
+          return;
+        }
+
+        if (previous && Math.abs(p.y-previous.y)>(high-low)*.5) {
+          started = false;
+        }
+
+        if (!started) {
+          graphCtx.moveTo(X(p.x),Y(p.y));
+          started = true;
+        } else {
+          graphCtx.lineTo(X(p.x),Y(p.y));
+        }
+
+        previous = p;
+      });
+
+      graphCtx.stroke();
+
+      const tbody = $('teacherGraphRows');
+      tbody.replaceChildren();
+
+      const interval = max-min;
+      const count = 11;
+
+      for (let i=0;i<count;i++) {
+        const x = min+interval*i/(count-1);
+        const stepList = [];
+        let yText = 'indefinido';
+        const substitution = `f(${fmt(x)})`;
+
+        try {
+          const y = evaluateAst(ast,x,stepList);
+
+          if (Number.isFinite(y)) yText = fmt(y);
+        } catch (_) {
+          yText = 'fora do domínio';
+        }
+
+        const tr = document.createElement('tr');
+
+        [fmt(x),substitution,yText].forEach(v => {
+          const td = document.createElement('td');
+          td.textContent = v;
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      }
+    }
+
+    function niceStep(span) {
+      const rough = span/9;
+      const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1e-6))));
+      const n = rough/pow;
+      return (n<1.5 ? 1 : n<3.5 ? 2 : n<7.5 ? 5 : 10)*pow;
+    }
+
+    function paintGraphGrid(min=-10,max=10) {
+      const W = graphCanvas.width;
+      const H = graphCanvas.height;
+
+      graphCtx.clearRect(0,0,W,H);
+      graphCtx.fillStyle = '#fff';
+      graphCtx.fillRect(0,0,W,H);
+      graphCtx.strokeStyle = '#e7e3ee';
+
+      for (let i=0;i<=10;i++) {
+        const x = 65+i*(W-93)/10;
+        graphCtx.beginPath();
+        graphCtx.moveTo(x,20);
+        graphCtx.lineTo(x,H-50);
+        graphCtx.stroke();
+
+        const y = 20+i*(H-70)/10;
+        graphCtx.beginPath();
+        graphCtx.moveTo(65,y);
+        graphCtx.lineTo(W-28,y);
+        graphCtx.stroke();
+      }
+
+      graphCtx.fillStyle = '#777285';
+      graphCtx.font = '14px system-ui';
+      graphCtx.fillText('Digite uma função válida para desenhar o gráfico.',75,45);
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g,ch=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+      }[ch]));
+    }
+
+    $('teacherGraphForm').addEventListener('submit',(e)=>{
+      e.preventDefault();
+      drawGraph();
+    });
+
+    $('teacherGraphReset').addEventListener('click',()=>{
+      $('teacherGraphExpression').value = 'x^2 - 4';
+      $('teacherGraphMin').value = -10;
+      $('teacherGraphMax').value = 10;
+      drawGraph();
+    });
+
+    drawGraph();
+
+    // ==========================================================
+    // FREEHAND DRAWING BOARD
+    // ==========================================================
+
+    const drawCanvas = $('teacherDrawCanvas');
+    const drawCtx = drawCanvas.getContext('2d');
+    let drawing = false;
+    let erasing = false;
+    let lastPoint = null;
+    const strokes = [];
+    let activeStroke = null;
+
+    function drawPoint(event) {
+      const rect = drawCanvas.getBoundingClientRect();
+
+      return {
+        x:(event.clientX-rect.left)*drawCanvas.width/rect.width,
+        y:(event.clientY-rect.top)*drawCanvas.height/rect.height
+      };
+    }
+
+    function strokeColor() {
+      return erasing ? '#ffffff' : $('teacherDrawColor').value;
+    }
+
+    function strokeWidth() {
+      return Number($('teacherDrawSize').value) *
+        drawCanvas.width/drawCanvas.getBoundingClientRect().width;
+    }
+
+    function redrawBoard() {
+      drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+
+      strokes.forEach(stroke=>{
+        if (!stroke.points.length) return;
+
+        drawCtx.beginPath();
+        drawCtx.strokeStyle = stroke.color;
+        drawCtx.lineWidth = stroke.width;
+        drawCtx.lineCap = 'round';
+        drawCtx.lineJoin = 'round';
+
+        drawCtx.moveTo(stroke.points[0].x,stroke.points[0].y);
+        stroke.points.slice(1).forEach(p=>drawCtx.lineTo(p.x,p.y));
+
+        if (stroke.points.length===1) {
+          drawCtx.lineTo(stroke.points[0].x+.1,stroke.points[0].y+.1);
+        }
+
+        drawCtx.stroke();
+      });
+    }
+
+    drawCanvas.addEventListener('pointerdown',(event)=>{
+      event.preventDefault();
+      drawing = true;
+      drawCanvas.setPointerCapture(event.pointerId);
+      lastPoint = drawPoint(event);
+
+      activeStroke = {
+        color:strokeColor(),
+        width:strokeWidth(),
+        points:[lastPoint]
+      };
+
+      strokes.push(activeStroke);
+      redrawBoard();
+    });
+
+    drawCanvas.addEventListener('pointermove',(event)=>{
+      if (!drawing || !activeStroke) return;
+      event.preventDefault();
+
+      const p = drawPoint(event);
+      activeStroke.points.push(p);
+      redrawBoard();
+      lastPoint = p;
+    });
+
+    function finishDrawing() {
+      drawing = false;
+      activeStroke = null;
+      lastPoint = null;
+    }
+
+    drawCanvas.addEventListener('pointerup',finishDrawing);
+    drawCanvas.addEventListener('pointercancel',finishDrawing);
+    drawCanvas.addEventListener('lostpointercapture',finishDrawing);
+
+    $('teacherDrawSize').addEventListener('input',()=>{
+      $('teacherDrawSizeValue').textContent = `${$('teacherDrawSize').value} px`;
+    });
+
+    $('teacherEraser').addEventListener('click',()=>{
+      erasing = !erasing;
+
+      $('teacherEraser').textContent = erasing ?
+        'Voltar ao marcador' : 'Borracha';
+
+      $('teacherEraser').classList.toggle('teacherPrimary',erasing);
+    });
+
+    $('teacherDrawUndo').addEventListener('click',()=>{
+      strokes.pop();
+      redrawBoard();
+    });
+
+    $('teacherDrawClear').addEventListener('click',()=>{
+      strokes.length = 0;
+      redrawBoard();
+    });
+
+    redrawBoard();
+
+    // ==========================================================
+    // STICKY NOTES
+    // ==========================================================
+
+    const NOTES_KEY = 'mathTeacherModeNotes_v1';
+    const notesGrid = $('teacherNotesGrid');
+    const toast = $('teacherNoteToast');
+
+    const noteColors = [
+      '#fff2a8',
+      '#dff3d8',
+      '#dceaff',
+      '#f8dce9',
+      '#e9defc',
+      '#ffe0c4'
+    ];
+
+    let noteId = 0;
+    let notes = [];
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(NOTES_KEY)||'[]');
+
+      if (Array.isArray(saved)) {
+        notes = saved
+          .filter(n=>n&&typeof n==='object')
+          .slice(0,50);
+      }
+    } catch (_) {
+      notes = [];
+    }
+
+    function saveNotes(message='Alterações salvas neste navegador.') {
+      try {
+        localStorage.setItem(NOTES_KEY,JSON.stringify(notes));
+        toast.textContent = message;
+      } catch (_) {
+        toast.textContent = 'Não foi possível salvar as notas neste navegador.';
+      }
+    }
+
+    function drawNotes() {
+      notesGrid.replaceChildren();
+
+      notes.forEach(note=>{
+        const card = document.createElement('article');
+        card.className = 'teacherSticky';
+        card.style.background = note.color||noteColors[0];
+
+        const top = document.createElement('div');
+        top.className = 'teacherStickyTop';
+
+        const title = document.createElement('input');
+        title.className = 'teacherStickyTitle';
+        title.value = note.title||'Nova nota';
+        title.maxLength = 80;
+        title.setAttribute('aria-label','Título da nota');
+
+        title.addEventListener('input',()=>{
+          note.title = title.value;
+          saveNotes('Título salvo.');
+        });
+
+        const color = document.createElement('button');
+        color.type = 'button';
+        color.textContent = '◌';
+        color.title = 'Mudar a cor da nota';
+        color.setAttribute('aria-label','Mudar a cor da nota');
+
+        color.addEventListener('click',()=>{
+          const i = noteColors.indexOf(note.color);
+          note.color = noteColors[(i+1+noteColors.length)%noteColors.length];
+          card.style.background = note.color;
+          saveNotes('Cor da nota salva.');
+        });
+
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.textContent = '×';
+        del.title = 'Excluir nota';
+        del.setAttribute('aria-label','Excluir nota');
+
+        del.addEventListener('click',()=>{
+          notes = notes.filter(n=>n.id!==note.id);
+          drawNotes();
+          saveNotes('Nota excluída.');
+        });
+
+        top.append(title,color,del);
+
+        const area = document.createElement('textarea');
+        area.value = note.text||'';
+        area.maxLength = 5000;
+        area.placeholder = 'Escreva suas ideias, contas ou lembretes...';
+        area.setAttribute('aria-label','Conteúdo da nota');
+
+        area.addEventListener('input',()=>{
+          note.text = area.value;
+          saveNotes('Texto da nota salvo.');
+        });
+
+        card.append(top,area);
+        notesGrid.appendChild(card);
+      });
+
+      if (!notes.length) {
+        const empty = document.createElement('p');
+        empty.className = 'teacherMuted';
+        empty.textContent = 'Ainda não há notas. Crie uma para começar.';
+        notesGrid.appendChild(empty);
+      }
+    }
+
+    $('teacherAddNote').addEventListener('click',()=>{
+      if (notes.length>=50) {
+        toast.textContent = 'Você chegou ao limite de 50 notas.';
+        return;
+      }
+
+      noteId++;
+
+      notes.push({
+        id:`${Date.now()}-${noteId}`,
+        title:'Nova nota',
+        text:'',
+        color:noteColors[notes.length%noteColors.length]
+      });
+
+      drawNotes();
+      saveNotes('Nova nota criada.');
+
+      const first = notesGrid.querySelector('.teacherStickyTitle');
+      if (first) first.focus();
+    });
+
+    $('teacherClearNotes').addEventListener('click',()=>{
+      if (!notes.length) {
+        toast.textContent = 'Não há notas para apagar.';
+        return;
+      }
+
+      if (!window.confirm('Apagar todas as notas adesivas salvas neste navegador?')) return;
+
+      notes = [];
+      drawNotes();
+      saveNotes('Todas as notas foram apagadas.');
+    });
+
+    drawNotes();
+
+    // ==========================================================
+    // 3D SURFACE GRAPHER
+    // ==========================================================
+
+    const surfaceCanvas = $('teacherSurfaceCanvas');
+    const surfaceCtx = surfaceCanvas.getContext('2d');
+
+    const surfaceCamera = {
+      yaw:0.72,
+      pitch:0.78,
+      zoom:215
+    };
+
+    let surfaceDragging = false;
+    let surfaceLastPointer = null;
+
+    function evaluateSurfaceAst(node,x,y) {
+      if (node.type==='number') return node.value;
+
+      if (node.type==='variable') {
+        if (node.name==='x') return x;
+        if (node.name==='y') return y;
+        throw new Error(`Variável desconhecida: ${node.name}`);
+      }
+
+      if (node.type==='group') return evaluateSurfaceAst(node.child,x,y);
+
+      if (node.type==='unary') {
+        const n = evaluateSurfaceAst(node.child,x,y);
+        return node.op==='-' ? -n : n;
+      }
+
+      if (node.type==='percent') {
+        return evaluateSurfaceAst(node.child,x,y)/100;
+      }
+
+      if (node.type==='func') {
+        const n = evaluateSurfaceAst(node.arg,x,y);
+
+        if (node.name==='sqrt') return n<0 ? NaN : Math.sqrt(n);
+        if (node.name==='abs') return Math.abs(n);
+        if (node.name==='sin') return Math.sin(n);
+        if (node.name==='cos') return Math.cos(n);
+        if (node.name==='tan') return Math.tan(n);
+        if (node.name==='ln') return n<=0 ? NaN : Math.log(n);
+        if (node.name==='log') return n<=0 ? NaN : Math.log10(n);
+
+        throw new Error(`Função desconhecida: ${node.name}`);
+      }
+
+      if (node.type==='binary') {
+        const a = evaluateSurfaceAst(node.left,x,y);
+        const b = evaluateSurfaceAst(node.right,x,y);
+
+        if (node.op==='+') return a+b;
+        if (node.op==='-') return a-b;
+        if (node.op==='*') return a*b;
+        if (node.op==='/') return Math.abs(b)<1e-14 ? NaN : a/b;
+        if (node.op==='^') return Math.pow(a,b);
+      }
+
+      return NaN;
+    }
+
+    function project3D(x,y,z,camera,width,height,offsetX=0,scaleOverride=null) {
+      const yaw = camera.yaw;
+      const pitch = camera.pitch;
+
+      const xx = x*Math.cos(yaw)-y*Math.sin(yaw);
+      const yy = x*Math.sin(yaw)+y*Math.cos(yaw);
+
+      const screenDepth = yy*Math.sin(pitch)+z*Math.cos(pitch);
+      const vertical = yy*Math.cos(pitch)-z*Math.sin(pitch);
+      const scale = scaleOverride ?? camera.zoom;
+
+      return {
+        x:width/2+offsetX+xx*scale,
+        y:height*.56+vertical*scale,
+        depth:screenDepth
+      };
+    }
+
+    function pathProjected(ctx,points,close=false) {
+      if (!points.length) return;
+
+      ctx.beginPath();
+      ctx.moveTo(points[0].x,points[0].y);
+
+      for (let i=1;i<points.length;i++) {
+        ctx.lineTo(points[i].x,points[i].y);
+      }
+
+      if (close) ctx.closePath();
+    }
+
+    function draw3DSurface() {
+      if (!surfaceCanvas||!surfaceCtx) return;
+
+      const ctx = surfaceCtx;
+      const W = surfaceCanvas.width;
+      const H = surfaceCanvas.height;
+
+      const expression = $('teacherSurfaceExpression').value.trim()||'10 - x^2 - y^2';
+      let min = Number($('teacherSurfaceMin').value);
+      let max = Number($('teacherSurfaceMax').value);
+
+      const error = $('teacherSurfaceError');
+      error.textContent = '';
+
+      if (!Number.isFinite(min)||!Number.isFinite(max)||min>=max) {
+        error.textContent = 'O limite máximo precisa ser maior que o limite mínimo.';
+        paint3DSurfaceFallback('Confira os limites da função.');
+        return;
+      }
+
+      min = Math.max(-20,min);
+      max = Math.min(20,max);
+
+      let ast;
+
+      try {
+        ast = parseMath(expression);
+
+        if (expression.includes('=')) {
+          throw new Error('Digite a expressão da função sem “z =”.');
+        }
+      } catch (e) {
+        error.textContent = e.message;
+        paint3DSurfaceFallback('Digite uma função válida em x e y.');
+        return;
+      }
+
+      const N = 30;
+      const grid = [];
+      const values = [];
+
+      for (let iy=0;iy<=N;iy++) {
+        const row = [];
+        const y = min+(max-min)*iy/N;
+
+        for (let ix=0;ix<=N;ix++) {
+          const x = min+(max-min)*ix/N;
+          let z = NaN;
+
+          try {
+            z = evaluateSurfaceAst(ast,x,y);
+          } catch (_) {
+            z = NaN;
+          }
+
+          if (!Number.isFinite(z)||Math.abs(z)>1e6) {
+            z = NaN;
+          } else {
+            values.push(z);
+          }
+
+          row.push({x,y,z});
+        }
+
+        grid.push(row);
+      }
+
+      if (!values.length) {
+        error.textContent = 'Esta função não tem valores reais visíveis nesse intervalo.';
+        paint3DSurfaceFallback('Nenhum ponto real para desenhar.');
+        return;
+      }
+
+      const low = Math.min(...values);
+      const high = Math.max(...values);
+      const mid = (high+low)/2;
+      const range = Math.max(high-low,1e-6);
+
+      const projectPoint = point => project3D(
+        (point.x-(min+max)/2)/((max-min)/2),
+        (point.y-(min+max)/2)/((max-min)/2),
+        Math.max(-.95,Math.min(.95,((point.z-mid)/range)*1.45)),
+        surfaceCamera,W,H,0,surfaceCamera.zoom
+      );
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#141622';
+      ctx.fillRect(0,0,W,H);
+
+      // Floor grid.
+      ctx.strokeStyle = 'rgba(177,174,211,.20)';
+      ctx.lineWidth = 1;
+
+      const floor = -.99;
+
+      for (let i=0;i<=10;i++) {
+        const v = -1+i*.2;
+
+        let a = project3D(-1,v,floor,surfaceCamera,W,H);
+        let b = project3D(1,v,floor,surfaceCamera,W,H);
+
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+
+        a = project3D(v,-1,floor,surfaceCamera,W,H);
+        b = project3D(v,1,floor,surfaceCamera,W,H);
+
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+      }
+
+      const cells = [];
+
+      for (let iy=0;iy<N;iy++) {
+        for (let ix=0;ix<N;ix++) {
+          const source = [
+            grid[iy][ix],
+            grid[iy][ix+1],
+            grid[iy+1][ix+1],
+            grid[iy+1][ix]
+          ];
+
+          if (source.some(p=>!Number.isFinite(p.z))) continue;
+
+          const pts = source.map(projectPoint);
+
+          cells.push({
+            pts,
+            depth:pts.reduce((sum,p)=>sum+p.depth,0)/pts.length,
+            value:source.reduce((sum,p)=>sum+p.z,0)/4
+          });
+        }
+      }
+
+      cells.sort((a,b)=>a.depth-b.depth);
+
+      cells.forEach(cell=>{
+        const normalized = (cell.value-low)/range;
+        const hue = 266-normalized*90;
+        const light = 35+normalized*24;
+
+        pathProjected(ctx,cell.pts,true);
+        ctx.fillStyle = `hsl(${hue} 62% ${light}%)`;
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(237,231,255,.32)';
+        ctx.lineWidth = .65;
+        ctx.stroke();
+      });
+
+      // Coordinate axes.
+      const axes = [
+        {a:[-1.13,0,floor],b:[1.13,0,floor],label:'x'},
+        {a:[0,-1.13,floor],b:[0,1.13,floor],label:'y'},
+        {a:[0,0,-1.03],b:[0,0,1.04],label:'z'}
+      ];
+
+      axes.forEach(axis=>{
+        const a = project3D(...axis.a,surfaceCamera,W,H);
+        const b = project3D(...axis.b,surfaceCamera,W,H);
+
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle = 'rgba(255,255,255,.9)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 17px system-ui';
+        ctx.fillText(axis.label,b.x+5,b.y-4);
+      });
+
+      ctx.fillStyle = 'rgba(17,18,30,.83)';
+      ctx.fillRect(17,17,Math.min(W-34,380),62);
+
+      ctx.fillStyle = '#f4f0ff';
+      ctx.font = 'bold 15px system-ui';
+      ctx.fillText(`z = ${expression}`,29,41,W-60);
+
+      ctx.fillStyle = '#bdb7d9';
+      ctx.font = '12px system-ui';
+      ctx.fillText(`Altura calculada: ${fmt(low)} até ${fmt(high)}`,29,63,W-60);
+    }
+
+    function paint3DSurfaceFallback(message) {
+      const ctx = surfaceCtx;
+      const W = surfaceCanvas.width;
+      const H = surfaceCanvas.height;
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#141622';
+      ctx.fillRect(0,0,W,H);
+
+      ctx.fillStyle = '#ded8f1';
+      ctx.font = '16px system-ui';
+      ctx.fillText(message,28,44,W-56);
+    }
+
+    $('teacherSurfaceDraw').addEventListener('click',draw3DSurface);
+
+    $('teacherSurfaceExpression').addEventListener('keydown',e=>{
+      if (e.key==='Enter') draw3DSurface();
+    });
+
+    $('teacherSurfaceReset').addEventListener('click',()=>{
+      $('teacherSurfaceExpression').value = '10 - x^2 - y^2';
+      $('teacherSurfaceMin').value = -5;
+      $('teacherSurfaceMax').value = 5;
+
+      surfaceCamera.yaw = .72;
+      surfaceCamera.pitch = .78;
+      surfaceCamera.zoom = 215;
+
+      $('teacherSurfaceZoom').value = '215';
+      $('teacherSurfaceZoomValue').textContent = '215';
+
+      draw3DSurface();
+    });
+
+    $('teacherSurfaceCameraReset').addEventListener('click',()=>{
+      surfaceCamera.yaw = .72;
+      surfaceCamera.pitch = .78;
+      draw3DSurface();
+    });
+
+    $('teacherSurfaceZoom').addEventListener('input',()=>{
+      surfaceCamera.zoom = Number($('teacherSurfaceZoom').value);
+      $('teacherSurfaceZoomValue').textContent = String(surfaceCamera.zoom);
+      draw3DSurface();
+    });
+
+    surfaceCanvas.addEventListener('pointerdown',e=>{
+      surfaceDragging = true;
+      surfaceLastPointer = {x:e.clientX,y:e.clientY};
+      surfaceCanvas.setPointerCapture(e.pointerId);
+    });
+
+    surfaceCanvas.addEventListener('pointermove',e=>{
+      if (!surfaceDragging||!surfaceLastPointer) return;
+
+      const dx = e.clientX-surfaceLastPointer.x;
+      const dy = e.clientY-surfaceLastPointer.y;
+
+      surfaceLastPointer = {x:e.clientX,y:e.clientY};
+      surfaceCamera.yaw += dx*.009;
+      surfaceCamera.pitch = Math.max(-1.25,Math.min(1.25,surfaceCamera.pitch+dy*.008));
+
+      draw3DSurface();
+    });
+
+    function stopSurfaceDrag() {
+      surfaceDragging = false;
+      surfaceLastPointer = null;
+    }
+
+    surfaceCanvas.addEventListener('pointerup',stopSurfaceDrag);
+    surfaceCanvas.addEventListener('pointercancel',stopSurfaceDrag);
+    surfaceCanvas.addEventListener('lostpointercapture',stopSurfaceDrag);
+
+    // ==========================================================
+    // LIQUID & LITERS SIMULATOR
+    // ==========================================================
+
+    const liquidCanvas = $('teacherLiquidCanvas');
+    const liquidCtx = liquidCanvas.getContext('2d');
+
+    const liquidCamera = {yaw:.62,pitch:.48};
+
+    let liquidVolumeA = 3.5;
+    let liquidVolumeB = 1.25;
+    let liquidAnimationId = 0;
+    let liquidDragging = false;
+    let liquidLastPointer = null;
+    let liquidMessageTimer = null;
+
+    function liquidConfig(which) {
+      const suffix = which;
+      const shape = $(`teacherLiquidShape${suffix}`).value;
+
+      const a = Math.max(.1,Math.min(10000,Number($(`teacherDimA${suffix}`).value)||.1));
+      const b = Math.max(.1,Math.min(10000,Number($(`teacherDimB${suffix}`).value)||.1));
+      const h = Math.max(.1,Math.min(10000,Number($(`teacherDimH${suffix}`).value)||.1));
+
+      let volumeCm3;
+
+      if (shape==='box') {
+        volumeCm3 = a*b*h;
+      } else if (shape==='cylinder') {
+        volumeCm3 = Math.PI*a*a*h;
+      } else {
+        volumeCm3 = (4/3)*Math.PI*a*a*a;
+      }
+
+      return {
+        which,
+        shape,
+        a,
+        b,
+        h,
+        volumeCm3,
+        capacityLiters:volumeCm3/1000
+      };
+    }
+
+    function updateDimensionLabels(which) {
+      const config = liquidConfig(which);
+      const suffix = which;
+
+      const labelA = $(`teacherDimLabelA${suffix}`);
+      const labelB = $(`teacherDimLabelB${suffix}`);
+      const labelH = $(`teacherDimLabelH${suffix}`);
+      const wrapB = $(`teacherDimWrapB${suffix}`);
+
+      if (config.shape==='box') {
+        labelA.textContent = 'Comprimento (cm)';
+        labelB.textContent = 'Largura (cm)';
+        labelH.textContent = 'Altura (cm)';
+        wrapB.hidden = false;
+
+        $(`teacherDimB${suffix}`).disabled = false;
+        $(`teacherDimH${suffix}`).disabled = false;
+      } else if (config.shape==='cylinder') {
+        labelA.textContent = 'Raio (cm)';
+        labelB.textContent = 'Não usado';
+        labelH.textContent = 'Altura (cm)';
+        wrapB.hidden = true;
+
+        $(`teacherDimB${suffix}`).disabled = true;
+        $(`teacherDimH${suffix}`).disabled = false;
+      } else {
+        labelA.textContent = 'Raio (cm)';
+        labelB.textContent = 'Não usado';
+        labelH.textContent = 'Não usada';
+        wrapB.hidden = true;
+
+        $(`teacherDimB${suffix}`).disabled = true;
+        $(`teacherDimH${suffix}`).disabled = true;
+      }
+    }
+
+    function fmtLiters(value) {
+      return `${Number(value).toLocaleString('pt-BR',{maximumFractionDigits:3})} L`;
+    }
+
+    function fmtMilliliters(valueLiters) {
+      return `${Math.round(valueLiters*1000).toLocaleString('pt-BR')} mL`;
+    }
+
+    function showLiquidMessage(message) {
+      const node = $('teacherLiquidMessage');
+      node.textContent = message;
+
+      if (liquidMessageTimer) clearTimeout(liquidMessageTimer);
+
+      if (message) {
+        liquidMessageTimer = setTimeout(()=>{node.textContent='';},4500);
+      }
+    }
+
+    function updateLiquidStats() {
+      const a = liquidConfig('A');
+      const b = liquidConfig('B');
+
+      liquidVolumeA = Math.max(0,Math.min(a.capacityLiters,liquidVolumeA));
+      liquidVolumeB = Math.max(0,Math.min(b.capacityLiters,liquidVolumeB));
+
+      $('teacherTankCapacityA').textContent = fmtLiters(a.capacityLiters);
+      $('teacherTankCapacityB').textContent = fmtLiters(b.capacityLiters);
+      $('teacherTankCurrentA').textContent = fmtLiters(liquidVolumeA);
+      $('teacherTankCurrentB').textContent = fmtLiters(liquidVolumeB);
+
+      $('teacherTankPercentA').textContent = `${
+        a.capacityLiters ?
+          (liquidVolumeA/a.capacityLiters*100).toLocaleString('pt-BR',{maximumFractionDigits:1}) :
+          '0'
+      }%`;
+
+      $('teacherTankPercentB').textContent = `${
+        b.capacityLiters ?
+          (liquidVolumeB/b.capacityLiters*100).toLocaleString('pt-BR',{maximumFractionDigits:1}) :
+          '0'
+      }%`;
+
+      $('teacherTotalWater').textContent = fmtLiters(liquidVolumeA+liquidVolumeB);
+      $('teacherTotalMl').textContent = fmtMilliliters(liquidVolumeA+liquidVolumeB);
+    }
+
+    function liquidWaterHeight(config,volumeLiters) {
+      const volume = Math.max(0,Math.min(config.volumeCm3,volumeLiters*1000));
+
+      if (config.shape==='box') return config.h*volume/config.volumeCm3;
+      if (config.shape==='cylinder') return config.h*volume/config.volumeCm3;
+
+      // Sphere: solve the spherical-cap volume formula with binary search.
+      const radius = config.a;
+      let low = 0;
+      let high = radius*2;
+
+      for (let i=0;i<48;i++) {
+        const mid = (low+high)/2;
+        const capVolume = Math.PI*mid*mid*(radius-mid/3);
+
+        if (capVolume<volume) low = mid;
+        else high = mid;
+      }
+
+      return (low+high)/2;
+    }
+
+    function tankPoint(x,y,z,offsetX=0,scale=145) {
+      return project3D(
+        x,y,z,liquidCamera,
+        liquidCanvas.width,liquidCanvas.height,
+        offsetX,scale
+      );
+    }
+
+    function drawTankPolygon(points,fill,stroke=null,lineWidth=1,offsetX=0) {
+      const projected = points.map(p=>tankPoint(p[0],p[1],p[2],offsetX,145));
+
+      pathProjected(liquidCtx,projected,true);
+
+      if (fill) {
+        liquidCtx.fillStyle = fill;
+        liquidCtx.fill();
+      }
+
+      if (stroke) {
+        liquidCtx.strokeStyle = stroke;
+        liquidCtx.lineWidth = lineWidth;
+        liquidCtx.stroke();
+      }
+    }
+
+    function drawTankLine(a,b,offsetX,stroke='rgba(235,232,255,.85)',width=1.5,dash=[]) {
+      const p1 = tankPoint(a[0],a[1],a[2],offsetX);
+      const p2 = tankPoint(b[0],b[1],b[2],offsetX);
+
+      liquidCtx.beginPath();
+      liquidCtx.moveTo(p1.x,p1.y);
+      liquidCtx.lineTo(p2.x,p2.y);
+      liquidCtx.strokeStyle = stroke;
+      liquidCtx.lineWidth = width;
+      liquidCtx.setLineDash(dash);
+      liquidCtx.stroke();
+      liquidCtx.setLineDash([]);
+    }
+
+    function drawBoxTank(offsetX,fillFraction,wave) {
+      const x = .82;
+      const y = .58;
+      const zTop = 1.55;
+      const level = Math.max(0,Math.min(1,fillFraction))*zTop;
+
+      const blueFront = 'rgba(48,157,235,.68)';
+      const blueSide = 'rgba(35,111,211,.72)';
+
+      if (level>.001) {
+        drawTankPolygon(
+          [[-x,-y,0],[x,-y,0],[x,-y,level],[-x,-y,level]],
+          blueFront,null,1,offsetX
+        );
+
+        drawTankPolygon(
+          [[x,-y,0],[x,y,0],[x,y,level],[x,-y,level]],
+          blueSide,null,1,offsetX
+        );
+
+        drawTankPolygon(
+          [[-x,-y,level],[x,-y,level],[x,y,level],[-x,y,level]],
+          'rgba(92,202,255,.72)',
+          'rgba(190,238,255,.9)',
+          1.2,
+          offsetX
+        );
+      }
+
+      const bottom = [[-x,-y,0],[x,-y,0],[x,y,0],[-x,y,0]];
+      const top = [[-x,-y,zTop],[x,-y,zTop],[x,y,zTop],[-x,y,zTop]];
+
+      for (let i=0;i<4;i++) {
+        drawTankLine(bottom[i],bottom[(i+1)%4],offsetX,'rgba(235,232,255,.82)',1.6);
+        drawTankLine(top[i],top[(i+1)%4],offsetX,'rgba(235,232,255,.9)',1.8);
+        drawTankLine(bottom[i],top[i],offsetX,'rgba(235,232,255,.8)',1.6);
+      }
+
+      for (const mark of [.25,.5,.75]) {
+        drawTankLine(
+          [-x,-y,mark*zTop],
+          [x,-y,mark*zTop],
+          offsetX,'rgba(255,255,255,.38)',.8,[4,5]
+        );
+      }
+    }
+
+    function drawCylinderTank(offsetX,fillFraction,wave) {
+      const r = .76;
+      const zTop = 1.55;
+      const segments = 48;
+      const level = Math.max(0,Math.min(1,fillFraction))*zTop;
+
+      const ring = (z,radius=r)=>Array.from({length:segments},(_,i)=>{
+        const angle = i*Math.PI*2/segments;
+        const ripple =
+          z===level && level>0 && level<zTop ?
+            Math.sin(angle*3+wave)*.012 :
+            0;
+
+        return [
+          Math.cos(angle)*radius,
+          Math.sin(angle)*radius,
+          z+ripple
+        ];
+      });
+
+      if (level>.001) {
+        const low = ring(0);
+        const high = ring(level);
+
+        for (let i=0;i<segments;i++) {
+          drawTankPolygon(
+            [low[i],low[(i+1)%segments],high[(i+1)%segments],high[i]],
+            i<segments/2 ?
+              'rgba(43,135,220,.67)' :
+              'rgba(37,109,198,.55)',
+            null,1,offsetX
+          );
+        }
+
+        drawTankPolygon(
+          high,
+          'rgba(100,210,255,.76)',
+          'rgba(195,241,255,.9)',
+          1.2,
+          offsetX
+        );
+      }
+
+      const top = ring(zTop);
+      const bottom = ring(0);
+
+      pathProjected(
+        liquidCtx,
+        top.map(p=>tankPoint(...p,offsetX)),
+        true
+      );
+      liquidCtx.strokeStyle = 'rgba(235,232,255,.9)';
+      liquidCtx.lineWidth = 1.7;
+      liquidCtx.stroke();
+
+      pathProjected(
+        liquidCtx,
+        bottom.map(p=>tankPoint(...p,offsetX)),
+        true
+      );
+      liquidCtx.strokeStyle = 'rgba(235,232,255,.68)';
+      liquidCtx.lineWidth = 1.2;
+      liquidCtx.stroke();
+
+      for (let i=0;i<segments;i+=4) {
+        drawTankLine(
+          [r*Math.cos(i*2*Math.PI/segments),r*Math.sin(i*2*Math.PI/segments),0],
+          [r*Math.cos(i*2*Math.PI/segments),r*Math.sin(i*2*Math.PI/segments),zTop],
+          offsetX,'rgba(235,232,255,.62)',1.1
+        );
+      }
+
+      for (const mark of [.25,.5,.75]) {
+        const z = mark*zTop;
+        const pts = ring(z);
+        const p = pts[segments-7];
+
+        drawTankLine(
+          [p[0],p[1],z],
+          [p[0]+.12,p[1],z],
+          offsetX,'rgba(255,255,255,.7)',1,[3,3]
+        );
+      }
+    }
+
+    function drawSphereTank(offsetX,fillFraction,wave) {
+      const r = .82;
+      const zTop = 1.64;
+      const segments = 36;
+      const level = Math.max(0,Math.min(1,fillFraction))*zTop;
+
+      function radiusAt(z) {
+        const q = (z/zTop-.5)*2;
+        return r*Math.sqrt(Math.max(0,1-q*q));
+      }
+
+      const ring = (z,ripple=false)=>Array.from({length:segments},(_,i)=>{
+        const rr = radiusAt(z);
+        const angle = i*2*Math.PI/segments;
+        const wiggle =
+          ripple && level>0 && level<zTop ?
+            Math.sin(angle*3+wave)*.008 :
+            0;
+
+        return [
+          Math.cos(angle)*rr,
+          Math.sin(angle)*rr,
+          z+wiggle
+        ];
+      });
+
+      if (level>.001) {
+        const bands = 18;
+
+        for (let j=0;j<bands;j++) {
+          const z1 = level*j/bands;
+          const z2 = level*(j+1)/bands;
+          const a = ring(z1);
+          const b = ring(z2,j===bands-1);
+
+          for (let i=0;i<segments;i++) {
+            drawTankPolygon(
+              [a[i],a[(i+1)%segments],b[(i+1)%segments],b[i]],
+              j<bands/2 ?
+                'rgba(38,131,219,.59)' :
+                'rgba(47,166,235,.65)',
+              null,1,offsetX
+            );
+          }
+        }
+
+        drawTankPolygon(
+          ring(level,true),
+          'rgba(112,218,255,.72)',
+          'rgba(204,243,255,.9)',
+          1.1,
+          offsetX
+        );
+      }
+
+      // Latitude rings and meridians outline the spherical container.
+      for (let j=1;j<8;j++) {
+        const z = zTop*j/8;
+
+        pathProjected(
+          liquidCtx,
+          ring(z).map(p=>tankPoint(...p,offsetX)),
+          true
+        );
+
+        liquidCtx.strokeStyle = 'rgba(235,232,255,.48)';
+        liquidCtx.lineWidth = 1;
+        liquidCtx.stroke();
+      }
+
+      for (let i=0;i<12;i++) {
+        const angle = i*2*Math.PI/12;
+        const pts = [];
+
+        for (let j=0;j<=24;j++) {
+          const z = zTop*j/24;
+          const rr = radiusAt(z);
+
+          pts.push(
+            tankPoint(
+              Math.cos(angle)*rr,
+              Math.sin(angle)*rr,
+              z,
+              offsetX
+            )
+          );
+        }
+
+        pathProjected(liquidCtx,pts,false);
+        liquidCtx.strokeStyle = 'rgba(235,232,255,.52)';
+        liquidCtx.lineWidth = 1;
+        liquidCtx.stroke();
+      }
+
+      pathProjected(
+        liquidCtx,
+        ring(zTop).map(p=>tankPoint(...p,offsetX)),
+        true
+      );
+
+      liquidCtx.strokeStyle = 'rgba(235,232,255,.76)';
+      liquidCtx.lineWidth = 1.4;
+      liquidCtx.stroke();
+    }
+
+    function renderLiquidScene(wave=0) {
+      updateLiquidStats();
+
+      const ctx = liquidCtx;
+      const W = liquidCanvas.width;
+      const H = liquidCanvas.height;
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#141622';
+      ctx.fillRect(0,0,W,H);
+
+      // Floor grid.
+      ctx.strokeStyle = 'rgba(177,174,211,.12)';
+      ctx.lineWidth = 1;
+
+      for (let i=0;i<=16;i++) {
+        const x = i*W/16;
+
+        ctx.beginPath();
+        ctx.moveTo(x,H*.73);
+        ctx.lineTo(W/2+(x-W/2)*1.3,H*.98);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = 'rgba(177,174,211,.15)';
+
+      for (let i=0;i<=6;i++) {
+        const y = H*.74+i*H*.035;
+
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(W,y);
+        ctx.stroke();
+      }
+
+      const configs = [liquidConfig('A'),liquidConfig('B')];
+      const volumes = [liquidVolumeA,liquidVolumeB];
+      const offsets = [-205,205];
+
+      configs.forEach((config,index)=>{
+        const capacity = Math.max(config.capacityLiters,1e-9);
+        const percent = Math.max(0,Math.min(1,volumes[index]/capacity));
+        const physicalHeight = liquidWaterHeight(config,volumes[index]);
+
+        const fillFraction =
+          config.shape==='sphere' ?
+            physicalHeight/(2*config.a) :
+            percent;
+
+        const offset = offsets[index];
+
+        ctx.fillStyle = '#f3efff';
+        ctx.font = 'bold 18px system-ui';
+        ctx.fillText(
+          index===0 ? 'RECIPIENTE A' : 'RECIPIENTE B',
+          W/2+offset-73,
+          62
+        );
+
+        if (config.shape==='box') {
+          drawBoxTank(offset,fillFraction,wave);
+        } else if (config.shape==='cylinder') {
+          drawCylinderTank(offset,fillFraction,wave);
+        } else {
+          drawSphereTank(offset,fillFraction,wave);
+        }
+
+        const heightInfo =
+          config.shape==='sphere' ?
+            `Raio: ${fmt(config.a)} cm` :
+          config.shape==='cylinder' ?
+            `r = ${fmt(config.a)} cm · h = ${fmt(config.h)} cm` :
+            `${fmt(config.a)} × ${fmt(config.b)} × ${fmt(config.h)} cm`;
+
+        ctx.fillStyle = '#c5c0dd';
+        ctx.font = '12px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(heightInfo,W/2+offset,H-26);
+        ctx.textAlign = 'start';
+      });
+
+      ctx.fillStyle = 'rgba(17,18,30,.9)';
+      ctx.fillRect(W/2-77,H*.27,154,42);
+
+      ctx.fillStyle = '#8fe2ff';
+      ctx.font = 'bold 18px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('A  ⇄  B',W/2,H*.27+27);
+      ctx.textAlign = 'start';
+    }
+
+    function animateLiquidVolumes(targetA,targetB,message='') {
+      if (liquidAnimationId) {
+        cancelAnimationFrame(liquidAnimationId);
+      }
+
+      const startA = liquidVolumeA;
+      const startB = liquidVolumeB;
+
+      const a = liquidConfig('A');
+      const b = liquidConfig('B');
+
+      targetA = Math.max(0,Math.min(a.capacityLiters,targetA));
+      targetB = Math.max(0,Math.min(b.capacityLiters,targetB));
+
+      const startTime = performance.now();
+      const duration = 900;
+
+      function frame(now) {
+        const t = Math.min(1,(now-startTime)/duration);
+        const eased = 1-Math.pow(1-t,3);
+
+        liquidVolumeA = startA+(targetA-startA)*eased;
+        liquidVolumeB = startB+(targetB-startB)*eased;
+
+        renderLiquidScene(now*.006);
+
+        if (t<1) {
+          liquidAnimationId = requestAnimationFrame(frame);
+        } else {
+          liquidAnimationId = 0;
+          liquidVolumeA = targetA;
+          liquidVolumeB = targetB;
+
+          renderLiquidScene();
+
+          if (message) showLiquidMessage(message);
+        }
+      }
+
+      liquidAnimationId = requestAnimationFrame(frame);
+    }
+
+    function transferLiquid(from,to) {
+      const amount = Number($('teacherPourAmount').value);
+
+      if (!Number.isFinite(amount)||amount<=0) {
+        showLiquidMessage('Digite uma quantidade maior que zero.');
+        return;
+      }
+
+      const volumeFrom = from==='A' ? liquidVolumeA : liquidVolumeB;
+      const volumeTo = to==='A' ? liquidVolumeA : liquidVolumeB;
+      const capacityTo = liquidConfig(to).capacityLiters;
+      const availableRoom = Math.max(0,capacityTo-volumeTo);
+      const moved = Math.min(amount,volumeFrom,availableRoom);
+
+      if (moved<=1e-9) {
+        showLiquidMessage(
+          availableRoom<=1e-9 ?
+            `O recipiente ${to} está cheio.` :
+            `O recipiente ${from} não tem água suficiente.`
+        );
+        return;
+      }
+
+      const nextA = liquidVolumeA+(to==='A'?moved:-moved);
+      const nextB = liquidVolumeB+(to==='B'?moved:-moved);
+
+      const suffix =
+        moved+1e-8<amount ?
+          ` Foram transferidos ${fmtLiters(moved)} porque havia água ou espaço limitado.` :
+          ` Foram transferidos ${fmtLiters(moved)}.`;
+
+      animateLiquidVolumes(
+        nextA,
+        nextB,
+        `Água transferida de ${from} para ${to}.${suffix}`
+      );
+    }
+
+    function handleTankShapeChange(which) {
+      updateDimensionLabels(which);
+      updateLiquidStats();
+      renderLiquidScene();
+    }
+
+    ['A','B'].forEach(which=>{
+      $(`teacherLiquidShape${which}`).addEventListener(
+        'change',
+        ()=>handleTankShapeChange(which)
+      );
+
+      [`teacherDimA${which}`,`teacherDimB${which}`,`teacherDimH${which}`].forEach(id=>{
+        $(id).addEventListener('input',()=>{
+          updateLiquidStats();
+          renderLiquidScene();
+        });
+      });
+
+      updateDimensionLabels(which);
+    });
+
+    $('teacherPourAToB').addEventListener(
+      'click',
+      ()=>transferLiquid('A','B')
+    );
+
+    $('teacherPourBToA').addEventListener(
+      'click',
+      ()=>transferLiquid('B','A')
+    );
+
+    $('teacherFillA').addEventListener(
+      'click',
+      ()=>animateLiquidVolumes(
+        liquidConfig('A').capacityLiters,
+        liquidVolumeB,
+        'Recipiente A cheio.'
+      )
+    );
+
+    $('teacherFillB').addEventListener(
+      'click',
+      ()=>animateLiquidVolumes(
+        liquidVolumeA,
+        liquidConfig('B').capacityLiters,
+        'Recipiente B cheio.'
+      )
+    );
+
+    $('teacherEmptyA').addEventListener(
+      'click',
+      ()=>animateLiquidVolumes(0,liquidVolumeB,'Recipiente A esvaziado.')
+    );
+
+    $('teacherEmptyB').addEventListener(
+      'click',
+      ()=>animateLiquidVolumes(liquidVolumeA,0,'Recipiente B esvaziado.')
+    );
+
+    liquidCanvas.addEventListener('pointerdown',e=>{
+      liquidDragging = true;
+      liquidLastPointer = {x:e.clientX,y:e.clientY};
+      liquidCanvas.setPointerCapture(e.pointerId);
+    });
+
+    liquidCanvas.addEventListener('pointermove',e=>{
+      if (!liquidDragging||!liquidLastPointer) return;
+
+      const dx = e.clientX-liquidLastPointer.x;
+      const dy = e.clientY-liquidLastPointer.y;
+
+      liquidLastPointer = {x:e.clientX,y:e.clientY};
+
+      liquidCamera.yaw += dx*.008;
+      liquidCamera.pitch = Math.max(
+        -.6,
+        Math.min(1.05,liquidCamera.pitch+dy*.006)
+      );
+
+      renderLiquidScene();
+    });
+
+    function stopLiquidDrag() {
+      liquidDragging = false;
+      liquidLastPointer = null;
+    }
+
+    liquidCanvas.addEventListener('pointerup',stopLiquidDrag);
+    liquidCanvas.addEventListener('pointercancel',stopLiquidDrag);
+    liquidCanvas.addEventListener('lostpointercapture',stopLiquidDrag);
+
+    // 3D Lab's internal tabs.
+    document.querySelectorAll('[data-lab-view]').forEach(button=>{
+      button.addEventListener('click',()=>{
+        document.querySelectorAll('[data-lab-view]').forEach(other=>{
+          const active = other===button;
+          other.classList.toggle('active',active);
+          other.setAttribute('aria-selected',String(active));
+        });
+
+        const showSurface = button.dataset.labView==='surface';
+
+        $('teacherLabSurface').hidden = !showSurface;
+        $('teacherLabLiquid').hidden = showSurface;
+
+        if (showSurface) {
+          draw3DSurface();
+        } else {
+          renderLiquidScene();
+        }
+      });
+    });
+
+    draw3DSurface();
+    renderLiquidScene();
+  })();
+  </script>
+  <script>
+(() => {
+  'use strict';
+
+  // Avoid creating the panel twice.
+  if (document.getElementById('teacherProbabilityPanel')) return;
+
+  const english = (document.documentElement.lang || '')
+    .toLowerCase()
+    .startsWith('en');
+
+  const t = (en, pt) => english ? en : pt;
+  const locale = english ? 'en-US' : 'pt-BR';
+
+  const numberFormat = new Intl.NumberFormat(locale, {
+    maximumFractionDigits: 2
+  });
+
+  // The colors repeat as needed; there is no category limit.
+  const colors = [
+    '#7866C8', '#E3A246', '#31978C', '#D76880',
+    '#5289C7', '#A49B3F', '#AD75C8', '#6B8797',
+    '#D17C48', '#588E61', '#B25EAB', '#7886D8'
+  ];
+
+  // Create the styling without changing the existing stylesheet.
+  const styles = document.createElement('style');
+
+  styles.textContent = `
+    #teacherProbabilityPanel {
+      grid-column: 1 / -1;
+      min-width: 0;
+      color: var(--teacher-text, var(--text-color, #242331));
+    }
+
+    #teacherProbabilityPanel .tpIntro {
+      margin: 0;
+      color: var(--teacher-muted, #777);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #teacherProbabilityPanel .tpLayout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(260px, .9fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 16px;
+    }
+
+    #teacherProbabilityPanel .tpRows {
+      display: grid;
+      gap: 9px;
+    }
+
+    #teacherProbabilityPanel .tpRow {
+      display: grid;
+      grid-template-columns: 12px minmax(70px, 1fr)
+        minmax(75px, 115px) minmax(55px, 75px) 36px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #teacherProbabilityPanel .tpColor {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+    }
+
+    #teacherProbabilityPanel .tpField {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      min-height: 42px;
+      border: 1px solid var(--teacher-line, rgba(120,110,140,.2));
+      border-radius: 10px;
+      padding: 9px;
+      background: var(--teacher-panel, var(--container-color, #fff));
+      color: var(--teacher-text, var(--text-color, #242331));
+      font: inherit;
+      font-size: 13px;
+    }
+
+    html.darkMode #teacherProbabilityPanel .tpField {
+      background: #191823;
+      color: var(--teacher-text, #f0edf9);
+    }
+
+    #teacherProbabilityPanel .tpPercent {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #teacherProbabilityPanel .tpRemove {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--teacher-line, rgba(120,110,140,.2));
+      border-radius: 10px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 19px;
+      cursor: pointer;
+    }
+
+    #teacherProbabilityPanel .tpRemove:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+
+    #teacherProbabilityPanel .tpActions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    #teacherProbabilityPanel .tpButton {
+      min-height: 40px;
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 13px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    #teacherProbabilityPanel .tpAdd {
+      background: var(--teacher-accent, #69569d);
+      color: white;
+    }
+
+    #teacherProbabilityPanel .tpReset {
+      background: rgba(105,86,157,.12);
+      color: inherit;
+      border: 1px solid var(--teacher-line, rgba(120,110,140,.2));
+    }
+
+    #teacherProbabilityPanel .tpChartCard {
+      min-width: 0;
+      border: 1px solid var(--teacher-line, rgba(120,110,140,.2));
+      border-radius: 15px;
+      padding: 15px;
+    }
+
+    #teacherProbabilityPanel .tpChartTitle {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    #teacherProbabilityPanel .tpChartSub {
+      margin: 0;
+      color: var(--teacher-muted, #777);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    #teacherProbabilityPanel .tpPie {
+      display: block;
+      width: min(100%, 330px);
+      height: auto;
+      margin: 10px auto 0;
+    }
+
+    #teacherProbabilityPanel .tpTotalRow {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      margin-top: 8px;
+      border-top: 1px solid var(--teacher-line, rgba(120,110,140,.2));
+      font-size: 12px;
+    }
+
+    #teacherProbabilityPanel .tpTotalRow strong {
+      font-variant-numeric: tabular-nums;
+    }
+
+    #teacherProbabilityPanel .tpFormula {
+      margin-top: 13px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: rgba(105,86,157,.08);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    #teacherProbabilityPanel .tpNote {
+      margin: 12px 0 0;
+      color: var(--teacher-muted, #777);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 760px) {
+      #teacherProbabilityPanel .tpLayout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      #teacherProbabilityPanel .tpRow {
+        grid-template-columns: 10px minmax(60px, 1fr)
+          minmax(65px, 90px) 55px 32px;
+        gap: 6px;
+      }
+
+      #teacherProbabilityPanel .tpField {
+        padding: 8px 6px;
+        font-size: 12px;
+      }
+
+      #teacherProbabilityPanel .tpRemove {
+        width: 32px;
+      }
+    }
+  `;
+
+  document.head.appendChild(styles);
+
+  // Create the panel.
+  const panel = document.createElement('section');
+  panel.id = 'teacherProbabilityPanel';
+  panel.className = 'teacherWorkspacePanel';
+
+  panel.innerHTML = `
+    <div class="teacherSectionHead">
+      <div>
+        <h2>${t(
+          'Statistics & Probability — Pie Chart',
+          'Estatística e Probabilidade — Gráfico de Setores'
+        )}</h2>
+        <p>${t(
+          'Change values and demonstrate how the percentage distribution changes.',
+          'Altere os valores e demonstre como a distribuição percentual muda.'
+        )}</p>
+      </div>
+    </div>
+
+    <div class="teacherSectionBody">
+      <p class="tpIntro">${t(
+        'Add as many categories as needed. Each percentage is calculated from the sum of all category values. Values do not have to add up to 100.',
+        'Adicione quantas categorias precisar. Cada percentual é calculado com base na soma de todos os valores. Os valores não precisam somar 100.'
+      )}</p>
+
+      <div class="tpLayout">
+        <div>
+          <div class="tpRows" id="teacherProbabilityRows"></div>
+
+          <div class="tpActions">
+            <button type="button" class="tpButton tpAdd"
+              id="teacherProbabilityAdd">
+              ${t('+ Add category', '+ Adicionar categoria')}
+            </button>
+
+            <button type="button" class="tpButton tpReset"
+              id="teacherProbabilityReset">
+              ${t('Reset example', 'Restaurar exemplo')}
+            </button>
+          </div>
+        </div>
+
+        <div class="tpChartCard">
+          <h3 class="tpChartTitle">${t(
+            'Percentage distribution',
+            'Distribuição percentual'
+          )}</h3>
+
+          <p class="tpChartSub">${t(
+            'The chart updates while you type.',
+            'O gráfico é atualizado enquanto você digita.'
+          )}</p>
+
+          <svg class="tpPie" id="teacherProbabilityPie"
+            viewBox="0 0 240 240" role="img"
+            aria-label="${t(
+              'Live pie chart',
+              'Gráfico de setores atualizado em tempo real'
+            )}">
+          </svg>
+
+          <div class="tpTotalRow">
+            <span>${t('Sum of values', 'Soma dos valores')}</span>
+            <strong id="teacherProbabilityTotal">100</strong>
+          </div>
+
+          <div class="tpTotalRow">
+            <span>${t('Number of categories', 'Número de categorias')}</span>
+            <strong id="teacherProbabilityCount">3</strong>
+          </div>
+
+          <div class="tpFormula">
+            <strong>${t('Formula', 'Fórmula')}</strong><br>
+            ${t(
+              'Percentage = (category value ÷ sum of values) × 100',
+              'Percentual = (valor da categoria ÷ soma dos valores) × 100'
+            )}
+          </div>
+        </div>
+      </div>
+
+      <p class="tpNote">${t(
+        'The chart shows each category’s share of the total. Interpret the shares as probabilities when the categories and values represent the possible outcomes or their appropriate weights.',
+        'O gráfico mostra a participação de cada categoria no total. Interprete esses percentuais como probabilidades quando as categorias e os valores representarem os resultados possíveis ou seus pesos apropriados.'
+      )}</p>
+    </div>
+  `;
+
+  // Insert inside the existing workspace, without replacing other tools.
+  const target =
+    document.querySelector('.teacherWorkspaceGrid') ||
+    document.getElementById('teacherViewWorkspace') ||
+    document.querySelector('.teacherMainCard') ||
+    document.querySelector('main');
+
+  if (!target) {
+    console.error(
+      '[Probability Visualizer] Could not find a place to insert the section.'
+    );
+    return;
+  }
+
+  target.appendChild(panel);
+
+  const rows = panel.querySelector('#teacherProbabilityRows');
+  const pie = panel.querySelector('#teacherProbabilityPie');
+  const totalLabel = panel.querySelector('#teacherProbabilityTotal');
+  const countLabel = panel.querySelector('#teacherProbabilityCount');
+
+  let nextId = 4;
+
+  // Example starts at 25%, 35%, and 40%.
+  let categories = [
+    { id: 1, name: t('Category A', 'Categoria A'), value: '25' },
+    { id: 2, name: t('Category B', 'Categoria B'), value: '35' },
+    { id: 3, name: t('Category C', 'Categoria C'), value: '40' }
+  ];
+
+  function getValue(category) {
+    const value = Number(String(category.value).trim());
+
+    if (!Number.isFinite(value)) return 0;
+
+    return Math.max(0, value);
+  }
+
+  function createSVGElement(name, attributes = {}) {
+    const element = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      name
+    );
+
+    Object.entries(attributes).forEach(([key, value]) => {
+      element.setAttribute(key, String(value));
+    });
+
+    return element;
+  }
+
+  // Recalculate the total, percentages, and pie-chart slices.
+  function updateChart() {
+    const values = categories.map(getValue);
+    const total = values.reduce((sum, value) => sum + value, 0);
+
+    pie.replaceChildren();
+
+    const cx = 120;
+    const cy = 120;
+    const radius = 88;
+
+    if (total <= 0) {
+      pie.appendChild(createSVGElement('circle', {
+        cx, cy, r: radius,
+        fill: '#9CA3AF',
+        opacity: '.25',
+        stroke: '#9CA3AF',
+        'stroke-width': '1.5'
+      }));
+
+      const message = createSVGElement('text', {
+        x: cx,
+        y: cy,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'middle',
+        fill: 'currentColor',
+        'font-size': '11'
+      });
+
+      message.textContent = t('Enter values', 'Digite valores');
+      pie.appendChild(message);
+    } else {
+      const activeSlices = values
+        .map((value, index) => ({ value, index }))
+        .filter(slice => slice.value > 0);
+
+      // A single positive value occupies the entire circle.
+      if (activeSlices.length === 1) {
+        const index = activeSlices[0].index;
+
+        pie.appendChild(createSVGElement('circle', {
+          cx,
+          cy,
+          r: radius,
+          fill: colors[index % colors.length],
+          stroke: 'var(--teacher-panel, #fff)',
+          'stroke-width': '2'
+        }));
+      } else {
+        let angle = -Math.PI / 2;
+
+        activeSlices.forEach(({ value, index }) => {
+          const sliceAngle = value / total * Math.PI * 2;
+          const endAngle = angle + sliceAngle;
+
+          const x1 = cx + radius * Math.cos(angle);
+          const y1 = cy + radius * Math.sin(angle);
+          const x2 = cx + radius * Math.cos(endAngle);
+          const y2 = cy + radius * Math.sin(endAngle);
+
+          const largeArc = sliceAngle > Math.PI ? 1 : 0;
+
+          const path = createSVGElement('path', {
+            d: `M ${cx} ${cy} L ${x1} ${y1}
+                A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`,
+            fill: colors[index % colors.length],
+            stroke: 'var(--teacher-panel, #fff)',
+            'stroke-width': '2'
+          });
+
+          const tooltip = createSVGElement('title');
+          tooltip.textContent =
+            `${categories[index].name}: ` +
+            `${numberFormat.format(value / total * 100)}%`;
+
+          path.appendChild(tooltip);
+          pie.appendChild(path);
+
+          angle = endAngle;
+        });
+      }
+    }
+
+    totalLabel.textContent = numberFormat.format(total);
+    countLabel.textContent = String(categories.length);
+
+    categories.forEach(category => {
+      const percent = total > 0
+        ? getValue(category) / total * 100
+        : null;
+
+      const percentElement = panel.querySelector(
+        `[data-probability-percent="${category.id}"]`
+      );
+
+      if (percentElement) {
+        percentElement.textContent = percent === null
+          ? '—'
+          : `${numberFormat.format(percent)}%`;
+      }
+    });
+  }
+
+  // Build the editable category rows.
+  function renderRows() {
+    rows.replaceChildren();
+
+    categories.forEach((category, index) => {
+      const row = document.createElement('div');
+      row.className = 'tpRow';
+
+      const color = document.createElement('span');
+      color.className = 'tpColor';
+      color.style.background = colors[index % colors.length];
+
+      const nameInput = document.createElement('input');
+      nameInput.className = 'tpField';
+      nameInput.type = 'text';
+      nameInput.maxLength = 80;
+      nameInput.value = category.name;
+      nameInput.setAttribute(
+        'aria-label',
+        t('Category name', 'Nome da categoria')
+      );
+
+      nameInput.addEventListener('input', () => {
+        category.name = nameInput.value;
+        updateChart();
+      });
+
+      const valueInput = document.createElement('input');
+      valueInput.className = 'tpField';
+      valueInput.type = 'number';
+      valueInput.min = '0';
+      valueInput.step = 'any';
+      valueInput.value = category.value;
+      valueInput.setAttribute(
+        'aria-label',
+        t('Category value', 'Valor da categoria')
+      );
+
+      valueInput.addEventListener('input', () => {
+        // Ignore negative quantities.
+        if (
+          valueInput.value !== '' &&
+          Number(valueInput.value) < 0
+        ) {
+          valueInput.value = '0';
+        }
+
+        category.value = valueInput.value;
+        updateChart();
+      });
+
+      const percentage = document.createElement('span');
+      percentage.className = 'tpPercent';
+      percentage.dataset.probabilityPercent = String(category.id);
+      percentage.textContent = '—';
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.className = 'tpRemove';
+      removeButton.textContent = '×';
+      removeButton.title = t('Remove category', 'Remover categoria');
+      removeButton.setAttribute(
+        'aria-label',
+        t('Remove category', 'Remover categoria')
+      );
+
+      removeButton.disabled = categories.length <= 1;
+
+      removeButton.addEventListener('click', () => {
+        if (categories.length <= 1) return;
+
+        categories = categories.filter(
+          item => item.id !== category.id
+        );
+
+        renderRows();
+      });
+
+      row.append(
+        color,
+        nameInput,
+        valueInput,
+        percentage,
+        removeButton
+      );
+
+      rows.appendChild(row);
+    });
+
+    updateChart();
+  }
+
+  // Add a category. There is intentionally no hard-coded maximum.
+  panel.querySelector('#teacherProbabilityAdd')
+    .addEventListener('click', () => {
+      const id = nextId++;
+
+      categories.push({
+        id,
+        name: `${t('Category', 'Categoria')} ${id}`,
+        value: '0'
+      });
+
+      renderRows();
+
+      const lastInput = rows.lastElementChild &&
+        rows.lastElementChild.querySelector('input[type="text"]');
+
+      if (lastInput) lastInput.focus();
+    });
+
+  // Restore the original three-category example.
+  panel.querySelector('#teacherProbabilityReset')
+    .addEventListener('click', () => {
+      categories = [
+        {
+          id: nextId++,
+          name: t('Category A', 'Categoria A'),
+          value: '25'
+        },
+        {
+          id: nextId++,
+          name: t('Category B', 'Categoria B'),
+          value: '35'
+        },
+        {
+          id: nextId++,
+          name: t('Category C', 'Categoria C'),
+          value: '40'
+        }
+      ];
+
+      renderRows();
+    });
+
+  renderRows();
+})();
+</script>
+</body>
+</html>
